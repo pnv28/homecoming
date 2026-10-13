@@ -10,3 +10,6 @@
 Repeated route records are deduplicated by stop ID. Different IDs are kept separate even when names or coordinates match: colocated or nearby records do not establish the same boarding point. There are no overlapping IDs between the two source files. This list contains no route rows and does not establish wheelchair boarding access, current service availability, or pickup permission for every service.
 
 Reproduce with `python3 analysis/create_bus_stop_list.py` from the project directory.
+
+
+Data paths were consolidated on 13 October 2026. Former root filenames above describe the original inputs; current paths and SHA-256 checks are recorded in [the reorganization manifest](reorganization_manifest.json). Analysis scripts use the current organized paths.

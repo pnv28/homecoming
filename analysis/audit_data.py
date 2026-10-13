@@ -39,12 +39,12 @@ def haversine(lat, lon, xy):
 
 
 def main():
-    estates = load_json('prh-estates (1).json')
-    bus = load_json('JSON_BUS.json')['features']
-    hospitals = load_json('facility-hosp.json')
-    facilities = csv_rows('barrier_free_facilities.csv')
-    categories = csv_rows('barrier_free_facility_category.csv')
-    stations = csv_rows('mtr_lines_and_stations.csv')
+    estates = load_json('data/organized/core/estates/prh-estates.json')
+    bus = load_json('data/organized/core/bus/route_stop_records.geojson')['features']
+    hospitals = load_json('data/organized/supplementary/hospitals/facility-hosp.json')
+    facilities = csv_rows('data/organized/core/mtr/barrier_free_facilities.csv')
+    categories = csv_rows('data/organized/core/mtr/barrier_free_facility_category.csv')
+    stations = csv_rows('data/organized/core/mtr/mtr_lines_and_stations.csv')
     by_stop = collections.defaultdict(list)
     for f in bus:
         by_stop[str(f['properties']['stopId'])].append(f)
@@ -81,7 +81,7 @@ def main():
                          'interpretation': 'Geographic proximity only; route and boarding accessibility unverified.'})
     report['geographic_examples'] = examples
     with tempfile.TemporaryDirectory(prefix='homecoming_audit_') as td:
-        with zipfile.ZipFile(ROOT / '3D_Pedestrian_Network_FGDB.zip') as z:
+        with zipfile.ZipFile(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') as z:
             z.extractall(td)
         gdb = next(Path(td).glob('*.gdb'))
         domains = {}

@@ -12,7 +12,7 @@ from pyogrio.raw import read
 OUT = Path(__file__).resolve().parent
 ROOT = OUT.parent.parent
 project = Transformer.from_crs(4326, 2326, always_xy=True)
-source = '/vsizip/' + str(ROOT / '3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
+source = '/vsizip/' + str(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
 meta, _, wkb, values = read(source, layer='PedestrianRoute', columns=[
     'PedestrianRouteID', 'FeatureType', 'Gradient', 'AliasNameEN', 'StreetNameEN', 'Enabled'])
 a = dict(zip(meta['fields'], values))

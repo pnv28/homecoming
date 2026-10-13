@@ -326,3 +326,6 @@ python3 -m venv .venv
 Outputs are `analysis/audit_summary.json` and `analysis/metadata_extracted.txt`. The archive is extracted into a temporary directory for inspection. Dependencies are pinned to the versions used here. This environment used Python 3.9 on macOS; other systems may require compatible package versions.
 
 The proposed constrained graph model is a good fit because it directly represents the physical route, separates barriers from preferences, adapts to different users, and can explain each recommendation. The immediate next step is a validated pilot with reliable origin/entrance connectors—not assigning accessibility scores to every estate before those connections are established.
+
+
+Data paths were consolidated on 13 October 2026. Former root filenames above describe the original inputs; current paths and SHA-256 checks are recorded in [the reorganization manifest](../data/reorganization_manifest.json). Analysis scripts use the current organized paths.

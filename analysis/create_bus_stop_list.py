@@ -9,7 +9,7 @@ OUTPUT = ROOT / 'data' / 'bus_stops.json'
 
 def main():
     stops = {}
-    for filename in ('JSON_BUS.json.1', 'JSON_GMB.json'):
+    for filename in ('data/organized/core/bus/route_stop_records.geojson', 'data/organized/core/bus/JSON_GMB.json'):
         with (ROOT / filename).open(encoding='utf-8-sig') as f:
             features = json.load(f)['features']
         for feature in features:

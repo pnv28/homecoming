@@ -42,7 +42,7 @@ for stem in ['hong_kong_housing_districts', 'hong_kong_estates_hospitals_numbere
         ax.add_patch(PathPatch(polygon_path(g.intersection(land)), facecolor=COLORS[name], edgecolor='none'))
     combined = 'estates' in stem
     if combined:
-        source = '/vsizip/' + str(ROOT / '3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
+        source = '/vsizip/' + str(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
         _, _, wkb, _ = read(source, layer='PedestrianRoute', columns=[])
         geoms = shapely.get_parts(shapely.from_wkb(wkb))
         coords = shapely.get_coordinates(geoms)

@@ -1,6 +1,6 @@
 # Data guide for estate-to-transit accessibility
 
-Organized on 12 October 2026. Useful files have been **copied**, not moved, into [`organized/`](organized/). Original files remain in their original locations. Copied contents are unchanged; a few filenames were clarified. [`copy_manifest.json`](organized/copy_manifest.json) records all 20 originals, copies, sizes and SHA-256 hashes. Copies were checked against their originals.
+Organized data lives in [`organized/`](organized/). On 13 October 2026, root data files were consolidated here and duplicates were removed only after matching SHA-256 hashes. Older duplicate paths inside `data/` are relative symlinks to the canonical files, preserving existing consumers. [`reorganization_manifest.json`](reorganization_manifest.json) records each move, removal, retained path and hash. [`copy_manifest.json`](organized/copy_manifest.json) remains the historical record of the original copy operation; its original paths may no longer exist. `work/` was left untouched.
 
 ## Folder structure
 
@@ -88,3 +88,7 @@ The other files in `data/2020 data github public set/` remain in place. They wer
 6. Report missing evidence and distinguish reaching an entrance/stop from reaching a platform or boarding.
 
 The [main assessment](../analysis/accessibility_report.md) and [coordinate-source investigation](../analysis/mtr_coordinate_sources.md) provide the detailed model and source checks. This organization does not modify source data, compute routes or certify access.
+
+## Green minibus source
+
+[`JSON_GMB.json`](organized/core/bus/JSON_GMB.json) preserves the unique green minibus route-stop source previously stored at the repository root. Bus records are retained at [`route_stop_records.geojson`](organized/core/bus/route_stop_records.geojson); the two former root bus files had identical SHA-256 hashes.

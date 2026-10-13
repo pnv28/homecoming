@@ -29,7 +29,7 @@ land = shapely.union_all([
     for f in json.loads((OUT / 'hong_kong_land.geojson').read_text())['features']
 ])
 land = shapely.make_valid(land)
-source = '/vsizip/' + str(ROOT / '3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
+source = '/vsizip/' + str(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
 _, _, wkb, _ = read(source, layer='PedestrianRoute', columns=[])
 geometries = shapely.from_wkb(wkb)
 assert len(geometries) == 465892

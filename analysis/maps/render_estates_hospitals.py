@@ -66,7 +66,7 @@ housing_legend(svg)
 rows=[]
 for kind,file,name,lat,lon,color in [
  ('estate','data/organized/core/estates/prh-estates.json','Estate Name','Estate Map Latitude','Estate Map Longitude','#16834b'),
- ('hospital','facility-hosp.json','institution_eng','latitude','longitude','#d7353f')]:
+ ('hospital','data/organized/supplementary/hospitals/facility-hosp.json','institution_eng','latitude','longitude','#d7353f')]:
     records=json.loads((ROOT/file).read_text())
     records.sort(key=lambda r:(r[name]['en'] if kind=='estate' else r[name]).casefold())
     for i,r in enumerate(records,1):

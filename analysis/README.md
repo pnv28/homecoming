@@ -1012,3 +1012,6 @@ and proposed routing mathematics as unimplemented until an actual engine exists.
 Preserve root originals and provenance. Regenerate dependent outputs together after
 source changes. Update this handoff with new results, methods, dependencies, limitations
 and verification so the next reader does not need the conversation history.
+
+
+Data paths were consolidated on 13 October 2026. Former root filenames above describe the original inputs; current paths and SHA-256 checks are recorded in [the reorganization manifest](../data/reorganization_manifest.json). Analysis scripts use the current organized paths.

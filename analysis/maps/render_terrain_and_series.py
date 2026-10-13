@@ -113,7 +113,7 @@ def save(fig, stem):
 
 def terrain_map():
     print('Reading terrain ASCII and averaging 4 x 4 native cells for display', flush=True)
-    with zipfile.ZipFile(ROOT / 'Whole_HK_DTM_5m.zip') as z:
+    with zipfile.ZipFile(ROOT / 'data/organized/supplementary/terrain/Whole_HK_DTM_5m.zip') as z:
         with z.open('Whole_HK_DTM_5m.asc') as f:
             header = {}
             for _ in range(6):
@@ -173,7 +173,7 @@ def terrain_map():
     print('Terrain complete:', stats, flush=True)
 
 def feature_series():
-    source = '/vsizip/' + str(ROOT / '3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
+    source = '/vsizip/' + str(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
     meta, _, wkb, values = read(source, layer='PedestrianRoute', columns=['FeatureType', 'Gradient'])
     attributes = dict(zip(meta['fields'], values))
     types, gradient = attributes['FeatureType'], attributes['Gradient']

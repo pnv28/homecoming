@@ -7,7 +7,7 @@ from pyogrio.raw import read
 
 OUT = Path(__file__).resolve().parent
 ROOT = OUT.parent.parent
-source = '/vsizip/' + str(ROOT / '3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
+source = '/vsizip/' + str(ROOT / 'data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip') + '/3DPN_P2.gdb'
 meta, _, _, values = read(source, layer='PedestrianRoute', read_geometry=False,
     columns=['PedestrianRouteID', 'FeatureType', 'WheelchairBarrier', 'WheelchairAccess',
              'ObstaclesType', 'Enabled', 'AccessTimeID', 'Gradient'])
