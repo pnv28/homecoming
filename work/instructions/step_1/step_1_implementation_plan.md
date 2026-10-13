@@ -1,8 +1,10 @@
 # Step 1 implementation plan: ingest and harmonise the housing-ranking data
 
+> **Latest decisions:** Read [the project context and agent handoff](../project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
+
 Prepared 13 October 2026 after inspecting the local files with the repository's `.venv`.
 
-Rechecked against the design and source files on 13 October 2026. The additional checks confirmed exact bus-list reconciliation, exact estate-crosswalk coordinates, readable coded domains in the selected network archive, and a successful GeoPackage round trip with 3D multipart paths and nulls. Implementation status: the Python pipeline is built and has completed a full real-data run with 0 errors and 93 warnings; 14 focused tests pass. See `work/README.md` and `work/precomputed/step_1/validation_report.md`. Unresolved source interpretation and matching issues remain flagged, and are unchecked in the human-readable checklist.
+Rechecked from original inputs on 13 October 2026 after today's policy decisions, physical MTR integration, candidate/boarding preparation and the GeoDataFrame output requirement. Successful run `20261013T121410Z-c823aaf9` has 476,153 spatial records, zero errors, 14 warning groups and 31 passing tests. All six outputs reopened as actual GeoDataFrames, all sixteen reference tables and eight MTR JSON files passed read-back checks, and all 23 source hashes were rechecked. See `work/precomputed/outputs/current/validation_report.md`. Actual remaining evidence gaps and later graph/routing/ranking work stay unchecked in the human-readable plan.
 
 ## Objective and scope
 
@@ -10,25 +12,25 @@ Implement **Step 1, “Harmonise data (`ingest.py`, `harmonise.py`)”**, in `es
 
 **Always-open assumption (user instruction):** All routes are assumed open at every time of day and on every date. Access schedules are outside the algorithm: do not load or export `AccessTime` or `AccessTimeDetails`, evaluate opening/closing hours, check schedule references, or request a journey date/time. Preserve an original `AccessTimeID` only as an unused source attribute for traceability; it must not affect route eligibility, cost, or ranking. This assumption concerns opening hours; stairs, gradients, physical barriers, direction, and other non-schedule suitability rules still apply in their respective later stages.
 
-Step 1 includes loading, coordinate harmonisation, field standardisation, Housing Authority district assignment, MTR table reconciliation, and validation. Graph construction, stair exclusion, edge weights, snapping, shortest paths, and ranking belong to later steps. Preserve information needed by those steps rather than applying their policies during ingestion.
+Step 1 includes loading, coordinate harmonisation, field standardisation, Housing Authority district assignment, MTR table reconciliation, and validation. Graph construction, parameter-dependent path filtering, edge weights, snapping, shortest paths, and ranking belong to later steps. Preserve information needed by those steps rather than applying their policies during ingestion. The latest policy retains stairs generally and excludes stairs/escalators/travelators only in future wheelchair mode.
 
-All new code and outputs will live under `work/`. Use the repository-root `.venv/bin/python`, install nothing during this step, and leave source files unchanged. No Homebrew packages are needed. If implementation reveals a necessary missing dependency, explain it and request permission before installing it.
+All new code and outputs live under `work/`. Use the repository-root `.venv/bin/python` and preserve original inputs. GeoPandas/pandas were installed through an approved request for the new output requirement. No Homebrew packages were installed. Further missing dependencies require explanation and permission.
 
 ## What the local inspection established
 
 | Dataset | Preferred input | Observed contents and implications |
 |---|---|---|
-| Estates | `work/data/prh-estates (1).json` | 244 estates; multilingual names, administrative district, map latitude/longitude, block names/counts, and other metadata. No block coordinates or entrance coordinates in the inspected schema. |
-| Hospitals | `work/data/facility-hosp.json` | 44 institutions; English/traditional/simplified Chinese names, coordinates, cluster, address, and A&E yes/no fields. |
-| Pedestrian network | `work/data/3D_Pedestrian_Network_FGDB.zip` | Contains `3DPN_P2.gdb`; `PedestrianRoute` has 465,892 `MultiLineString Z` features. Horizontal CRS is EPSG:2326; vertical CRS is HKPD height, EPSG:5738. |
+| Estates | `work/original_data/prh-estates (1).json` | 244 estates; multilingual names, administrative district, map latitude/longitude, block names/counts, and other metadata. No block coordinates or entrance coordinates in the inspected schema. |
+| Hospitals | `work/original_data/facility-hosp.json` | 44 institutions; English/traditional/simplified Chinese names, coordinates, cluster, address, and A&E yes/no fields. |
+| Pedestrian network | `work/original_data/3D_Pedestrian_Network_FGDB.zip` | Contains `3DPN_P2.gdb`; `PedestrianRoute` has 465,892 `MultiLineString Z` features. Horizontal CRS is EPSG:2326; vertical CRS is HKPD height, EPSG:5738. |
 | Network support tables | Same geodatabase | Seven nonspatial tables exist in the source. Load only the five non-schedule tables: terminal, floor, building, site, and distance-post references. Skip `AccessTime` and `AccessTimeDetails`. No separate node layer among the eight listed layers. |
-| MTR access points | `work/data/mtr_access_points.geojson` | 611 records; native `GEONAMEID`, station/site names, entrance names, access subcategory, WGS84 geometry, and HK1980 easting/northing attributes. |
-| Railway station reference | `work/data/railway_stations.geojson` | 98 records. Station reference points, not entrance locations or a guaranteed match to the station CSV. |
-| Bus/minibus stop list | `work/data/bus_stops.json` | 9,264 distinct stop IDs; includes 4,776 GMB-labelled stops, operator lists and flags. This is broader than the older bus-only audit. |
-| Original route-stop records | `work/data/JSON_BUS.json`, `work/data/JSON_GMB.json` | 56,209 bus rows and 13,155 GMB rows. Useful for validating the stop list and preserving service/pickup evidence. Read using `utf-8-sig`: a BOM is present in at least the bus input. |
+| MTR access points | `work/original_data/mtr_access_points.geojson` | 611 records; native `GEONAMEID`, station/site names, entrance names, access subcategory, WGS84 geometry, and HK1980 easting/northing attributes. |
+| Railway station reference | `work/original_data/railway_stations.geojson` | 98 records. Station reference points, not entrance locations or a guaranteed match to the station CSV. |
+| Bus/minibus stop list | `work/original_data/bus_stops.json` | 9,264 distinct stop IDs; includes 4,776 GMB-labelled stops, operator lists and flags. This is broader than the older bus-only audit. |
+| Original route-stop records | `work/original_data/JSON_BUS.json`, `work/original_data/JSON_GMB.json` | 56,209 bus rows and 13,155 GMB rows. Useful for validating the stop list and preserving service/pickup evidence. Read using `utf-8-sig`: a BOM is present in at least the bus input. |
 | MTR CSV references | `data/organized/core/mtr/` | `mtr_lines_and_stations.csv`, `barrier_free_facilities.csv`, `barrier_free_facility_category.csv`. The original accessibility CSV has empty exit-coordinate fields. |
 | Housing district crosswalk | `analysis/maps/estate_housing_district_crosswalk.csv` | Covers all 244 current estate names: Urban 109, Extended Urban 70, New Territories 60, Islands 5. |
-| Source documentation | Six provider PDFs in `work/data/`; existing reports under `analysis/` | 3DPN dictionary confirms radians and horizontal metres; iGeoCom confirms WGS84 geometry/HK1980 attributes. Estate, hospital and bus specifications define latitude/longitude but do not explicitly name a datum. |
+| Source documentation | Six provider PDFs in `work/original_data/`; existing reports under `analysis/` | 3DPN dictionary confirms radians and horizontal metres; iGeoCom confirms WGS84 geometry/HK1980 attributes. Estate, hospital and bus specifications define latitude/longitude but do not explicitly name a datum. |
 
 Read `whole_chat_export.md` together with the design. In particular, coordinate harmonisation does not create a graph, and point locations must remain available separately from future snapped locations.
 
@@ -36,17 +38,13 @@ Read `whole_chat_export.md` together with the design. In particular, coordinate 
 
 ### Python libraries and output format
 
-The installed environment runs Python 3.9.6 and contains Pyogrio 0.11.1, Shapely 2.0.7, PyProj 3.6.1, NumPy 2.0.2, and pypdf 6.20.0. GeoPandas, pandas, PyArrow, Fiona, and rasterio are absent. Keep code compatible with Python 3.9, including its type-annotation and standard-library APIs.
+Use the repository's Python 3.9.6 `.venv`: Pyogrio 0.11.1, Shapely 2.0.7, PyProj 3.6.1, NumPy 2.0.2, pypdf 6.20.0, GeoPandas 1.0.1 and pandas 2.3.3. GeoPandas/pandas and their missing dependencies were installed with approval to satisfy the user's GeoDataFrame requirement. Versions are pinned in `work/requirements.txt`; further installations still require permission. No Homebrew packages are involved.
 
-Use **Pyogrio's raw reader + NumPy attribute arrays + Shapely geometry arrays + PyProj**. A small in-memory `SpatialDataset` container will carry fields, geometry, horizontal CRS, vertical metadata, and source identity. This serves the same purpose as the design's GeoDataFrames without requiring new packages. Later functions should accept this container through a consistent interface.
+**Public spatial outputs are actual GeoPandas GeoDataFrames.** Persist six layers in `harmonised.gpkg`, then use `read_outputs()` or `read_geodataframe(directory, layer)` to load them with nullable pandas types restored from `schema.json`. Keep original Z/parts/vertices, EPSG:2326 horizontal CRS, HKPD vertical metadata and exact timestamp text. Internal `SpatialDataset`/`Table` arrays remain ingestion/export containers; future consumers use the GeoDataFrame interface.
 
-Define that contract explicitly: an ordered mapping of named, equal-length attribute arrays; a same-length Shapely geometry array; declared field types and null masks where needed; horizontal CRS; optional vertical CRS; and dataset/source metadata. Nonspatial support tables use the same attribute/type contract without a geometry array. Raw readers can represent nullable integers as floating arrays containing NaN, so use the declared source schema to restore nullable integer fields rather than allowing identifiers to become strings such as `"117.0"`.
+Write reference tables to SQLite and modelling/source/review records to JSON/CSV. GeoPackage avoids a PyArrow dependency. Round-trip every stored value through both the storage engine and the actual GeoDataFrame loader. Verify IDs, schema, nulls, unicode, timestamps, CRS and exact geometry WKB. The latest full rerun completed those checks for all 476,153 spatial records and all 16 reference tables.
 
-Recommended persisted format: **GeoPackage** for spatial layers, and standard-library SQLite/JSON/CSV for nonspatial tables and reports. Verify the installed GDAL GeoPackage writer and Pyogrio raw write API in a small read/write round trip before implementing the full export. Encode list-valued attributes as documented JSON text where necessary; preserve types and nulls. GeoPackage can store projected geometries and network Z values, whereas conventional GeoJSON is intended for geographic coordinates. Keep the original compound CRS WKT and vertical datum explicitly in the manifest regardless of writer behaviour.
-
-The recheck confirmed that both OpenFileGDB and GeoPackage drivers are available and that `pyogrio.raw.write()` works without pandas. A temporary two-layer GeoPackage preserved WKB for a vertical lift and multipart 3D path, Unicode text, null text, and a null floating attribute, and read back as EPSG:2326. Implementation still needs full-data export checks, especially nullable integer/boolean fields and timestamps; this small check does not establish preservation of every source type.
-
-Alternative: GeoPandas + GeoParquet would closely follow the original outline and provide a convenient table API, but requires additional packages. It is unnecessary for the first implementation. If the existing writer proves inadequate, choose an explicit WKB/SQLite representation with CRS metadata or request permission for a justified dependency; do not silently lose geometry dimensions or types.
+**Location:** `work/precomputed/outputs/` is a real directory with successful `runs/` snapshots and a `current/` link. Only fully checked candidates are selected. Cache/staging stays outside finished outputs, and successful outputs remain trackable in Git. A tested one-time migration moves the local identity-registry link to `outputs/current/entity_ids.json` without losing IDs; failed publication restores its previous link.
 
 ### Coordinate policy
 
@@ -63,11 +61,11 @@ Alternative: GeoPandas + GeoParquet would closely follow the original outline an
 
 ### 1. Make an explicit input inventory
 
-Create `work/config/step_1.json` listing each selected input, source role, expected CRS evidence, and expected schema. Prefer `work/data`; use exact paths to the identified supplementary files outside `work` rather than scanning and selecting whichever similarly named file appears first.
+Create `work/config/step_1.json` listing each selected input, source role, expected CRS evidence, and expected schema. Prefer `work/original_data`; use exact paths to the identified supplementary files outside `work` rather than scanning and selecting whichever similarly named file appears first.
 
 Record SHA-256, size, selected archive members, source dates where known, and library versions. Treat file modification time separately from a source publication or download date. This manifest makes it clear which snapshot generated each output and resolves duplicate copies in the parent directory.
 
-For the first implementation, copy the needed MTR CSVs and district crosswalk/documentation into `work/data/reference/`, retaining original path and checksums in the manifest. Compare the crosswalk's estate names and coordinates to the current estate file before reuse. Do not import existing scripts that have hard-coded destinations outside `work`.
+For the first implementation, copy the needed MTR CSVs and district crosswalk/documentation into `work/original_data/reference/`, retaining original path and checksums in the manifest. Compare the crosswalk's estate names and coordinates to the current estate file before reuse. Do not import existing scripts that have hard-coded destinations outside `work`.
 
 ### 2. Inspect and load the geodatabase
 
@@ -95,41 +93,32 @@ For estates:
 
 - Extract English/traditional/simplified Chinese names, source administrative district, region, map coordinates, and block metadata.
 - Set `location_role="estate_map_point"`; do not describe it as a gate or block entrance.
-- Join the existing **estate allocation lookup** (`work/data/reference/estate_housing_district_crosswalk.csv`, copied from `analysis/maps/estate_housing_district_crosswalk.csv`) to add a separate `housing_district` field. Here “crosswalk” means a data mapping table, not a physical pedestrian crossing. Its latitude/longitude are copied estate map points: all 244 match the estate JSON exactly. Use estate JSON geometry as canonical; lookup coordinate comparison checks identity/snapshot consistency and does not supply entrance or road-crossing locations. Match exact source names, require a unique row, check administrative district/coordinates, and preserve unresolved matches as blocking diagnostics.
+- Join the existing **estate allocation lookup** (`work/original_data/reference/estate_housing_district_crosswalk.csv`, copied from `analysis/maps/estate_housing_district_crosswalk.csv`) to add a separate `housing_district` field. Here “crosswalk” means a data mapping table, not a physical pedestrian crossing. Its latitude/longitude are copied estate map points: all 244 match the estate JSON exactly. Use estate JSON geometry as canonical; lookup coordinate comparison checks identity/snapshot consistency and does not supply entrance or road-crossing locations. Match exact source names, require a unique row, check administrative district/coordinates, and preserve unresolved matches as blocking diagnostics.
 - Preserve the estate allocation lookup provenance and its limitations: town boundaries for Tung Chung and Tseung Kwan O are derived geographic proxies, not HA-issued allocation polygons. Avoid a blanket administrative-district mapping for Islands or Sai Kung.
 
 For hospitals:
 
 - Extract multilingual institution names, cluster, address, coordinates, and `has_ae` as a nullable boolean.
 - Set `location_role="institution_map_point"` and retain entrance uncertainty.
-- Preserve all 44 supplied institutions. Do not make A&E availability an eligibility requirement here; downstream configuration can select A&E hospitals or the full supplied set.
+- Preserve all 44 supplied institutions. The user has settled no-preference hospital scope as all 44, without an A&E-only filter. Preferred-hospital choice is applied in the later query stage.
 
 Where the input has no native entity ID, create and persist an ID registry using source namespace and an explicit identity key, initially the exact English name. Detect collisions; do not assign IDs from row position. Handle future renames through recorded aliases rather than silently creating a different identity.
 
-Keep the authoritative registry at `work/config/entity_ids.json`, outside replaceable output directories. Copy its committed snapshot into each successful output. Use deterministic initial IDs from the namespace and identity key, and preserve recorded aliases on subsequent runs. Stage registry updates with the output so a failed run cannot change existing entity identities.
+Keep `work/config/entity_ids.json` as a managed link to the selected run's registry snapshot. Save the snapshot in each successful output and restore it on a fresh checkout if the local link is absent. Use deterministic initial IDs from the namespace and identity key, and preserve recorded aliases on subsequent runs. Stage registry updates with the output so a failed run cannot change existing entity identities.
 
-### 4. Reconcile the MTR sources
+### 4. Reconcile MTR using physical station masters
 
-Load the three CSV references with `csv.DictReader`, `utf-8-sig`, and identifiers preserved as strings. Drop genuinely blank rows with an audit count. Keep station-line membership separate: repeated station IDs on different lines/directions are meaningful relationships.
+Read the three station/facility/category CSVs using `utf-8-sig`, and decode the relevant PDFs in `mtr DataDictionary.zip`. Facility Station_No refers to the old CSV Station ID; Key refers to category Item_Code; Y/N means available/unavailable. The facility coordinate field is explicitly not in use. iGeoCom station/access geometries supply coordinates.
 
-Join facility `Key` to category `Item_Code`, and facility `Station_No` to the station table's `Station ID`. Report unmatched keys and station IDs. Earlier audit discrepancies, such as facility station IDs absent from the station CSV, should be checked again against these selected files.
+Build the masters directly from the configured source snapshot through `mtr_master.prepare()`, not from a potentially stale output link. Use stable MTR-S/MTR-A IDs based on native station/access GEONAMEIDs. All 98 physical station points and 611 access points match; map all 100 legacy CSV IDs separately. Keep lines/routes out of the masters and preserve source CSVs/hashes and blank-row accounting. No source-ID equivalence with TerminalID is assumed.
 
-Use an explicit station crosswalk to connect iGeoCom site/station names to the MTR station CSV. Start with documented prefix removal, whitespace/case normalisation, and exact English/Chinese comparisons; write proposed matches and unresolved cases to a review table. Do not infer that iGeoCom `GEONAMEID` equals an MTR station ID or network `TerminalID`. A controlled override table handles aliases and exceptions.
+Use `mtr_prepare.attach_masters()` to attach physical station IDs, exit codes and mobility evidence to the spatial layers and create the SQLite relationships. Include 276 mobility records: 249 explicit subcategories plus 27 positive named-exit supplements. Preserve all 611 points, 3,564 facilities and the full review. Do not spread paid-area/station-level facilities across external entrances or equate exit-level equipment evidence with precise equipment coordinates.
 
-Parse named exit descriptions only when unambiguous. Facility text can mention multiple exits or equipment serving only part of a journey; retain raw descriptions and match evidence. A station-level facility match must not label every exit accessible. Railway station points assist reconciliation and do not replace exit coordinates.
+General mode starts with all 611 access points and excludes exclusively stair-lift/wheelchair-aid equipment; wheelchair mode starts with 276 mobility-evidence points. Candidate flags implement evidence/equipment preparation, not path connectivity. Keep source coordinates, assisted types, exit-only descriptions, coincident identities and evidence differences. Ten genuinely unnamed exit codes remain null.
 
-Preserve all 611 access records. Interpret the dictionary subcategories as evidence:
+Legacy override CSVs are empty. Nonempty legacy overrides require explicit migration to physical IDs; do not silently ignore them or apply line-specific IDs. No overrides are needed for this snapshot's physical-name matches.
 
-| Code | Meaning | Normalised evidence |
-|---|---|---|
-| `MTRLIF` | Barrier-free access with lift | `lift` |
-| `MTRRAM` | Barrier-free access with ramp | `ramp` |
-| `MTRSLV` | Barrier-free access at same level | `same_level` |
-| `MTRSTL` | Barrier-free access with stair lift | `stair_lift` |
-| `MTRWCA` | Barrier-free access with wheelchair aid | `wheelchair_aid` |
-| blank | Unspecified | `unknown` |
-
-Observed counts: 119 lift, 56 ramp, 61 same-level, 11 stair-lift, 2 wheelchair-aid, and 362 unspecified. Keep an evidence/source field and station/exit match status. These categories do not prove a continuous accessible route to a platform or current equipment availability. Later routing policy decides which categories qualify; Step 1 does not make that decision.
+Save and verify all eight JSON files in the run's `mtr_master/` folder and use the same records for its database. Check physical station foreign keys and facility links. Report remaining IDs 70/888 (72 rows), unknown/unlocated evidence, three equipment differences and three stations without mapped mobility access. `mtr_match_review.csv` now contains ten unnamed codes rather than the old 45 matching cases. Historical runs keep their original reports.
 
 ### 5. Standardise and verify the bus/minibus stop list
 
@@ -137,9 +126,9 @@ Use the 9,264-row `bus_stops.json` as the preferred point list. Preserve `stop_i
 
 Validate the derived list against both supplied route-stop datasets: compare ID sets, coordinates, operator unions, and naming variants. Report inconsistent coordinates for one ID rather than selecting the first unnoticed. Preserve route/service evidence in a related nonspatial table or a lossless reference to raw records, including `stopPickDrop`, `routeId`, `routeSeq`, `stopSeq`, `serviceMode`, and `lastUpdateDate`.
 
-Recheck result: the local list exactly matches the union of raw stop IDs, coordinates, and operator sets, with no conflicting coordinates for a stop ID. Its original builder used `JSON_BUS.json.1` in the parent directory; that file's SHA-256 equals `work/data/JSON_BUS.json`, and the parent GMB file also equals its `work/data` copy. Record this provenance rather than assuming similar filenames contain the same snapshot.
+Recheck result: the local list exactly matches the union of raw stop IDs, coordinates, and operator sets, with no conflicting coordinates for a stop ID. Its original builder used `JSON_BUS.json.1` in the parent directory; that file's SHA-256 equals `work/original_data/JSON_BUS.json`, and the parent GMB file also equals its `work/original_data` copy. Record this provenance rather than assuming similar filenames contain the same snapshot.
 
-Do not infer pickup permission from an undocumented code or wheelchair boarding ability from an operator flag. Set boarding-accessibility evidence to `unknown` where absent. Keep GMB distinct so later ranking can include or exclude minibuses. The bus stop dataset can be retained now even if boarding-code semantics need further documentation.
+Preserve raw pickup/drop-off codes and source accessibility evidence. Later derived selection follows the accepted user policy: unknown codes become 99 and are assumed both pickup/drop-off; KMB/CTB are wheelchair-eligible, while GMB is eligible only in general mode. Bus scope is KMB/CTB/GMB. Other operators remain preserved as source data but are outside this bus subcost. These assumptions do not imply new provider evidence. Implement filtering after preserving the original data.
 
 ### 6. Validate and write reproducible outputs
 
@@ -168,38 +157,33 @@ Network connectivity analysis is a Step 2 check because it needs an actual graph
 ```text
 work/
   config/
-    step_1.json
-    entity_ids.json               # authoritative identity/alias registry
-    mtr_station_overrides.csv
-    mtr_exit_overrides.csv
-  data/
-    ...existing inputs...
-    reference/                   # selected supplementary inputs with provenance
-  cache/
-    3DPN_P2.gdb/
-  src/
-    estate_ranking/
-      __init__.py
-      models.py                  # SpatialDataset and validation result contracts
-      ingest.py                  # source readers, safe extraction, inventory
-      harmonise.py               # coordinates, fields, identifiers, district join
-      mtr_links.py                # station/exit reconciliation and evidence
-      validate.py                # checks and diagnostics
-      export.py                  # spatial/table persistence and round trips
-      step_1.py                  # command-line orchestration
-  tests/
-    test_step_1.py                # small fixtures for consequential transformations
-  precomputed/
-    step_1/
-      harmonised.gpkg             # network, estates, hospitals, MTR exits/stations, stops
-      reference_tables.sqlite     # non-schedule network references, MTR/service relations
-      source_manifest.json
-      schema.json
-      validation_report.json
-      validation_report.md
-      mtr_match_review.csv
-      rejected_records.jsonl
-      entity_ids.json
+    step_1.json                  # input/output selections
+    routing_policy.json          # accepted modelling decisions
+    entity_ids.json              # local link to selected registry snapshot
+    mtr_*_overrides.csv           # empty legacy overrides; migrate before use
+  original_data/
+    ...original inputs and provider dictionaries...
+    reference/                   # verified supplementary copies
+  cache/                         # extraction, staging and failure diagnostics
+  src/estate_ranking/
+    models.py                    # internal arrays and null masks
+    ingest.py, harmonise.py       # sources, coordinates and preserved data
+    mtr_master.py, mtr_prepare.py # physical station masters and database integration
+    policy.py                    # candidate and derived boarding preparation
+    validate.py, export.py        # full checks and GeoDataFrame output API
+    step_1.py                    # command-line orchestration
+  tests/                         # preservation, policy, identity and failure fixtures
+  precomputed/outputs/
+    runs/<run_id>/               # complete successful snapshots
+    current/                     # selected successful snapshot
+      harmonised.gpkg            # six persisted GeoDataFrame layers
+      reference_tables.sqlite    # sixteen nonspatial reference/evidence tables
+      mtr_master/                # eight checked MTR JSON files
+      model_policy.json          # the exact policy snapshot used
+      schema.json, source_manifest.json
+      validation_report.md, validation_report.json
+      mtr_match_review.csv, rejected_records.jsonl
+      entity_ids.json, SUCCESS.json
 ```
 
 Common spatial fields: `id`, `source_id` where available, `name`, `name_en`, `name_zh_hant`, `name_zh_hans` where available, `entity_type`, geometry, and provenance reference. Include `name` to retain the original design's `id`/`name`/`geometry` interface, using the available English name first and a documented Chinese fallback. Names may be missing for network paths; do not manufacture them. Dataset metadata carries CRS; type-specific fields retain the distinctions described above. Store raw source attributes or a lossless source-record reference alongside normalised fields.
@@ -214,7 +198,7 @@ Suggested function responsibilities:
 | `load_estates()`, `load_hospitals()`, `load_mtr_exits()`, `load_bus_stops()` | Parse each input without assigning routing policy. |
 | `to_common_crs(dataset, target="EPSG:2326")` | Transform X/Y with explicit source CRS and preserved vertical metadata. |
 | `assign_housing_districts(estates, crosswalk)` | Add the four-category district field with join diagnostics. |
-| `link_mtr_tables(stations, exits, facilities, categories, overrides)` | Produce relationships, evidence and unresolved-match reports. |
+| `mtr_master.prepare()` / `mtr_prepare.attach_masters()` | Build physical masters and attach matching IDs/evidence to layers and tables. |
 | `validate(datasets, tables, manifest)` | Return structured errors, warnings and reconciliation totals. |
 | `write_outputs(...)` | Stage outputs, verify round trips and finalise the successful run. |
 
@@ -240,17 +224,17 @@ Step 1 is complete when every selected source record is accounted for (the two a
 
 ## Questions carried forward to later steps
 
-The current, itemised resolution register is in [the human-readable plan](step_1_implementation_human_readable.md#resolution-register-what-is-confirmed-and-what-remains). It separates confirmed coordinate/measurement definitions from source relationships and later policy choices. The new bus PDF confirms stopPickDrop codes 1/2/3; only code 0 (25 rows at two stop IDs), boarding eligibility implementation and wheelchair boarding evidence remain open in that part. The MTR review has 28 ambiguous matches, 5 unmatched records and 12 exit-code cases. Of 362 unspecified iGeoCom access categories, 23 have positive linked CSV evidence and 339 have none; these counts do not certify accessibility.
+The current, itemised resolution register is in [the human-readable plan](step_1_implementation_human_readable.md#resolution-register-what-is-confirmed-and-what-remains); the [handoff](../project_context_and_decisions.md) records later accepted modelling assumptions. The separate MTR masters resolve the physical station identities behind the older 28 ambiguous and 5 unmatched cases. Two of the old 12 exit-code cases now parse; ten genuinely unnamed codes remain null. Of 362 unspecified categories, 27 now have positive named-exit facility evidence and 335 remain unknown. Facility IDs 70/888 remain unidentified; three equipment-description differences and specific unlocated facility/exit relationships remain in the new review. The older database/review remain historical. The rerun embeds the physical masters and uses them in its new database, with ten unnamed-code review records.
 
 
 Access schedules are already decided: assume all routes are always open, with no date/time inputs or schedule checks. The remaining questions below do not prevent writing the Step 1 pipeline:
 
-- Gradient units and `Shape_Length` are resolved: radians and horizontal metres. Gradient sign/within-path aggregation still need a documented routing interpretation, using provider clarification or explicitly defined vertex-based calculations.
-- “No stairs” and independent wheelchair access may require different policies for escalators, stair lifts, assisted access, and steep ramps.
-- Estate and hospital map points are not verified entrances; additional entrance locations may improve later snapping.
-- MTR station/exit aliases may require manual review of the generated match table.
-- Pickup/drop-off codes 1/2/3 are documented by the new bus specification. Code 0 remains undocumented; boarding-target filtering still needs implementation, and wheelchair boarding evidence remains unresolved.
-- The later query configuration must decide whether “any hospital” includes every supplied institution or only an A&E subset, and whether GMB is part of bus access.
+- Gradient/length units and use are settled: supplied magnitude with height-derived sign; at most two rounds of four random interpolated path samples when endpoints are level; ten-point flat classification if both rounds remain level; repeatable samples and summed local interval times. Standard Tobler is adopted for walking using tan(signed angle). Implement/test these rules; wheelchair speed is deferred.
+- General routes retain stairs/escalators/travelators; wheelchair routes exclude them. Lifts/stair lifts/wheelchair aids qualify for wheelchair mode, while wheelchair aids and stair lifts are excluded generally. Ordinary lift timing is 30 seconds travel plus zero wait, and no maximum ramp-slope cutoff applies for now. WheelchairBarrier=1 is excluded for wheelchair mode. Other equipment timing and actual graph connectivity still need implementation.
+- Estate/hospital map-point approximation is accepted; implement sensible connections and topology checks rather than require verified entrance collection.
+- MTR physical station matching is resolved in the separate masters; missing exit labels, facility identities and equipment-location relationships may require specific evidence. Do not reopen solved line-ID ambiguity.
+- Unknown boarding codes become derived 99, assumed to allow pickup/drop-off, while raw values stay preserved. Step 1 has implemented KMB/CTB/GMB general and KMB/CTB wheelchair boarding candidates without deleting raw records. Route reachability/costs remain later work.
+- No-preference hospital scope is all 44 institutions. MTR general mode starts with all 611 access points; wheelchair mode starts with 276 mobility-evidence candidates. Both apply equipment rules. Use minimum reachable route cost within each eligible target group and retain three separate subcosts, target IDs, units and reachability. Final combination/scaling is deliberately undecided.
 - The DTM remains optional for later connector/terrain checks; Step 1 does not resample it or use bare-earth heights to overwrite elevated network geometry.
 
 If documentary gaps require new external data, first identify the exact missing evidence and source. The initial implementation can proceed with local inputs and explicit unknowns.

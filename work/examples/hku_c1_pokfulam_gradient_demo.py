@@ -22,7 +22,7 @@ from estate_ranking.ingest import sha256
 
 def main():
     def read(name):
-        return json.loads((WORK / "data" / name).read_text(encoding="utf-8-sig"))
+        return json.loads((WORK / "original_data" / name).read_text(encoding="utf-8-sig"))
     exit_feature = next(f for f in read("mtr_access_points.geojson")["features"]
                         if f["properties"]["GEONAMEID"] == 559800)
     hospital = next(r for r in read("facility-hosp.json")
@@ -31,7 +31,7 @@ def main():
     to_lonlat = Transformer.from_crs(2326, 4326, always_xy=True)
     cx, cy = to_grid.transform(*exit_feature["geometry"]["coordinates"])
     qx, qy = to_grid.transform(hospital["longitude"], hospital["latitude"])
-    archive = WORK / "data/3D_Pedestrian_Network_FGDB.zip"
+    archive = WORK / "original_data/3D_Pedestrian_Network_FGDB.zip"
     # This cache was extracted from the selected source archive by Step 1.
     digest = sha256(archive)
     cache = WORK / "cache" / ("network_" + digest[:16])
@@ -108,7 +108,7 @@ def main():
                              wheelchair_barrier=int(data["WheelchairBarrier"][i]),
                              street_name=data["StreetNameEN"][i], alias=data["AliasNameEN"][i]))
     result = dict(description="First five road-side endpoint points near HKU C1 along a local candidate directed toward Queen Mary; five points give four intervals",
-        sources={name: {"path": "work/data/"+name, "sha256": sha256(WORK/"data"/name)} for name in [
+        sources={name: {"path": "work/original_data/"+name, "sha256": sha256(WORK/"original_data"/name)} for name in [
             "mtr_access_points.geojson", "facility-hosp.json", "3D_Pedestrian_Network_FGDB.zip", "3DPN_DataDictionary_v2.2.pdf", "data_dictionary_v5.pdf"]},
         network_layer="PedestrianRoute", exit_geonameid=559800,
         exit_coordinates=exit_feature["geometry"]["coordinates"], hospital_coordinates=[hospital["longitude"], hospital["latitude"]],

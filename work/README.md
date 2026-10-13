@@ -1,8 +1,14 @@
 # Step 1: prepare the estate-ranking data
 
+> **Latest decisions:** Read [the project context and agent handoff](instructions/project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
+
+Original inputs are stored in `original_data/`, renamed from `data/` at the user's request. Active configuration, code and documentation use the new folder. Historical saved-run manifests retain their paths at the time of that run; resolve an old `work/data/` path through `work/original_data/` when checking those records. The separate repository-root `data/` directory retains its name.
+
 This Python pipeline reads the selected local sources, aligns horizontal locations to Hong Kong 1980 Grid (EPSG:2326), prepares stable identities, adds estate allocation categories, reconciles MTR references, and validates/export the result. It follows both documents in [instructions/step_1](instructions/step_1/).
 
-**All routes are assumed always open.** `AccessTime` and `AccessTimeDetails` are not loaded, checked, or exported. Any original `AccessTimeID` is retained only as an unused source attribute. The pipeline builds no graph, computes no walking distances, and makes no access-policy decisions about stairs or assisted equipment.
+**All routes are assumed always open.** `AccessTime` and `AccessTimeDetails` are not loaded, checked, or exported. Any original `AccessTimeID` is an inert attribute. The pipeline retains all source records and prepares mode-candidate flags from the agreed rules: general paths retain stairs; wheelchair paths exclude ordinary stairs/escalators/travelators and WheelchairBarrier=1; general equipment excludes stair lifts/wheelchair aids. These are candidates, not connected routes or computed costs.
+
+The latest full rerun passed with **476,153 spatial records, zero errors, 14 warning groups and 31 passing tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
 
 From the repository root:
 
@@ -13,24 +19,34 @@ PYTHONPATH=src ../.venv/bin/python -m estate_ranking.step_1 --config config/step
 
 The command uses the installed `.venv` packages and needs no installation or network access. Configuration paths are relative to the `work_root` declared in the configuration (resolved from the configuration file), not the current shell directory.
 
-The selected supplementary inputs are copied to `data/reference/` and verified against their original checksums. If a reference copy and its selected origin later differ, the run stops so the intended snapshot can be selected explicitly. Source publication/download dates are kept separate from file modification dates; missing source dates remain unknown.
+The selected supplementary inputs are copied to `original_data/reference/` and verified against their original checksums. If a reference copy and its selected origin later differ, the run stops so the intended snapshot can be selected explicitly. Source publication/download dates are kept separate from file modification dates; missing source dates remain unknown.
 
-The finished result is available under `precomputed/step_1/`:
+The finished result is available under `precomputed/outputs/current/`:
 
-- `harmonised.gpkg`: six spatial layers, including all original network vertices/heights.
+- `harmonised.gpkg`: six persisted GeoDataFrame layers, including all original network vertices/heights.
 - `reference_tables.sqlite`: five non-schedule network tables, MTR relationships, estate crosswalk, and lossless raw bus route-stop records.
 - `schema.json`: field types, missing-value rules, CRS, original source schemas and coded domains.
 - `source_manifest.json`: selected inputs, hashes, provenance, assumptions and software versions.
+- `model_policy.json`: snapshot of [the agreed rules](config/routing_policy.json), including explicit later-stage/deferred choices.
+- `mtr_master/`: eight rebuilt MTR JSON files, integrated into this run's spatial layers and reference tables.
 - `validation_report.md` and `.json`: checks and remaining issues.
-- `mtr_match_review.csv`: station/exit cases needing further review.
+- `mtr_match_review.csv`: ten source access records without named exit codes; physical station matching is complete.
 - `rejected_records.jsonl`: blocking-record diagnostics (empty for successful runs).
 - `entity_ids.json`: the successful run's persistent identity/alias registry snapshot.
 
-Each candidate run is staged under `cache/step_1_staging/`. Only a run that passes validation and full read-back checks moves to `precomputed/step_1_runs/` and becomes current. `precomputed/step_1` is a link to the successful run. `config/entity_ids.json` links to that run's registry, so changing the current-run link publishes both the prepared data and identities together. Failed runs retain diagnostics in cache without changing the previous current result. A local process lock prevents simultaneous runs. Successful precomputed data and reports are not excluded from Git; temporary/cache files and the local registry link are ignored.
+Each candidate run is staged under `cache/step_1_staging/`. Only a run that passes validation and full read-back checks moves to `precomputed/outputs/runs/` and becomes current. `precomputed/outputs/current` is a link to the successful run. `config/entity_ids.json` links to that run's registry, so changing the current-run link publishes both the prepared data and identities together. Failed runs retain diagnostics in cache without changing the previous current result. A local process lock prevents simultaneous runs. Successful precomputed data and reports are not excluded from Git; temporary/cache files and the local registry link are ignored.
 
 The registry supports explicit name aliases through `IdentityRegistry.alias(namespace, new_name, original_name)`. Renames must be recorded deliberately; row order never determines estate/hospital IDs. A fresh Git checkout without the local registry link restores IDs and aliases from the versioned current output snapshot. To change a committed registry, stage the edits in a new candidate snapshot and publish it with a successful run. Do not replace the managed registry link with an unrelated file.
 
-MTR override CSVs are initially empty. For station overrides, use `dataset` = `mtr_exits` or `railway_stations`, the bare iGeoCom `GEONAMEID` in `source_id`, a valid MTR CSV `station_id`, and a reason. Exit overrides use bare `access_id`, `station_id`, an explicit `exit_code` (for example `A1`), and a reason. IDs remain strings. Unknown/ambiguous matches and blank access categories are retained rather than guessed. Facility evidence linked to one named exit never propagates to every entrance at a station.
+The old MTR override CSVs remain empty. The rerun now uses physical MTR-S station IDs; all 611 access points and 98 stations match without overrides. If a legacy override is added later, the command stops for explicit migration rather than silently ignoring or applying a line-specific ID to the new physical model. Facility station IDs 70/888 remain null and visible in the embedded review. Named-exit equipment evidence does not locate every piece of equipment at each associated point.
+
+Step 1 now rebuilds and embeds the **physical MTR masters** using `original_data/mtr DataDictionary.zip`. A standalone command is also available:
+
+```sh
+PYTHONPATH=src ../.venv/bin/python -m estate_ranking.mtr_master
+```
+
+The integrated run contains [98 physical stations](precomputed/outputs/current/mtr_master/mtr_station_master.json) and [276 mobility access records](precomputed/outputs/current/mtr_master/mtr_mobility_exit_master.json), with stable source-based IDs and original WGS84 coordinates. Lines/routes do not enter the masters. All 611 access points link to physical stations and all 100 CSV station IDs are mapped separately. All 3,564 facility rows are decoded; the provider coordinate field is not in use. Read [the master guide](precomputed/docs/mtr_master_readme.md) for evidence gaps. Historical saved runs retain their old reports; the new database uses the updated physical relationships.
 
 WGS84 is an explicit, reported assumption for estate, hospital and bus point sources: their supplied provider specifications identify latitude/longitude but do not explicitly name the datum. iGeoCom's dictionary explicitly confirms WGS84 point geometry and HK1980 grid attributes. The original network's HKPD height reference is preserved separately from its horizontal grid. Map points for estates and hospitals remain unverified entrance locations.
 
@@ -42,16 +58,19 @@ Focused tests, from `work/`:
 PYTHONPATH=src ../.venv/bin/python -m unittest discover -s tests -v
 ```
 
-Later Python stages can load a prepared layer through:
+Load the actual GeoDataFrame outputs from `work/`:
 
 ```python
-from estate_ranking.export import read_spatial_dataset
+from estate_ranking.export import read_outputs, read_geodataframe
 
-estates = read_spatial_dataset("precomputed/step_1", "estates")
-network = read_spatial_dataset("precomputed/step_1", "network")
+frames = read_outputs()  # dict of six geopandas.GeoDataFrame objects
+estates = frames["estates"]
+network = read_geodataframe("precomputed/outputs/current", "network")
 ```
 
-The loader restores declared nullable integer/boolean types and height metadata from the saved schema. Original network timestamps are retained as exact text (including timezone suffixes), avoiding an undocumented timezone conversion.
+The loader restores nullable integer/boolean/string types and height metadata from the schema. Network timestamps remain exact text, including timezone suffixes. GeoPandas 1.0.1 and pandas 2.3.3 were installed with approval in the local `.venv`; PyArrow is unnecessary for the GeoPackage format. Internal `SpatialDataset` arrays remain an ingestion implementation detail, not the public spatial output type.
+
+Bus service records retain original `stopPickDrop`, alongside derived unknown code 99 and explicit pickup/dropoff flags. Stop candidates are 8,848 generally and 4,130 for wheelchair scope. No source stop/service is deleted. Network base candidates are 465,887 generally and 430,522 for wheelchair scope, from all 465,892 retained paths. Connectivity and route costs are not computed by Step 1.
 
 iGeoCom's original `EASTING` and `NORTHING` attributes are saved as `source_grid_easting` and `source_grid_northing`, with the original field-name mapping documented in layer metadata. This keeps them separate from the transformed `easting` and `northing` fields: GeoPackage/SQLite treats field names as case-insensitive. The complete original property names and values also remain in each point's `raw_json`.
 

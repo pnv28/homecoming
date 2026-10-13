@@ -1,0 +1,28 @@
+{
+  "run_id": "20261013T121410Z-c823aaf9",
+  "status": "passed",
+  "spatial_output_type": "geopandas.GeoDataFrame",
+  "layers": {
+    "network": 465892,
+    "estates": 244,
+    "hospitals": 44,
+    "mtr_exits": 611,
+    "railway_stations": 98,
+    "bus_stops": 9264
+  },
+  "spatial_records": 476153,
+  "preserved_network_vertices": 1963912,
+  "sqlite_integrity": "ok",
+  "reference_tables": 16,
+  "original_service_records_independently_compared": 69364,
+  "unknown_boarding_rows_derived_as_99": 25,
+  "source_hashes_rechecked": 23,
+  "estate_hospital_registry_unchanged": true,
+  "all_mtr_points_physically_matched": true,
+  "wheelchair_barriers_excluded_from_candidates": true,
+  "ordinary_stairs_retained_generally": true,
+  "schedule_tables_absent": true,
+  "blocking_errors": 0,
+  "warning_groups": 14,
+  "tests_passed": 31
+}

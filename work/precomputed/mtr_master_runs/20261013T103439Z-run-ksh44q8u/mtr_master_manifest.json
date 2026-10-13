@@ -1,0 +1,73 @@
+{
+  "created_utc": "2026-10-13T10:34:39.487782+00:00",
+  "status": "validated_with_review_items",
+  "sources": {
+    "dictionary_zip": {
+      "path": "original_data/mtr DataDictionary.zip",
+      "sha256": "0bf65d9456b6a30f07c9147a408923c784c023692ec86baadcee562bf7f12772"
+    },
+    "railway_stations": {
+      "path": "original_data/railway_stations.geojson",
+      "sha256": "0120e9648a990f4a5cebf7087d118c417b70531db767c29fc3a4ab76c1403cfd"
+    },
+    "access_points": {
+      "path": "original_data/mtr_access_points.geojson",
+      "sha256": "0c7b0e1f60439b0986806d09067389e3767b99288ecf44817cca57dbe76e112a"
+    },
+    "station_csv": {
+      "path": "original_data/reference/mtr_lines_and_stations.csv",
+      "sha256": "e0e781152e2e6c5f6d7763262acbae76577b71ca4c66b4b7b72a97252175e0c3"
+    },
+    "category_csv": {
+      "path": "original_data/reference/barrier_free_facility_category.csv",
+      "sha256": "84ba231566dab0a7ae3f87f9a702f234040fb8b1aea95faf6fe135ab5973f963"
+    },
+    "facility_csv": {
+      "path": "original_data/reference/barrier_free_facilities.csv",
+      "sha256": "f220d56aab3fc129aec4d6ca5ebb57b6e1db70491eb23d1e5d2cc041b8c66daf"
+    },
+    "igeocom_dictionary": {
+      "path": "original_data/data_dictionary_v5.pdf",
+      "sha256": "76c578514760db54db919d21fa2c70cfed628a0f153f303692c66bee049ee6f0"
+    }
+  },
+  "accounting": {
+    "source_station_points": 98,
+    "physical_stations": 98,
+    "source_station_line_rows": 273,
+    "blank_rows_ignored": 3,
+    "line_rows_used_for_identity_only": 270,
+    "legacy_station_ids_mapped": 100,
+    "source_access_points": 611,
+    "access_points_station_matched": 611,
+    "mobility_access_records": 276,
+    "access_points_without_mobility_evidence": 335,
+    "access_points_without_exit_codes": 10,
+    "source_facilities": 3564,
+    "facilities_decoded": 3564,
+    "unmapped_facility_rows": 72,
+    "source_access_subcategories": {
+      "unspecified": 362,
+      "MTRLIF": 119,
+      "MTRSLV": 61,
+      "MTRRAM": 56,
+      "MTRSTL": 11,
+      "MTRWCA": 2
+    },
+    "stations_with_mobility_access": 95,
+    "equipment_evidence_differences": 3
+  },
+  "crs": "EPSG:4326 longitude/latitude",
+  "identity_policy": "MTR-S- plus native railway-station GEONAMEID; MTR-A- plus access-point GEONAMEID; independent of row order and line/route fields",
+  "coordinate_policy": "Original iGeoCom station/access geometry; never station-centre coordinates substituted for exits",
+  "exit_selection": "Explicit source mobility subcategory, or positive facility evidence tied to the same physical station and named exit",
+  "limits": [
+    "Masters contain no lines or routes; legacy ID relations are stored separately",
+    "Source access records are not automatically unique physical equipment/exits; do not merge distinct IDs by coordinates alone",
+    "Unnamed access codes remain null, while their real coordinates are retained",
+    "Paid-area/station-level facilities do not manufacture external entrance coordinates",
+    "Facility descriptions linked to an exit do not locate each piece of equipment or certify every point at that exit",
+    "Assisted-access types and source differences are retained; routing eligibility is not decided by this file",
+    "Facility records are static provision evidence; schedules ignored under the accepted always-open policy"
+  ]
+}

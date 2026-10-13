@@ -1,132 +1,137 @@
+# Estate ranking: current design and implementation stages
+
+Updated 13 October 2026 after the user's policy decisions and the full Step 1 rerun. Read [project_context_and_decisions.md](project_context_and_decisions.md) for the complete decisions and [routing_policy.json](../config/routing_policy.json) for their machine-readable snapshot. These instructions supersede the earlier universal no-stairs outline.
+
+## Purpose and final output
+
+A user selects one of the four Housing Authority allocation categories: Urban, Extended Urban, New Territories or Islands. They may select a hospital. A future `wheelchair` parameter changes path/equipment and transport eligibility.
+
+Each candidate estate has three separate subcosts:
+
+| Subcost | Algorithm and units |
+|---|---|
+| MTR | Minimum reachable gradient-adjusted walking time to an eligible MTR access point, in seconds |
+| Bus | Minimum reachable gradient-adjusted walking time to an eligible boarding stop/service, in seconds |
+| Hospital | Pedestrian-network distance to the selected hospital, or minimum reachable distance to any of all 44 institutions if none is selected, in metres |
+
+Use network journeys rather than straight-line distances. Filter the candidate estates by allocation category without cutting the pedestrian network or destinations at category boundaries.
+
+**The method of combining the three subcosts into the final estate cost is deliberately undecided.** Preserve all three and their target IDs, units and reachability. Do not select weights or normalisation automatically, take one minimum across the three categories, or add raw metres and seconds. Final handling of wholly unreachable target groups will be decided with the combining method.
+
+## Shared assumptions and mode rules
+
+All routes are assumed always open. Do not load, export, join or evaluate `AccessTime`/`AccessTimeDetails`, or introduce journey date/time inputs. Retain `AccessTimeID` only as inert source evidence. Dataset publication/update dates describe provenance.
+
+Use supplied estate/hospital map points as accepted approximations; verified entrance collection is not required. WGS84 is accepted for estate/hospital/bus longitude-latitude inputs. iGeoCom WGS84 and the network's HK1980 grid/HKPD heights are provider-confirmed. Work horizontally in EPSG:2326 and preserve network XYZ and EPSG:5738 height metadata.
+
+| Rule | General / wheelchair=false | Wheelchair=true |
+|---|---|---|
+| Ordinary stairs, escalators, travelators | Retain | Exclude |
+| Ordinary lifts | Allow | Allow |
+| Stair lifts and wheelchair aids | Exclude | Allow |
+| Paths marked WheelchairBarrier=1 | This flag alone does not exclude them | Exclude |
+| Bus operators | KMB, CTB, GMB | KMB, CTB |
+| MTR starting candidates | All 611 mapped access records | 276 records with mobility evidence |
+
+Apply equipment/path rules to both MTR candidate pools; starting counts are not guaranteed final eligible/reachable counts. Bus operator selection applies to services before aggregating stops. Joint services qualify through an included operator; a mixed GMB/KMB stop is not discarded when its KMB service qualifies. Other operators remain preserved in source data but are outside the bus subcost.
+
+There is no maximum ramp-slope cutoff for now. Keep all original rows so both modes can be calculated later. Candidate flags prepare the rules; they do not establish real network connectivity or physical equipment coordinates. Wheelchair speed is explicitly deferred, and current walking estimates must not be presented as a wheelchair travel-time model.
+
+## 1. Harmonise and prepare the data — implemented and rechecked
+
+### Explanation for the team
+
+The source files use different formats and identifiers. Preparation gives them consistent coordinates, identities and field types while preserving the original information. The result is six actual GeoPandas GeoDataFrames, persisted as layers in a GeoPackage. Reference tables without geometry are kept in SQLite, and source/rule/review records are kept in JSON/CSV.
+
+Original inputs are in `work/original_data/`; selected older supplementary files are copied into its `reference/` subfolder with their origin and checksum recorded. The existing local `.venv` is used. GeoPandas 1.0.1 and pandas 2.3.3 were installed with approval; no Homebrew packages were installed.
+
+### Steps we take
+
+1. Inventory every configured input and its hash; verify the seven selected reference copies against their originals. Record package versions, explicit assumptions and `routing_policy.json`.
+2. Safely extract/inspect the 3D geodatabase and load its paths plus five non-schedule supporting tables. Preserve every part, vertex, height, timestamp and source code. Skip both schedule tables.
+3. Load estate, hospital, access/station and bus points; transform X/Y to EPSG:2326, retaining original coordinates and unknown point heights.
+4. Match all 244 estates to the documented allocation lookup. This data crosswalk is an estate-category mapping, not pedestrian-crossing data. Keep administrative districts separate.
+5. Decode the supplied MTR dictionary. Create 98 physical station IDs independent of lines, translate all 100 legacy IDs, and link all 611 access points. Preserve 276 mobility records and unresolved evidence. Integrate physical IDs into the spatial layers and SQLite relationships, and embed the eight JSON masters in the same run.
+6. Reconcile all 9,264 stops against 69,364 bus/GMB service rows. Preserve raw `stopPickDrop` and derive unknown code **99**, assumed pickup/dropoff both. Known codes remain 1=dropoff, 2=pickup, 3=both. Derive general and wheelchair boarding candidates from the permitted services.
+7. Prepare mode-candidate flags without deleting paths or points. General paths retain stairs and exclude stair lifts; wheelchair paths exclude ordinary stairs/escalators/travelators and WheelchairBarrier=1. MTR evidence/equipment selection follows the table above. Missing evidence stays visible.
+8. Validate identities, geometry, coordinates, source accounting, estate assignments and required relationships. Save diagnostics for unresolved source references; do not invent missing station identities or equipment locations.
+9. Write staged GeoPackage/SQLite/JSON/CSV outputs. Reopen every geometry/attribute/null/reference value, including the actual GeoDataFrames, and recheck all 23 source hashes before selecting the successful run.
+
+The full rerun passed with **476,153 spatial records, zero blocking errors, 14 warning groups and 31 passing tests**. Warnings retain actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
+
+Finished results are under `work/precomputed/outputs/current/`, selected from successful snapshots in `outputs/runs/`. This folder includes `harmonised.gpkg`, `reference_tables.sqlite`, `schema.json`, `source_manifest.json`, `model_policy.json`, validation/rejection reports, IDs and `mtr_master/`. Failed candidates remain in `work/cache` without replacing the prior successful data/IDs. Successful precomputed outputs remain trackable in Git.
+
+From `work/`:
+
+```sh
+PYTHONPATH=src ../.venv/bin/python -m estate_ranking.step_1 --config config/step_1.json
+PYTHONPATH=src ../.venv/bin/python -m unittest discover -s tests -v
 ```
-Original datasets
-│
-├── Hospitals [hospital locations and A&E availability]
-│   └── facility-hosp.json — JSON
-│
-├── Estates [estate names, districts, block information and map locations]
-│   └── prh-estates (1).json — JSON
-│
-├── MTR stations [station names, IDs, lines and station order]
-│   └── mtr_lines_and_stations.csv — CSV
-│
-├── MTR accessibility [station facilities and descriptions of accessible exits]
-│   ├── barrier_free_facilities.csv — CSV
-│   └── barrier_free_facility_category.csv — CSV
-│
-├── MTR exit coordinates [named entrances, coordinates and access categories]
-│   └── data/official_igeocom/
-│       ├── source_csv.zip — ZIP containing the official iGeoCom CSV
-│       ├── source_geojson.zip — ZIP containing the official iGeoCom GeoJSON
-│       └── data_dictionary_v5.pdf — PDF explaining fields and access categories
-│
-├── Terrain [elevation and broad terrain analysis]
-│   └── Whole_HK_DTM_5m.zip — ZIP containing an ASCII terrain grid (.asc)
-│
-├── Pedestrian network [paths, stairs, ramps, lifts, barriers and access schedules]
-|    ├── 3D_Pedestrian_Network_FGDB.zip — ZIP containing a File Geodatabase (.gdb)
-|    └── portal.csdi.gov.hk_csdi-webpage_metadata_landsd_rcd_1637222018065_52265_html.pdf
-|        — PDF containing network metadata
-├── Bus stops [stop coordinates, names, IDs, routes and service directions]
-│   └── JSON_BUS.json — GeoJSON stored in a .json file
-```
-Okay, so I have this data that I've collected for a ranking algorithm that I would like to create.
-The algorithm initially lets the user choose one of the four districts that the Hong Kong Housing Authority uses to categorize applicants, and optionally a preferred hospital in Hong Kong. Then it ranks housing estates in that district based on the distance between the estate coordinates and two kinds of locations: the user's hospital, and public transport stations (MTR and/or bus stations). If the user entered no preferred hospital, then rank them based on distance to any public hospital. The distance to these locations should be measured along the pedestrian paths, ramps, lifts, etc (but NOT along stairs). specified in the 3D_pedestrian_network_FGDB zip file. It should not use mere straight-line distances. If what you told me about map distance calculation is correct, then we'll need to convert the pedestrian network zip file into a weighted graph, and combine it with weighted graph versions of the estate locations, mtr exit locations, bus stop locations, and the hospital locations (which are all stored as coordinates in CSVs, JSONs, or geoJSONs). Note four things: 1. the pedestrian network zip file contains gradients for every path that it has in its database. I would like you to use gradients as the weights in the final combined weighted graph. 2. in the pedestrian network zip file, paths are represented as two or more vertices. around 170,000 paths are represented as more than two vertices, and around 290,000 are represented as just two vertices. 3. the CSVs, JSONs, or geoJSONs might contain different models of hong kong, which may mean they use different base sizes, or resolutions. 4. we may need to homogenize the data because the datasets might have different sizes, resolutions, or models of HK. Now that I’ve told you all of this, I can give you my request. I would like to build a python algorithm that can take in one of those four districts, and an optional preferred hospital, and give a list of ranked housing estates. Can you help me draft the high-level structure of the algorithm, its components, and the functions of each component? Please point out parts of the algorithm where alternative implementations are possible, and explain which one you think is best.
 
-# AI Model Response: Housing estate ranking using walking distance: design outline
+Load the actual GeoDataFrames:
 
-## Three refinements to the original plan
+```python
+from estate_ranking.export import read_outputs, read_geodataframe
 
-- **Points get snapped into the graph. They don't become graphs.** Estates, MTR exits, bus stops and hospitals are attached to the pedestrian graph by a short connector to the nearest walkable path. The pedestrian network is the only real graph.
-- **Gradient modifies the weight. It can't be the weight.** If cost were the gradient alone, a flat 2 km path would cost zero. Each edge needs a length term, for example `cost = length × penalty(gradient)`, or walking time from a pace model like Tobler's. Gradient also has a sign (uphill one way, downhill the other), so the graph should be directed.
-- **Coordinate systems are a bigger risk than resolution.** Only the DTM is a raster. The vector files have positional precision, not resolution. The real hazards are CRS mismatches (HK1980 Grid vs WGS84, and axis order) and what each point represents (an estate centroid vs a gate).
-
-## Pipeline at a glance
-
-```mermaid
-flowchart TD
-    A["Harmonise data<br/>One CRS, one schema"] --> B["Build walkable graph<br/>No stairs, directed costs"]
-    B --> C["Snap points to graph<br/>Estates, exits, stops, hospitals"]
-    C --> D["Compute walking distances<br/>Run once, cached table"]
-    D --> E["Score and rank<br/>Runs on each user query"]
-    Q["User query<br/>District, optional hospital"] --> E
+frames = read_outputs()  # dictionary of all six GeoDataFrames
+estates = frames["estates"]
+network = read_geodataframe("precomputed/outputs/current", "network")
 ```
 
-The first four stages run once offline and write a cached table. Only the last stage runs per query. There are only a few hundred estates and a few dozen hospitals, so the full estate-to-target distance table is small, and each query becomes a filter, a score and a sort. Computing on demand is only worth it if users can add their own locations.
+The loaders restore nullable integer/boolean/string fields and retain CRS, geometry Z and vertical metadata. Internal `SpatialDataset` containers support efficient ingestion; they are not the public output type. See [both Step 1 plans](step_1/) for detailed explanations and completed checklists.
 
-## 1. Harmonise data (`ingest.py`, `harmonise.py`)
+## 2. Build directed pedestrian connections and route costs — later work
 
-- `load_network(gdb_path)`: reads the File Geodatabase through GeoPandas (GDAL's OpenFileGDB driver). Unzip it first rather than reading it from inside the ZIP.
-- `load_estates()`, `load_hospitals()`, `load_mtr_exits()`, `load_bus_stops()`: each returns a GeoDataFrame with a common schema (`id`, `name`, `geometry`, plus type-specific columns).
-- `to_common_crs(gdf, "EPSG:2326")`: reprojects everything. Use `always_xy=True` in pyproj, because HK1980's official axis order is northing/easting and swapped axes are a classic silent bug.
-- `link_mtr_tables()`: joins the station list, exit coordinates and barrier-free facility tables. This is likely the messiest step, because it means matching station names and IDs across files.
-- `validate()`: bounding-box checks (every point inside Hong Kong), nulls, duplicates.
+### Explanation for the team
 
-Two checks matter here. First, confirm the estates file gives the Housing Authority's four categories. If it only has the 18 districts, build the mapping from HA's published list rather than guessing. Second, the 5 m DTM can probably stay mostly unused. It is bare-earth elevation, so it misrepresents footbridges and elevated walkways, and 5 m cells are coarse for narrow footpaths. The network's own gradients are better. The DTM is still useful for sanity checks and for estimating slope on the short connector legs in stage 3.
+A graph connects usable pieces of the pedestrian network. A point where a bridge crosses a road in the map is not automatically a junction; heights and source references matter. Direction restrictions are separate from uphill/downhill direction.
 
-**Alternative:** work in WGS84 and use haversine for distances. This is fine for lengths, but spatial indexing and snapping in degrees distort. A projected metric CRS is better.
+### Steps we will take
 
-## 2. Build the walkable graph (`graph_build.py`)
+1. Apply the selected mode's candidates/equipment rules, retaining raw sources and explicit unknowns. Inspect `Enabled` semantics where needed without reintroducing schedules. Resolve missing supporting references only where the topology needs them.
+2. Build nodes/connections at appropriate endpoints and junctions. Split paths where a real connection meets their interior. Retain separate levels and avoid merging every coincident XY location. Choose and verify connection tolerances against the source accuracy/data.
+3. Keep each source feature's gradient magnitude `n`, measured in radians. Use +n for rising heights and -n for falling heights in travel order. Reversing travel reverses those signs; the provider `Direction` field controls permitted travel, not slope sign.
+4. When endpoints A/B have equal heights despite a nonzero/differing gradient indication, take four repeatable random internal samples along the actual XYZ polyline. Interpolate from its existing vertices. If those samples remain level, take four additional distinct samples between the same A/B, giving ten points total. Stop after at most two rounds. If all remain level, assume relatively flat and use derived zero slope, preserving the raw gradient. If heights vary, order the points along the path and retain separately signed portions. Do not recursively create further sampling rounds.
+5. For walking transport costs, use standard Tobler:
 
-- `filter_walkable(gdf)`: drops stairs and makes an explicit decision on escalators and travellators if they exist. They are usable by most people but not by wheelchair users.
-- `build_topology(gdf)`: nodes sit at path endpoints. Use the network's own node IDs if the geodatabase has them. Otherwise snap endpoints within a tolerance of about 0.1 m. Intermediate vertices of multi-vertex paths are not nodes; they only contribute to length. If a path ends mid-line on another path (a T-junction), split the longer path there, or the graph will have missing connections.
-- `edge_cost(length, gradient, kind)`: returns forward and reverse costs. It needs per-type rules. Lifts have zero horizontal length, so slope is undefined and they need a fixed time cost. Barriers and scheduled facilities need a policy, such as assuming they are open at a configurable reference time and flagging routes that depend on them.
-- `keep_components(graph)`: reports disconnected pieces and keeps the usable ones.
+```text
+slope = tan(signed_gradient_radians)
+speed_kmh = 6 * exp(-3.5 * abs(slope + 0.05))
+time_seconds = horizontal_length_metres * 3.6 / speed_kmh
+```
 
-**Cost function alternatives:** (A) a hard gradient cap only, (B) length × a slope multiplier, (C) walking time from a pace model such as Tobler's. Recommended: C, storing `length_m` separately so you can still report physical distance. If the use case is wheelchair or mobility-aid users, add a hard cap as well, since a steep slope can be impassable rather than just slow.
+This converts the provider angle to rise/run input without recalculating its magnitude from heights. Sum separately signed interval times; a climb followed by a descent must retain both costs. Sampling uses exact height equality for now and seed 20261013, recorded in the policy snapshot. Reuse canonical sample positions for reverse travel.
 
-**The 170k multi-vertex paths:** start with the provided gradient attribute. For multi-vertex paths it is probably an average, which can hide a climb followed by a descent. If the vertices carry Z values, compute the cost per segment and sum it into a single graph edge. That needs no extra nodes, and comparing it with the provided gradient is a good validation check.
+6. Use **30 seconds lift travel plus zero waiting time per lift use**, an accepted arbitrary assumption. Do not apply Tobler to a vertical lift or assign zero time from its zero horizontal length. Do not charge separately at every vertex. Other equipment timing and the wheelchair speed model remain to be specified.
+7. For hospital costs, use horizontal network distance in metres without slope/time penalties. Do not add lift seconds to hospital metres. Both hospital and transport journeys respect the selected mode's physical rules and direction constraints.
+8. Verify nonnegative costs, permitted directions, crossing levels and connectivity, including stairs retained for general mode and excluded for wheelchair mode. Report unreachable paths/targets explicitly.
 
-## 3. Snap points to the graph (`snapping.py`)
+Tobler was researched from the [user-supplied page](https://en.wikipedia.org/wiki/Tobler%27s_hiking_function) and [original report](https://escholarship.org/uc/item/05r820mz.pdf). Standard walking speed is about 5.04 km/h at zero slope. Its walking curve is adopted; wheelchair speed is deliberately deferred.
 
-- `snap_points(points, edges)`: finds the nearest edge, the projected position along it, and the snap distance. Use shapely's `STRtree` or `geopandas.sjoin_nearest`.
-- `attach(snapped)`: either splits the edge at the projection with a virtual node, or leaves the graph untouched and records `(edge, offset)` so costs to each endpoint are computed from the offset.
-- Target-specific rules: only barrier-free MTR exits are valid targets (the stair-free route to an exit is meaningless if the exit itself has stairs). Estates should use block locations if available, taking the minimum or mean across blocks.
+## 3. Connect estates and facilities to the graph — later work
 
-Snap only to the stair-free, usable component. Otherwise an estate can land on a stair edge or on an isolated footbridge fragment and get infinite distances. Also set a maximum snap distance (for example 100 m) and flag anything beyond it.
+1. Attach accepted estate/hospital map points and eligible transport access/boarding points to suitable paths. Preserve source positions alongside derived connections.
+2. Use appropriate network levels and entrance/equipment evidence where available. Do not attach an access point to a nearby bridge solely because its XY distance is short.
+3. Decide and verify connector distances/tolerances; show unusually long or implausible connections. Never assign unknown point heights to zero without evidence.
+4. Split an edge at a legitimate connector position where needed. Attribute its length/cost consistently and preserve directionality.
+5. Keep failed or uncertain connections visible. The terrain model remains optional for later connector checks and must not overwrite elevated network Z.
 
-**Alternative:** snap to the nearest node. That is simpler, but the error can reach half an edge length, which is large on long multi-vertex paths. Edge projection is better.
+## 4. Compute and cache the three subcosts — later work
 
-## 4. Compute walking distances (`distances.py`)
+1. Compute estate-to-target journeys under the selected physical mode and metric. Directed time costs can differ in reverse travel.
+2. Use the minimum reachable cost within each eligible MTR/bus group. For hospitals, use the selected hospital or the minimum reachable distance among all 44 institutions.
+3. Cache target-level results so a future hospital choice can select the correct column without rerunning all paths. Retain mode, metric, policy/input version and target identity so incompatible results are not mixed.
+4. Return MTR time, bus time and hospital distance separately, with the selected targets, units, reachability and relevant data-quality flags. An unreachable group must not receive a zero cost.
+5. Use a shortest-path implementation appropriate to the directed network's size. Check the local environment first; additional graph libraries or faster engines require justification and installation permission if absent. No routing engine is implemented by Step 1.
 
-- `multi_source_costs(graph, target_nodes)`: one Dijkstra run with all targets as sources gives every node its cost to the nearest target. Run it on the reversed graph so costs reflect walking from the estate to the target, which matters because uphill and downhill costs differ.
-- Target sets: all accessible MTR exits, all bus stops, each hospital individually, and all hospitals together.
-- Output: a table with one row per estate and columns like `d_mtr`, `d_bus`, `d_hosp_<id>`, `d_hosp_any`, saved to Parquet. Report physical length along the cost-optimal path by tracing the predecessor array.
+## 5. Combine and rank — deliberately deferred
 
-Don't clip the graph to the chosen district. The nearest exit or hospital may be across a boundary.
+Filter estates to the selected allocation category, obtain their three subcosts for the chosen mode/hospital, then apply the final combining/scaling function once it is agreed. Return the final estate cost with its separate MTR, bus and hospital subcosts and supporting flags.
 
-**Library alternatives:**
+Weights, scaling, reachability treatment, tie handling and the final combining method are not selected. Earlier illustrative weighted sums or distance-decay thresholds are not approved defaults.
 
-- NetworkX is readable but slower.
-- `scipy.sparse.csgraph.dijkstra(min_only=True)` is fast and handles multi-source directly.
-- igraph is similar in speed to SciPy.
-- pandana is built for nearest-point-of-interest queries on pedestrian networks, but it is a heavier dependency.
+## Remaining evidence and implementation boundaries
 
-Recommended: SciPy for the computation, NetworkX only for debugging.
+Physical MTR identity matching is resolved. Source gaps remain: facility IDs 70/888; unknown or unnamed access/equipment evidence; certain unlocated facility descriptions; three equipment-description differences; and stations without mapped mobility points. Missing terminal/floor/site/building references and both Castle Peak Hospital reference versions remain preserved for relevant later investigation. Current allocation categories are complete; new estates require verification because the lookup uses documented geographic proxies.
 
-## 5. Score and rank (`scoring.py`, `query.py`)
-
-`rank_estates(district, hospital=None, modes=("mtr", "bus"), weights=...)` does the following:
-
-1. Filters estates to the district.
-2. Picks the hospital column (the chosen hospital, or nearest-any).
-3. Scores transit by mode.
-4. Normalises and combines the scores.
-5. Sorts and returns each estate with its underlying distances and flags.
-
-Decisions here:
-
-- **Combining MTR and bus:** don't take `min(d_mtr, d_bus)`. Bus stops are far denser, so the minimum will almost always be the bus stop and MTR proximity disappears from the ranking. Score each mode separately, then combine.
-- **Normalisation:** recommended is capped distance-decay scoring (full score within a short walk, falling to zero at a cutoff). The alternatives are min-max, which is sensitive to outliers, and percentile rank, which is robust but purely relative.
-- **Combining criteria:** a weighted sum with exposed weights is transparent and is the recommended choice. Pareto ranking needs no weights but doesn't produce one clean list. Lexicographic ordering (hospital first, then transit) is simple but ignores trade-offs.
-- **Unreachable estates:** give them the worst score and a visible flag rather than infinity or silent exclusion.
-- **No hospital chosen:** the dataset has A&E availability, so "any hospital" could be restricted to A&E hospitals. Decide which is intended.
-
-## Where to start
-
-Before writing any of this, run a connectivity check on the stair-free graph and read the metadata PDF for field names, gradient units and sign, and whether a node layer exists. Two risks could change the design:
-
-1. The network may not be continuous across the territory, so some estate-to-hospital walks may be unreachable.
-2. Walking distance to a hospital several kilometres away may be a weak metric even where a path exists.
-
-If either shows up, hospital proximity may need a fallback such as a capped distance or a road-based measure, while transit proximity stays walking-based.
+Step 1 prepares and preserves data and agreed candidate selections. It does not establish connected accessible journeys, execute the signed-gradient sampling/Tobler routing model, calculate the three subcosts or produce a final ranked list. Continue with later stages using the current context and saved policy, keeping unresolved items unchecked.

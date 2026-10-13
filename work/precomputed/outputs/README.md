@@ -1,0 +1,36 @@
+# Prepared Step 1 outputs
+
+The latest complete, validated output is in [current/](current/). Successful snapshots are stored in `runs/`. The current full run is `20261013T121410Z-c823aaf9`: **476,153 spatial records, zero errors, 14 warning groups and 31 passing tests**.
+
+The six spatial datasets are actual GeoPandas GeoDataFrames when loaded through the public API. They are persisted as layers in [harmonised.gpkg](current/harmonised.gpkg): `network`, `estates`, `hospitals`, `mtr_exits`, `railway_stations` and `bus_stops`. The network retains all original XYZ vertices. `schema.json` restores nullable column types, and height metadata is retained separately from horizontal EPSG:2326.
+
+From `work/`, run Python with `PYTHONPATH=src ../.venv/bin/python`, then:
+
+```python
+from estate_ranking.export import read_outputs, read_geodataframe
+
+frames = read_outputs()  # dictionary of six geopandas.GeoDataFrame objects
+estates = frames["estates"]
+network = read_geodataframe("precomputed/outputs/current", "network")
+print(network.crs)                       # EPSG:2326
+print(network.attrs["vertical_crs"])     # EPSG:5738
+```
+
+Other files in the selected run:
+
+- [reference_tables.sqlite](current/reference_tables.sqlite): sixteen preserved nonspatial reference/evidence tables, including derived boarding flags alongside raw source codes.
+- [mtr_master/](current/mtr_master/): eight physical-station/access/dictionary/review JSON files; these are also integrated into the GeoPackage/SQLite relationships.
+- [model_policy.json](current/model_policy.json): exact agreed modelling rules used for candidate preparation and recorded for later routing.
+- [schema.json](current/schema.json): field types, missing-value rules, CRS and source definitions.
+- [source_manifest.json](current/source_manifest.json): all 23 selected input hashes, software versions, assumptions and output interface.
+- [validation_report.md](current/validation_report.md) and [validation_report.json](current/validation_report.json): complete preservation checks and remaining source gaps.
+- [warnings_explained.md](current/warnings_explained.md): plain-language explanation of each of the fourteen warning groups and what would resolve it.
+- [step_1_recheck.json](current/step_1_recheck.json): independent audit of published GeoDataFrames, raw service records, identities, source hashes and SQLite integrity.
+- [mtr_match_review.csv](current/mtr_match_review.csv): ten unnamed source exit codes; their locations and physical station links are known.
+- [entity_ids.json](current/entity_ids.json): stable estate/hospital identity snapshot.
+- [rejected_records.jsonl](current/rejected_records.jsonl): blocking-record diagnostics, empty for this successful run.
+- [SUCCESS.json](current/SUCCESS.json): successful-run identity/completion marker.
+
+All source rows remain available. `general_mode_candidate`, `wheelchair_mode_candidate` and boarding-candidate fields are preparation flags, not computed routes or reachability. Tobler/sampling route costs and final ranking are later work. Actual remaining MTR/network reference gaps stay visible; accepted assumptions are not converted into publisher facts.
+
+The standalone MTR command writes its independent output to `outputs/mtr_master/` and snapshots to `outputs/mtr_master_runs/`. The MTR snapshot embedded in `current/` belongs to that Step 1 run. The older `precomputed/mtr_master` bookmark points to the selected Step 1 snapshot's master folder; historical runs remain preserved.

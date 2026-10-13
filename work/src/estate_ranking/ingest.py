@@ -60,7 +60,7 @@ def inventory_sources(config, report):
                 "configuration": {k: v for k, v in config.items() if not k.startswith("_")},
                 "python": platform.python_version(),
                 "libraries": {k: importlib.metadata.version(k) for k in
-                              ["numpy", "pyogrio", "shapely", "pyproj", "pypdf"]},
+                              ["numpy", "pyogrio", "shapely", "pyproj", "pypdf", "geopandas", "pandas"]},
                 "gdal": pyogrio.__gdal_version_string__, "sources": {}}
     paths = {}
     for name, spec in config["sources"].items():
@@ -83,7 +83,10 @@ def inventory_sources(config, report):
         if origin:
             entry["original_absolute_path"] = str(origin.resolve())
         if spec.get("crs_assumption"):
-            report.warning("crs_assumption", name, spec["crs_assumption"])
+            if spec.get("crs_assumption_accepted"):
+                report.checks[name + ":accepted_crs_assumption"] = spec["crs_assumption"]
+            else:
+                report.warning("crs_assumption", name, spec["crs_assumption"])
         manifest["sources"][name] = entry
     manifest["sources"]["mtr_exits"]["extraction_provenance"] = read_json(paths["mtr_source_manifest"])
     manifest["sources"]["mtr_exits"]["retrieved_utc"] = manifest["sources"]["mtr_exits"]["extraction_provenance"].get("retrieved_utc")

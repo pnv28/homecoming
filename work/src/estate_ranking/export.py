@@ -8,6 +8,8 @@ import sqlite3
 import uuid
 
 import numpy as np
+import geopandas as gpd
+import pandas as pd
 import pyogrio
 import pyogrio.raw
 import shapely
@@ -55,7 +57,14 @@ DESCRIPTIONS = {
     "access_evidence": "Dictionary-based iGeoCom evidence, not a routing eligibility decision",
     "access_evidence_json": "Per-source entrance evidence; unknowns/differences are retained",
     "access_evidence_difference": "Source evidence differs; neither source is silently overwritten",
-    "station_id": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+    "station_id": "Physical MTR-S-<station GEONAMEID> identity; original CSV IDs mapped separately",
+    "access_id": "MTR-A-<access GEONAMEID> identity of the original access-point record",
+    "general_mode_candidate": "Candidate under general-mode type/equipment rules, not established network reachability",
+    "wheelchair_mode_candidate": "Candidate under wheelchair type/evidence/barrier rules, not established reachability",
+    "stop_pick_drop_derived": "Documented code 1/2/3, or user-assumed unknown code 99 permitting pickup/dropoff both",
+    "boarding_code_assumed": "Derived boarding code uses an accepted assumption; original stopPickDrop remains preserved",
+    "general_boarding_candidate": "At least one pickup service under KMB/CTB/GMB scope; no network reachability claim",
+    "wheelchair_boarding_candidate": "Pickup under accepted KMB/CTB scope; excludes GMB, not a route reachability claim",
     "station_match_status": "matched/override/ambiguous/unmatched",
     "station_match_evidence": "Recorded matching rule or override reason",
     "exit_code": "Explicit named exit code; null for equipment records without a resolvable exit name",
@@ -177,6 +186,7 @@ def write_spatial(path, datasets, report, batch_size=50000):
 def write_outputs(directory, datasets, tables, manifest, inspection, registry, review, report):
     directory.mkdir(parents=True, exist_ok=True)
     schema = {"horizontal_crs": "EPSG:2326", "access_policy": manifest["access_policy"],
+              "modelling_policy": manifest.get("modelling_policy"),
               "original_network_compound_crs_wkt": inspection["original_compound_crs_wkt"],
               "coded_domains": inspection["domains"],
               "spatial_layers": {ds.name: schema_for(ds, inspection) for ds in datasets},
@@ -185,29 +195,48 @@ def write_outputs(directory, datasets, tables, manifest, inspection, registry, r
     write_json(directory / "source_manifest.json", manifest)
     write_json(directory / "entity_ids.json", registry.entries)
     with (directory / "mtr_match_review.csv").open("w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["dataset", "source_id", "name", "issue", "candidate_station_ids", "station_id", "exit_code", "evidence"])
+        writer = csv.DictWriter(f, fieldnames=["dataset", "source_id", "name", "issue", "candidate_station_ids", "station_id", "exit_code", "evidence"], lineterminator="\n")
         writer.writeheader()
         writer.writerows(review)
     write_spatial(directory / "harmonised.gpkg", datasets, report)
     write_sqlite(directory / "reference_tables.sqlite", tables, report)
 
 
-def publish_run(run, current, registry_path):
+def publish_run(run, current, registry_path, legacy_registry_targets=()):
     """One pointer switch publishes both data and registry snapshot together."""
     run, current, registry_path = Path(run), Path(current), Path(registry_path)
     if current.exists() and not current.is_symlink():
         raise ValueError("Current output must be absent or a managed symlink: " + str(current))
     target = os.path.relpath(current / "entity_ids.json", registry_path.parent)
+    previous = os.readlink(registry_path) if registry_path.is_symlink() else None
     if os.path.lexists(registry_path):
-        if not registry_path.is_symlink() or os.readlink(registry_path) != target:
+        if not registry_path.is_symlink() or previous not in {target, *legacy_registry_targets}:
             raise ValueError("Registry must be the managed output-snapshot link; preserve existing registry and resolve explicitly")
-    else:
-        registry_path.parent.mkdir(parents=True, exist_ok=True)
-        registry_path.symlink_to(target)
     current.parent.mkdir(parents=True, exist_ok=True)
     temporary = current.with_name("." + current.name + "-" + uuid.uuid4().hex)
     temporary.symlink_to(os.path.relpath(run, current.parent), target_is_directory=True)
-    os.replace(temporary, current)
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+    registry_temporary = registry_path.with_name(".registry-" + uuid.uuid4().hex)
+    registry_backup = registry_path.with_name(".registry-backup-" + uuid.uuid4().hex)
+    changed_registry = previous != target
+    try:
+        if changed_registry:
+            if previous is not None:
+                registry_backup.symlink_to(previous)
+            registry_temporary.symlink_to(target)
+            os.replace(registry_temporary, registry_path)
+        os.replace(temporary, current)
+    except Exception:
+        if changed_registry:
+            if registry_backup.is_symlink():
+                os.replace(registry_backup, registry_path)
+            elif previous is None and registry_path.is_symlink() and os.readlink(registry_path) == target:
+                registry_path.unlink()
+        raise
+    finally:
+        for path in [temporary, registry_temporary, registry_backup]:
+            if path.is_symlink():
+                path.unlink()
 
 
 def read_spatial_dataset(directory, layer):
@@ -222,3 +251,55 @@ def read_spatial_dataset(directory, layer):
     ds.geometry = shapely.from_wkb(geometry)
     ds.check_contract()
     return ds
+
+
+def as_geodataframe(dataset):
+    """Actual public GeoDataFrame, with schema-declared nullable column types."""
+    dtype = {"int16": "Int16", "int32": "Int32", "int64": "Int64",
+             "float64": "Float64", "bool": "boolean", "string": "string", "timestamp_text": "string"}
+    columns = {}
+    for field, kind in dataset.types.items():
+        array = pd.array(dataset.columns[field], dtype=dtype[kind])
+        array[dataset.masks[field]] = pd.NA
+        columns[field] = array
+    frame = gpd.GeoDataFrame(columns, geometry=dataset.geometry, crs=dataset.crs)
+    frame.attrs.update(preparation_metadata=dataset.metadata, vertical_crs=dataset.vertical_crs,
+                       source_logical_types=dict(dataset.types))
+    return frame
+
+
+def read_geodataframe(directory, layer):
+    """Load one prepared GeoPackage layer as a GeoPandas GeoDataFrame."""
+    return as_geodataframe(read_spatial_dataset(directory, layer))
+
+
+def read_outputs(directory=None):
+    """Return all six output GeoDataFrames; the CLI persists them in a GeoPackage."""
+    directory = Path(directory) if directory is not None else Path(__file__).resolve().parents[2] / "precomputed/outputs/current"
+    schema = json.loads((directory / "schema.json").read_text(encoding="utf-8"))
+    return {layer: read_geodataframe(directory, layer) for layer in schema["spatial_layers"]}
+
+
+def verify_geodataframes(directory, datasets, report):
+    """Check the actual downstream objects, not just the storage engine's arrays."""
+    for dataset in datasets:
+        frame = read_geodataframe(directory, dataset.name)
+        if not isinstance(frame, gpd.GeoDataFrame) or not CRS(frame.crs).equals(CRS(dataset.crs)):
+            report.error("geodataframe_type_crs", dataset.name, "Output is not a GeoDataFrame in the expected CRS")
+        if len(frame) != len(dataset) or list(frame.columns) != list(dataset.columns) + ["geometry"]:
+            report.error("geodataframe_schema", dataset.name, "GeoDataFrame field names/count differ")
+        if not np.array_equal(shapely.to_wkb(frame.geometry.array), shapely.to_wkb(dataset.geometry)):
+            report.error("geodataframe_geometry", dataset.name, "GeoDataFrame changed vertices, parts or heights")
+        for field in dataset.columns:
+            missing = frame[field].isna().to_numpy()
+            if not np.array_equal(missing, dataset.masks[field]):
+                report.error("geodataframe_nulls", dataset.name, "GeoDataFrame nulls differ: " + field)
+            actual = frame.loc[~missing, field].to_numpy()
+            if not np.array_equal(actual, dataset.columns[field][~missing]):
+                report.error("geodataframe_values", dataset.name, "GeoDataFrame values differ: " + field)
+        report.checks[dataset.name + ":geodataframe_roundtrip"] = {
+            "rows_checked": len(frame), "actual_type": "geopandas.GeoDataFrame",
+            "all_attributes_and_nulls": True, "wkb_exact": True,
+            "vertical_crs": frame.attrs["vertical_crs"],
+            "nullable_types": {k: str(frame[k].dtype) for k in dataset.columns}}
+        del frame

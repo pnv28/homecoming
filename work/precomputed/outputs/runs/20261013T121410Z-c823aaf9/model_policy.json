@@ -1,0 +1,100 @@
+{
+  "policy_version": 1,
+  "always_open": true,
+  "coordinates": {
+    "assumed_wgs84_sources": [
+      "estates",
+      "hospitals",
+      "bus_stops"
+    ],
+    "estate_hospital_location": "supplied_map_point_approximation"
+  },
+  "gradient": {
+    "magnitude": "provider_radians",
+    "sign": "ordered_height_change",
+    "equal_height": {
+      "points_per_round": 4,
+      "maximum_rounds": 2,
+      "second_round": "only_if_first_round_remains_flat",
+      "sample_positions": "random_along_preserved_xyz_polyline",
+      "interpolate_height": true,
+      "random_seed": 20261013,
+      "height_tolerance_metres": 0.0,
+      "confirmed_flat_derived_slope": 0.0,
+      "preserve_source_gradient": true
+    },
+    "aggregate": "sum_separately_signed_interval_times"
+  },
+  "transport_time": {
+    "walking_model": "standard_tobler",
+    "angle_conversion": "tan_signed_radians",
+    "maximum_speed_kmh": 6.0,
+    "exponential_coefficient": 3.5,
+    "slope_offset": 0.05,
+    "lift_travel_seconds": 30.0,
+    "lift_wait_seconds": 0.0,
+    "wheelchair_speed_model": null,
+    "other_equipment_time_model": null,
+    "maximum_ramp_slope": null
+  },
+  "modes": {
+    "general": {
+      "excluded_path_types": [
+        "Stairlift",
+        "M_Stairlift"
+      ],
+      "excluded_access_equipment": [
+        "stair_lift",
+        "wheelchair_aid"
+      ],
+      "bus_operators": [
+        "KMB",
+        "CTB",
+        "GMB"
+      ],
+      "mtr_candidate_source": "all_mapped_access_points"
+    },
+    "wheelchair": {
+      "excluded_path_types": [
+        "Staircase",
+        "M_Staircase",
+        "Escalator",
+        "M_Escalator",
+        "Travelator",
+        "M_Travelator"
+      ],
+      "excluded_access_equipment": [],
+      "exclude_wheelchair_barrier": true,
+      "bus_operators": [
+        "KMB",
+        "CTB"
+      ],
+      "mtr_candidate_source": "mobility_evidence_points"
+    }
+  },
+  "boarding": {
+    "unknown_derived_code": 99,
+    "unknown_allows_pickup": true,
+    "unknown_allows_dropoff": true,
+    "preserve_source_code": true
+  },
+  "hospital": {
+    "cost_model": "horizontal_network_distance_metres",
+    "no_preference_scope": "all_supplied_institutions"
+  },
+  "estate_subcosts": {
+    "components": [
+      "mtr",
+      "bus",
+      "hospital"
+    ],
+    "target_reduction": "minimum_reachable_route_cost",
+    "final_combination": null,
+    "unreachable_final_score": null
+  },
+  "implementation_status": {
+    "step_1": "source_preservation_physical_identity_and_candidate_preparation",
+    "routing_graph_and_costs": "not_implemented",
+    "final_ranking": "not_implemented"
+  }
+}

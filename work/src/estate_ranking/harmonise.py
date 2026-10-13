@@ -263,11 +263,15 @@ def decode_network(network, domains, report):
         true_code, false_code = (1, 0) if field == "PositionCertainty" else (1, 2)
         unknown = network.masks[field] | ~np.isin(codes, [true_code, false_code])
         network.add(field + "_bool", codes == true_code, "bool", unknown)
-    report.warning("gradient_direction_and_aggregation", "network",
-                   "Provider confirms Gradient in radians and Shape_Length as horizontal metres. Gradient sign convention and within-path aggregation are not explicitly documented; derive directional slope from ordered Z coordinates or confirm a policy before directed route costs.")
+    report.checks["network:source_gradient_evidence"] = {
+        "units_confirmed": "radians", "source_sign_and_aggregation_documented": False,
+        "model_interpretation": "Recorded in model_policy.json; applied in later routing, raw values retained"}
 
 
-def reconcile_bus(stops, bus_path, gmb_path, report):
+def reconcile_bus(stops, bus_path, gmb_path, report, policy=None):
+    from pathlib import Path
+    from .policy import boarding_fields, load_policy
+    policy = policy or load_policy(Path(__file__).resolve().parents[2] / "config/routing_policy.json")
     grouped, route_rows = {}, []
     for source, path in [("raw_bus", bus_path), ("raw_gmb", gmb_path)]:
         raw = read_json(path)
@@ -279,15 +283,19 @@ def reconcile_bus(stops, bus_path, gmb_path, report):
                 raise ValueError("Unexpected raw stop geometry")
             sid = identifier(p["stopId"])
             coords = tuple(geom["coordinates"])
-            entry = grouped.setdefault(sid, {"coordinates": set(), "operators": set(), "names_en": set(), "names_zh": set()})
+            entry = grouped.setdefault(sid, {"coordinates": set(), "operators": set(), "names_en": set(), "names_zh": set(),
+                                            "general_boarding_candidate": False, "wheelchair_boarding_candidate": False})
             entry["coordinates"].add(coords)
             entry["operators"].update(p["companyCode"].split("+"))
             entry["names_en"].add(p.get("stopNameE", ""))
             entry["names_zh"].add(p.get("stopNameC", ""))
-            # Original properties/geometry are lossless and exact service codes remain uninterpreted.
+            # Retain source codes/properties exactly; assumptions occupy separate derived fields.
             row = {k: p[k] for k in ["stopPickDrop", "routeId", "routeSeq", "stopSeq", "serviceMode", "lastUpdateDate", "companyCode"]}
             row.update(stop_id=sid, source=source, source_record=index,
                        raw_json=json.dumps(feature, ensure_ascii=False))
+            row.update(boarding_fields(p["stopPickDrop"], p["companyCode"], policy))
+            for key in ["general_boarding_candidate", "wheelchair_boarding_candidate"]:
+                entry[key] |= row[key]
             route_rows.append(row)
     listed = set(stops.columns["source_id"])
     for sid in sorted(listed ^ set(grouped)):
@@ -311,6 +319,20 @@ def reconcile_bus(stops, bus_path, gmb_path, report):
                              "names_zh_json": json.dumps(sorted(raw["names_zh"]), ensure_ascii=False)})
     report.checks["bus_reconciliation"] = {"raw_route_records": len(route_rows), "distinct_raw_stop_ids": len(grouped),
                                            "prepared_stop_ids": len(listed), "naming_variant_stops": len(variants)}
-    report.warning("bus_boarding", "bus_stops", "Operator flags do not establish wheelchair boarding access; pickup/drop-off codes are retained without undocumented interpretation.")
-    return [Table.from_rows("bus_route_stop_records", route_rows),
+    for key in ["general_boarding_candidate", "wheelchair_boarding_candidate"]:
+        stops.add(key, [grouped.get(stops.value("source_id", i), {}).get(key, False) for i in range(len(stops))], "bool")
+    stops.metadata["boarding_policy"] = {
+        "source": "model_policy.json", "raw_codes_preserved": True,
+        "unknown_derived_code": 99, "unknown_assumed_pickup_and_dropoff": True,
+        "operator_accessibility": "User-accepted KMB/CTB eligibility; GMB excluded only in wheelchair mode",
+        "candidates_are_not_network_reachability": True}
+    report.checks["bus_boarding_candidates"] = {
+        "source_codes": dict(Counter(str(r["stopPickDrop"]) for r in route_rows)),
+        "derived_codes": dict(Counter(str(r["stop_pick_drop_derived"]) for r in route_rows)),
+        "assumed_code_rows": sum(r["boarding_code_assumed"] for r in route_rows),
+        "general_stops": int(stops.columns["general_boarding_candidate"].sum()),
+        "wheelchair_stops": int(stops.columns["wheelchair_boarding_candidate"].sum()),
+        "records_removed": 0}
+    return [Table.from_rows("bus_route_stop_records", route_rows,
+                           metadata={"source_count": len(route_rows), "derived_code_policy": "Unknown = 99, assumed pickup/dropoff both; raw code retained"}),
             Table.from_rows("bus_name_variants", variants, types={"stop_id": "string", "names_en_json": "string", "names_zh_json": "string"})]

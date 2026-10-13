@@ -54,7 +54,7 @@ class StepOneTests(unittest.TestCase):
         self.assertNotEqual(ida, a.get("hospital", "A"))
 
     def test_provider_dictionary_confirms_units_without_inventing_sign_convention(self):
-        provider_pdf = Path(__file__).resolve().parents[1] / "data/3DPN_DataDictionary_v2.2.pdf"
+        provider_pdf = Path(__file__).resolve().parents[1] / "original_data/3DPN_DataDictionary_v2.2.pdf"
         definitions = confirm_network_definitions(provider_pdf)
         self.assertEqual(definitions["gradient"]["unit"], "radians")
         self.assertEqual(definitions["gradient"]["sign_convention"], "not explicitly documented")
