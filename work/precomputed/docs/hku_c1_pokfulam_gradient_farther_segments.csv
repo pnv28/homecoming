@@ -1,0 +1,5 @@
+from_point,to_point,height_change_m,classification,supplied_gradient_rad,signed_gradient_rad,horizontal_interval_length_m,source_path_id
+P1,P2,2.5288,uphill,0.05129629,0.05129629,36.884,250002139
+P2,P3,3.3927,uphill,0.05129629,0.05129629,49.244,250002139
+P3,P4,2.4166,uphill,0.05129629,0.05129629,44.454,250002139
+P4,P5,3.3758,uphill,0.05129629,0.05129629,97.576,250002139

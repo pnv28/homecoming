@@ -1,0 +1,133 @@
+{
+  "description": "Five existing vertices spaced farther apart within a 228 m Pok Fu Lam Road source path, oriented from HKU C1 toward Queen Mary",
+  "source_path": {
+    "FeatureType": 1,
+    "Gradient": 0.05129629,
+    "PedestrianRouteID": 250002139,
+    "Shape_Length": 228.1573341213452,
+    "StreetNameEN": "Pok Fu Lam Road",
+    "WheelchairBarrier": 2
+  },
+  "first_point_straight_line_distance_from_c1_map_point_m": 117.79103321504844,
+  "sources": {
+    "mtr_access_points.geojson": {
+      "path": "work/data/mtr_access_points.geojson",
+      "sha256": "0c7b0e1f60439b0986806d09067389e3767b99288ecf44817cca57dbe76e112a"
+    },
+    "facility-hosp.json": {
+      "path": "work/data/facility-hosp.json",
+      "sha256": "02a01027c1879f1bb8df27c940e1d1fc5b87d36caa3aaa69ef2e2faa2f4c5918"
+    },
+    "3D_Pedestrian_Network_FGDB.zip": {
+      "path": "work/data/3D_Pedestrian_Network_FGDB.zip",
+      "sha256": "1961f2466a896ff43cee413dc6f5775d6493d9d405af52a5d3d792326ab382b4"
+    },
+    "3DPN_DataDictionary_v2.2.pdf": {
+      "path": "work/data/3DPN_DataDictionary_v2.2.pdf",
+      "sha256": "82cb80753dba4233f48217284c7bd500999e19a7bb4becc7163239b0034de5c0"
+    },
+    "data_dictionary_v5.pdf": {
+      "path": "work/data/data_dictionary_v5.pdf",
+      "sha256": "76c578514760db54db919d21fa2c70cfed628a0f153f303692c66bee049ee6f0"
+    }
+  },
+  "points": [
+    {
+      "point": "P1",
+      "source_vertex_index_in_travel_order": 0,
+      "latitude": 22.283959851743013,
+      "longitude": 114.13356908318893,
+      "easting": 831805.1590999998,
+      "northing": 816120.1823999994,
+      "height_hkpd_m": 62.7974,
+      "distance_along_source_path_m": 0.0
+    },
+    {
+      "point": "P2",
+      "source_vertex_index_in_travel_order": 3,
+      "latitude": 22.283707714210877,
+      "longitude": 114.13333742368287,
+      "easting": 831781.2773000002,
+      "northing": 816092.2689999994,
+      "height_hkpd_m": 65.3262,
+      "distance_along_source_path_m": 36.884
+    },
+    {
+      "point": "P3",
+      "source_vertex_index_in_travel_order": 5,
+      "latitude": 22.283407158031498,
+      "longitude": 114.13298642628303,
+      "easting": 831745.0954,
+      "northing": 816058.9976000004,
+      "height_hkpd_m": 68.7189,
+      "distance_along_source_path_m": 86.128
+    },
+    {
+      "point": "P4",
+      "source_vertex_index_in_travel_order": 8,
+      "latitude": 22.28308094335416,
+      "longitude": 114.13273877639192,
+      "easting": 831719.5630999999,
+      "northing": 816022.8818999995,
+      "height_hkpd_m": 71.1355,
+      "distance_along_source_path_m": 130.582
+    },
+    {
+      "point": "P5",
+      "source_vertex_index_in_travel_order": 13,
+      "latitude": 22.282246028901245,
+      "longitude": 114.13251684873174,
+      "easting": 831696.665,
+      "northing": 815930.4350000005,
+      "height_hkpd_m": 74.5113,
+      "distance_along_source_path_m": 228.157
+    }
+  ],
+  "segments": [
+    {
+      "from_point": "P1",
+      "to_point": "P2",
+      "height_change_m": 2.5288,
+      "classification": "uphill",
+      "supplied_gradient_rad": 0.05129629,
+      "signed_gradient_rad": 0.05129629,
+      "horizontal_interval_length_m": 36.884,
+      "source_path_id": 250002139
+    },
+    {
+      "from_point": "P2",
+      "to_point": "P3",
+      "height_change_m": 3.3927,
+      "classification": "uphill",
+      "supplied_gradient_rad": 0.05129629,
+      "signed_gradient_rad": 0.05129629,
+      "horizontal_interval_length_m": 49.244,
+      "source_path_id": 250002139
+    },
+    {
+      "from_point": "P3",
+      "to_point": "P4",
+      "height_change_m": 2.4166,
+      "classification": "uphill",
+      "supplied_gradient_rad": 0.05129629,
+      "signed_gradient_rad": 0.05129629,
+      "horizontal_interval_length_m": 44.454,
+      "source_path_id": 250002139
+    },
+    {
+      "from_point": "P4",
+      "to_point": "P5",
+      "height_change_m": 3.3758,
+      "classification": "uphill",
+      "supplied_gradient_rad": 0.05129629,
+      "signed_gradient_rad": 0.05129629,
+      "horizontal_interval_length_m": 97.576,
+      "source_path_id": 250002139
+    }
+  ],
+  "notes": [
+    "All five points belong to one source polyline; its supplied gradient is retained for each sampled interval.",
+    "No new gradient magnitudes were calculated; height differences determine sign only.",
+    "This is a stored-data demonstration, not validation of the complete wheelchair route."
+  ]
+}
