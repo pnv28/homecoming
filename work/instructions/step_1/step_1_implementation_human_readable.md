@@ -25,6 +25,8 @@ Step 1 will produce separate, cleaned working datasets. We will still have an es
 
 A later stage will turn the pedestrian paths into a **graph**: a structure with connection points and links between them. Another stage will **snap** estate and facility points to suitable paths, meaning find and record where they connect to the walking network. Later stages will calculate journeys and rank estates. Step 1 prepares the inputs for that work.
 
+**Opening-hours decision:** We will assume every route is open all the time, on every day and date. We will ignore access schedules throughout preparation and routing. This removes the need to ask for a journey time or date. It does not make stairs, steep gradients, or physical barriers suitable; those still need their own later rules. This is our modelling assumption, not a claim that every real-world route operates continuously.
+
 The sources do not establish everything we might want to know. An estate map point may not be its accessible gate. A lift label does not establish whether the lift works today. We will preserve those distinctions so later stages can make informed decisions.
 
 ### Steps we will take
@@ -32,7 +34,7 @@ The sources do not establish everything we might want to know. An estate map poi
 1. We will read `estate_ranking_design.md` and `whole_chat_export.md` together and keep the scope tied to their first main stage.
 2. We will load the source files, standardise their fields and coordinates, add the four Housing Authority allocation categories, and connect related MTR reference tables.
 3. We will check the prepared data and save it with reports describing the sources and any unresolved issues.
-4. We will preserve information needed for later stages, including path heights, slope values, access schedules, and uncertainty about entrances.
+4. We will preserve information needed for later stages, including path heights, slope values, and uncertainty about entrances. We will exclude access schedules and treat every route as always open.
 5. We will leave graph construction, stair exclusion, route costs, snapping, shortest-path calculation, and ranking to their corresponding later stages.
 6. We will keep new code and outputs under `work/`, use the repository's local `.venv`, and leave original source files unchanged. We will install no packages during this planned implementation. If a necessary missing dependency is discovered, we will explain why and request permission before installing it. No Homebrew packages are needed by the current plan.
 
@@ -52,7 +54,7 @@ The inspection found these inputs:
 |---|---|---|
 | Estates | `work/data/prh-estates (1).json` | 244 estates, names in three language forms, administrative districts, map coordinates, and block names/counts. The inspected schema has no block or entrance coordinates. |
 | Hospitals | `work/data/facility-hosp.json` | 44 institutions, multilingual names, addresses, clusters, coordinates, and A&E yes/no fields. |
-| Pedestrian paths and related tables | `work/data/3D_Pedestrian_Network_FGDB.zip` | A geographic database named `3DPN_P2.gdb`, with 465,892 path records and seven supporting tables. |
+| Pedestrian paths and related tables | `work/data/3D_Pedestrian_Network_FGDB.zip` | A geographic database named `3DPN_P2.gdb`, with 465,892 path records and seven supporting tables. We will use five reference tables and skip the two access-schedule tables. |
 | MTR access points | `work/data/mtr_access_points.geojson` | 611 access records, with names, locations, station/site descriptions, and access categories. |
 | Railway station reference points | `work/data/railway_stations.geojson` | 98 station records. Station map points are different from station entrance points. |
 | Combined bus/minibus stops | `work/data/bus_stops.json` | 9,264 distinct stop IDs, including 4,776 stops labelled GMB. |
@@ -138,7 +140,7 @@ The iGeoCom file gives two representations of each access point: WGS84 geometry 
 
 ### Explanation for the team
 
-A **File Geodatabase** is a geographic database stored as a directory ending in `.gdb`. Our ZIP contains `3DPN_P2.gdb`. A **layer** groups one kind of geographic information, like a sheet in a workbook. The main layer, `PedestrianRoute`, contains paths; the seven other tables provide schedules and references.
+A **File Geodatabase** is a geographic database stored as a directory ending in `.gdb`. Our ZIP contains `3DPN_P2.gdb`. A **layer** groups one kind of geographic information, like a sheet in a workbook. The main layer, `PedestrianRoute`, contains paths. Seven other tables exist in the source: five contain references we will use, and two contain access schedules we will ignore. The presence of a schedule in the source will not change our always-open assumption.
 
 The path geometry is `MultiLineString Z`. A **LineString** is a line described by a sequence of points. A **vertex** is one of those points. “Multi” means a record can contain more than one line part; “Z” means the coordinates include heights. We must keep the intermediate vertices because they describe bends and height changes. We must also keep separate line parts and their order.
 
@@ -156,12 +158,12 @@ The network's `WheelchairAccess` field describes whether a connection to a facil
 2. We will associate the extraction with the ZIP checksum. We will reuse it only when it matches the selected source contents.
 3. We will call `pyogrio.list_layers()` and `read_info()` to record actual layer names, field definitions, row counts, geometry types, CRS, and geographic extent.
 4. We will load `PedestrianRoute` using `pyogrio.raw.read()`, with bounded batches if needed for memory use. The current snapshot contains 465,892 records.
-5. We will load all seven supporting tables separately. `AccessTime` currently has 2,413 rows and `AccessTimeDetails` has 3,483 rows; terminal, floor, building, site, and distance-post references will also be retained.
-6. We will preserve `PedestrianRouteID`, all line parts, every vertex, every Z value, and original attributes. Important fields include `FeatureType`, `Gradient`, `Direction`, `WheelchairBarrier`, `WheelchairAccess`, `Enabled`, `Location`, `FloorID`, `AccessTimeID`, `TerminalID`, and `Shape_Length`.
+5. We will load the five non-schedule supporting tables separately: terminal, floor, building, site, and distance-post references. We will skip `AccessTime` and `AccessTimeDetails` entirely and record their deliberate exclusion in the source manifest. Their records will not be read or copied into the prepared outputs.
+6. We will preserve `PedestrianRouteID`, all line parts, every vertex, every Z value, and original attributes. Important fields include `FeatureType`, `Gradient`, `Direction`, `WheelchairBarrier`, `WheelchairAccess`, `Enabled`, `Location`, `FloorID`, `TerminalID`, and `Shape_Length`. If the original path record includes `AccessTimeID`, we will keep it only as an unused source attribute so the original record remains traceable. We will not look up that ID or use it in any decision.
 7. We will extract the archive's coded-domain definitions separately. The installed Pyogrio public API does not expose them through `read_info()`. The recheck found 18 readable `GPCodedValueDomain2` XML definitions inside `.gdbtable` files. XML is structured text; we will read only the bounded definition blocks and parse them using Python's built-in tools.
 8. We will keep both source codes and decoded descriptions, and compare observed codes with the extracted dictionaries. If a dictionary cannot be read, we will check the documented fallback in `analysis/audit_summary.json` against the selected archive and record that use.
 9. We will store the slope value as `gradient_raw` and mark unresolved units/direction in metadata. We will retain `Shape_Length` without labelling it as a confirmed 3D or planar length. Source interpretation must be resolved before the affected route-cost calculation.
-10. We will preserve schedules and reference IDs without deciding whether facilities are open at a chosen time. Those decisions belong to later routing policy.
+10. We will assume every route is always open. We will not read opening hours, closing hours, day-of-week rules, or date restrictions. We will not join schedule references, produce schedule warnings, or restrict a route because of a schedule. Later routing will follow the same assumption and will not require a journey time or date.
 11. We will keep all paths in Step 1. We will not split lines, merge endpoints, remove stairs, or create connections wherever lines cross on a flat map. Paths at the same X/Y but different heights must remain distinguishable.
 
 ## 6. Prepare estate locations and Housing Authority categories
@@ -282,7 +284,7 @@ The recheck compared the prepared list with both raw inputs. The 9,264 IDs, coor
 
 An **error** prevents the prepared output from being finalised, such as a coordinate system the program cannot interpret. A **warning** records a limitation while allowing the data to be retained, such as an entrance with unknown access evidence. A warning can still prevent a later routing operation if that operation needs the missing information.
 
-**Referential integrity** means that an ID pointing to another table can be resolved appropriately. For example, a path's schedule ID should connect to a schedule, and that schedule may have several day/time rows. Missing references need reports; valid repeated schedule rows must not be mistaken for duplicate identities.
+**Referential integrity** means that an ID pointing to another table can be resolved appropriately. For example, a path's terminal ID should connect to the terminal reference table. Missing references need reports. A station can also have several line memberships, so those valid repeated relationships must not be mistaken for duplicate identities. Schedule IDs and schedule tables are excluded from these checks.
 
 A **round-trip check** saves data, reopens it, and compares the result with what was written. This catches export problems, such as heights being dropped or missing values turning into zero. A **fixture** is a small deliberately chosen example used to test a consequential case without reading the whole dataset.
 
@@ -294,12 +296,12 @@ A **quarantined record** is preserved separately with a reason because it cannot
 2. We will reconcile input counts with usable and quarantined records, accounting for every record. Current counts are snapshot expectations rather than permanently hard-coded dataset sizes.
 3. We will check required coordinates for finite numeric values, plausible bounds, supported reference systems, and appropriate geometry types. We will not treat a broad Hong Kong bounding box as proof of precise location or category membership.
 4. We will check all 244 current estate assignments for one documented allocation category and verify crosswalk coordinates against configured tolerances.
-5. We will check MTR station/category relationships, schedule references, source code dictionaries, and the bus-list reconciliation while respecting valid one-to-many relationships.
+5. We will check MTR station/category relationships, non-schedule network references, source code dictionaries, and the bus-list reconciliation while respecting valid one-to-many relationships. We will not check schedule references or schedule records.
 6. We will check path vertex counts, line-part structure, and Z preservation. We will retain vertical lift lines even when their flat-map length is zero and will not apply two-dimensional shape repair indiscriminately to 3D paths.
 7. We will record coordinate comparison thresholds and units in configuration and report outliers as errors or review items under explicit rules.
 8. We will use fixtures to check axis ordering, vertical/multipart geometry preservation, `1`/`2` code interpretation, nullable IDs, ambiguous matches, blank access categories, and colocated stops with distinct IDs.
 9. We will stop finalisation for missing required inputs/fields, unresolved CRS without an accepted assumption, duplicate primary IDs, unusable required coordinates/geometries, missing or ambiguous estate categories, or failed read/write preservation. We will save the offending records and diagnostics.
-10. We will report unresolved MTR matches, unknown access categories, entrance uncertainty, gradient interpretation gaps, suspicious dates, coordinate overlaps, and schedule-reference gaps as visible issues. Later stages must enforce any requirements these affect.
+10. We will report unresolved MTR matches, unknown access categories, entrance uncertainty, gradient interpretation gaps, suspicious source publication/update dates, and coordinate overlaps as visible issues. Source dates describe how old the data is; they are not used as route opening or closing dates. Later stages must enforce any requirements these affect.
 11. We will write both `validation_report.json` for program use and `validation_report.md` for team review. Each issue will identify the source, relevant record, check, and consequence.
 12. We will leave network connectivity checks to Step 2, where a graph and access policy exist. Step 1 cannot establish route reachability from file integrity alone.
 
@@ -320,7 +322,7 @@ A **staging directory** is a temporary location for a candidate output. We valid
 ### Steps we will take
 
 1. We will create a staging directory for the run and save separate GeoPackage layers for paths, estates, hospitals, MTR access points, railway station references, and bus/minibus stops.
-2. We will store schedules, network reference tables, MTR relationships, and retained route/service evidence in SQLite or through documented lossless source references.
+2. We will store the five non-schedule network reference tables, MTR relationships, and retained route/service evidence in SQLite or through documented lossless source references. The two access-schedule tables will not appear in the outputs. We will record the always-open assumption in the manifest and validation report.
 3. We will encode list-valued fields, such as operators, as documented JSON text where the destination field cannot hold a list directly.
 4. We will save `schema.json` describing each field's meaning, type, allowed codes, missing-value rules, and relationships.
 5. We will save source metadata, including original compound CRS WKT, the HKPD height reference, input hashes, assumptions, and software versions.
@@ -382,7 +384,7 @@ The shared spatial fields will include `id`, `source_id` where available, `name`
 |---|---|
 | `inventory_sources(config)` | Find exactly the selected inputs and record their origins and fingerprints. |
 | `inspect_network(gdb_path)` | Describe the database's layers, field definitions, coordinate system, and counts; coordinate separate domain extraction. |
-| `load_network(gdb_path)` | Read paths and supporting tables without building connections. |
+| `load_network(gdb_path)` | Read paths and the five non-schedule supporting tables without building connections; skip the two access-schedule tables. |
 | `load_estates()`, `load_hospitals()`, `load_mtr_exits()`, `load_bus_stops()` | Read the relevant source and return the shared working structure. |
 | `to_common_crs(dataset, target="EPSG:2326")` | Convert horizontal positions while retaining original coordinates and height metadata. |
 | `assign_housing_districts(estates, crosswalk)` | Add documented allocation categories and report failed/ambiguous matches. |
@@ -418,10 +420,10 @@ A completed Step 1 means we have prepared, traceable inputs for later work. It d
 ### Steps we will take
 
 1. **Milestone 1 — inputs and storage:** We will complete the explicit source inventory, confirm the environment, safely extract the database, and prove the required output types can survive saving and reopening.
-2. **Milestone 2 — loaded, aligned data:** We will load paths, all supporting tables, estates, hospitals, MTR records, and stops into the shared structures and standardise horizontal coordinates.
+2. **Milestone 2 — loaded, aligned data:** We will load paths, the five non-schedule supporting tables, estates, hospitals, MTR records, and stops into the shared structures and standardise horizontal coordinates.
 3. **Milestone 3 — relationships:** We will complete estate allocation assignments, supported MTR matches, review/override mechanisms, persistent identities, and bus-list reconciliation.
 4. **Milestone 4 — checked deliverables:** We will run the focused fixtures and one full real-data pipeline run, then save the outputs, manifest, schema, and reports through the documented command.
-5. We will consider Step 1 finished when every input record is accounted for, published spatial layers use EPSG:2326 horizontally, original network heights survive, all 244 current estates have one documented allocation category, required checks pass, and unresolved evidence is visible in the report.
+5. We will consider Step 1 finished when every selected input record is accounted for, the two schedule tables are documented as deliberately excluded, published spatial layers use EPSG:2326 horizontally, original network heights survive, all 244 current estates have one documented allocation category, required checks pass, and unresolved evidence is visible in the report.
 6. We will review the human-readable report before starting graph construction and identify which remaining issues block a particular later operation.
 
 ## 14. Keep later decisions visible without guessing their answers
@@ -433,6 +435,8 @@ Some questions affect the final ranking but do not require an answer to read and
 For example, “avoid stairs” and “independent wheelchair access” can lead to different rules for assisted stair lifts. Similarly, the choice to rank against any supplied institution or only A&E hospitals affects the final hospital score.
 
 The **DTM**, or digital terrain model, describes bare-earth elevation. Its five-metre cells do not represent the height of every footbridge or elevated walkway. It can be useful later for terrain or connector checks, but it should not overwrite the network's supplied heights.
+
+Access schedules are a settled decision: routes are always open in this model. We will not carry opening-hours questions forward or ask users to choose a journey date/time.
 
 ### Steps we will take
 

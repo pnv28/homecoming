@@ -8,6 +8,8 @@ Rechecked against the design and source files on 13 October 2026. The additional
 
 Implement **Step 1, “Harmonise data (`ingest.py`, `harmonise.py`)”**, in `estate_ranking_design.md`. The result will be separate, consistent spatial datasets ready for graph construction and point snapping, with a source manifest and validation report.
 
+**Always-open assumption (user instruction):** All routes are assumed open at every time of day and on every date. Access schedules are outside the algorithm: do not load or export `AccessTime` or `AccessTimeDetails`, evaluate opening/closing hours, check schedule references, or request a journey date/time. Preserve an original `AccessTimeID` only as an unused source attribute for traceability; it must not affect route eligibility, cost, or ranking. This assumption concerns opening hours; stairs, gradients, physical barriers, direction, and other non-schedule suitability rules still apply in their respective later stages.
+
 Step 1 includes loading, coordinate harmonisation, field standardisation, Housing Authority district assignment, MTR table reconciliation, and validation. Graph construction, stair exclusion, edge weights, snapping, shortest paths, and ranking belong to later steps. Preserve information needed by those steps rather than applying their policies during ingestion.
 
 All new code and outputs will live under `work/`. Use the repository-root `.venv/bin/python`, install nothing during this step, and leave source files unchanged. No Homebrew packages are needed. If implementation reveals a necessary missing dependency, explain it and request permission before installing it.
@@ -19,7 +21,7 @@ All new code and outputs will live under `work/`. Use the repository-root `.venv
 | Estates | `work/data/prh-estates (1).json` | 244 estates; multilingual names, administrative district, map latitude/longitude, block names/counts, and other metadata. No block coordinates or entrance coordinates in the inspected schema. |
 | Hospitals | `work/data/facility-hosp.json` | 44 institutions; English/traditional/simplified Chinese names, coordinates, cluster, address, and A&E yes/no fields. |
 | Pedestrian network | `work/data/3D_Pedestrian_Network_FGDB.zip` | Contains `3DPN_P2.gdb`; `PedestrianRoute` has 465,892 `MultiLineString Z` features. Horizontal CRS is EPSG:2326; vertical CRS is HKPD height, EPSG:5738. |
-| Network support tables | Same geodatabase | Seven nonspatial tables, including `AccessTime` (2,413 rows), `AccessTimeDetails` (3,483 rows), terminal and floor references. No separate node layer among the eight listed layers. |
+| Network support tables | Same geodatabase | Seven nonspatial tables exist in the source. Load only the five non-schedule tables: terminal, floor, building, site, and distance-post references. Skip `AccessTime` and `AccessTimeDetails`. No separate node layer among the eight listed layers. |
 | MTR access points | `work/data/mtr_access_points.geojson` | 611 records; native `GEONAMEID`, station/site names, entrance names, access subcategory, WGS84 geometry, and HK1980 easting/northing attributes. |
 | Railway station reference | `work/data/railway_stations.geojson` | 98 records. Station reference points, not entrance locations or a guaranteed match to the station CSV. |
 | Bus/minibus stop list | `work/data/bus_stops.json` | 9,264 distinct stop IDs; includes 4,776 GMB-labelled stops, operator lists and flags. This is broader than the older bus-only audit. |
@@ -71,13 +73,15 @@ For the first implementation, copy the needed MTR CSVs and district crosswalk/do
 
 Safely extract the archive to `work/cache/3DPN_P2.gdb`: reject archive paths that escape the cache, confirm the expected `.gdb` directory, and reuse an extraction only when its recorded input hash matches.
 
-Use `pyogrio.list_layers()` and `read_info()` to save the actual layer names, schemas, CRS, feature counts, bounds, geometry dimensions, and available coded domains. Load `PedestrianRoute` using `pyogrio.raw.read()`, in bounded batches if necessary. Read the seven supporting tables separately without requiring geometries.
+Use `pyogrio.list_layers()` and `read_info()` to save the actual layer names, schemas, CRS, feature counts, bounds, geometry dimensions, and available coded domains. Load `PedestrianRoute` using `pyogrio.raw.read()`, in bounded batches if necessary. Read the five non-schedule supporting tables separately without requiring geometries. Record `AccessTime` and `AccessTimeDetails` as intentionally excluded in the source manifest, without reading their records or exporting them.
 
-Preserve `PedestrianRouteID`, all vertices, multipart structure, Z values, and the original attributes. Important fields include `FeatureType`, `Gradient`, `Direction`, `WheelchairBarrier`, `WheelchairAccess`, `Enabled`, `Location`, `FloorID`, `AccessTimeID`, `TerminalID`, and `Shape_Length`.
+Preserve `PedestrianRouteID`, all vertices, multipart structure, Z values, and the original attributes. Important fields include `FeatureType`, `Gradient`, `Direction`, `WheelchairBarrier`, `WheelchairAccess`, `Enabled`, `Location`, `FloorID`, `TerminalID`, and `Shape_Length`. Any original `AccessTimeID` is retained solely as an unused source attribute, not decoded or joined.
 
 Keep source codes and add decoded labels using the geodatabase domains. `list_layers()` and `read_info()` do not expose coded domains through the installed Pyogrio public API. The recheck found 18 embedded `GPCodedValueDomain2` XML definitions in this archive's `.gdbtable` files, readable using the standard library; the earlier audit uses this approach too. Implement that bounded metadata extraction separately, record its source, and validate extracted values against observed codes. Existing domain descriptions in `analysis/audit_summary.json` can be a documented fallback, checked against the selected archive. Do not cast coded values directly to Python booleans: for several fields, `1` means true and `2` means false. `WheelchairAccess` describes an accessible entrance connection; it is not a universal path-usability flag.
 
 Preserve `Gradient` as `gradient_raw` with unresolved unit/sign metadata until authoritative evidence is available. Comparing its distribution with vertex-based slopes can detect inconsistencies but cannot alone establish its meaning. The available metadata PDF did not establish gradient units in this inspection. Step 2's cost model must resolve this before using it. Similarly, retain `Shape_Length` as a source attribute; distinguish planar XY length from 3D length rather than assuming which it represents.
+
+Assume every route is always open. Do not inspect opening/closing schedules, flag schedule gaps, or add schedule-based restrictions in this or later stages.
 
 No path filtering, splitting, endpoint merging, or planar-intersection creation occurs here. Coincident X/Y coordinates at different heights must remain distinct for later topology work.
 
@@ -143,7 +147,7 @@ Make any record exceeding a configured coordinate-residual or crosswalk-coordina
 
 **Errors that stop publication:** missing required inputs or fields; unsupported/unresolved source CRS for transformation; duplicate primary IDs; non-finite required coordinates; empty/wrong geometry types in the usable output; missing/ambiguous housing-district assignments; failed read/write preservation checks. Retain offending records and diagnostics in a rejection report; never silently discard them.
 
-**Issues that remain visible without stopping ingestion:** unmatched MTR station/exit references; unspecified access categories; entrance uncertainty; unconfirmed gradient semantics; suspicious source dates; overlapping coordinates; schedule-reference gaps. Mark them explicitly so later stages can enforce their own requirements.
+**Issues that remain visible without stopping ingestion:** unmatched MTR station/exit references; unspecified access categories; entrance uncertainty; unconfirmed gradient semantics; suspicious source publication/update dates; overlapping coordinates. Source publication/update dates describe dataset provenance and do not control route opening hours. Mark them explicitly so later stages can enforce their own requirements.
 
 Checks will cover:
 
@@ -151,7 +155,7 @@ Checks will cover:
 - Unique entity IDs, required fields, known code domains, multilingual string handling, and null preservation.
 - Geometry type, nonempty geometry, finite coordinates, plausible Hong Kong bounds, and geographic-to-projected round trips. Use documented broad bounds as a sanity check; avoid rejecting coastal points solely because a land polygon excludes them.
 - Network multipart and Z preservation, including vertical lift geometries whose planar length can be zero. Do not apply polygon repair or two-dimensional zero-length rejection indiscriminately to 3D paths.
-- Uniqueness and referential integrity in schedule, station, category, and district joins, respecting one-to-many schedule details and station-line relationships.
+- Uniqueness and referential integrity in non-schedule network references, station, category, and district joins, respecting station-line relationships. Do not validate `AccessTimeID` references or schedule tables.
 - Current crosswalk completeness and counts; bus-list agreement with raw records; iGeoCom projected-coordinate residuals.
 - Output round trips: IDs, counts, nulls, CRS, field types, multipart structure, and vertex/Z coordinates remain intact within a documented numerical tolerance.
 
@@ -186,7 +190,7 @@ work/
   precomputed/
     step_1/
       harmonised.gpkg             # network, estates, hospitals, MTR exits/stations, stops
-      reference_tables.sqlite     # schedules, network references, MTR/service relations
+      reference_tables.sqlite     # non-schedule network references, MTR/service relations
       source_manifest.json
       schema.json
       validation_report.json
@@ -204,7 +208,7 @@ Suggested function responsibilities:
 |---|---|
 | `inventory_sources(config)` | Resolve explicit files and record hashes/provenance. |
 | `inspect_network(gdb_path)` | Discover layers, CRS, schema, counts and domains. |
-| `load_network(gdb_path)` | Return spatial paths and separate support tables. |
+| `load_network(gdb_path)` | Return spatial paths and five non-schedule support tables; skip the two access-schedule tables. |
 | `load_estates()`, `load_hospitals()`, `load_mtr_exits()`, `load_bus_stops()` | Parse each input without assigning routing policy. |
 | `to_common_crs(dataset, target="EPSG:2326")` | Transform X/Y with explicit source CRS and preserved vertical metadata. |
 | `assign_housing_districts(estates, crosswalk)` | Add the four-category district field with join diagnostics. |
@@ -224,17 +228,17 @@ Resolve input and output paths relative to `work` or the configuration's declare
 ## Implementation milestones and completion criteria
 
 1. **Input inventory and writer proof:** explicit sources, environment check, safe extraction, small geometry/table round trip with Z and nulls preserved.
-2. **Core loaders and coordinate harmonisation:** network/support tables and all facility/estate datasets loaded through the common container.
+2. **Core loaders and coordinate harmonisation:** network/five non-schedule support tables and all facility/estate datasets loaded through the common container.
 3. **District and MTR relationships:** verified crosswalk, match evidence, override mechanism and unresolved-case exports; bus-list reconciliation complete.
 4. **Validation and reproducible export:** reports, manifest and outputs produced by one command, with focused fixture checks and a full real-data run.
 
 The fixture checks should exercise axis order, Z preservation for lifts and multipart paths, `1`/`2` code interpretation, duplicate identifiers, ambiguous joins, blank MTR subcategories, and colocated bus stops with different IDs. These protect transformations that could otherwise produce plausible but incorrect routing inputs.
 
-Step 1 is complete when every current source record is accounted for, all published spatial layers share EPSG:2326 horizontally, original network heights survive, all 244 estates have one documented housing district, and unresolved accessibility or source-semantic questions are explicit in the report. MTR records with uncertain matches remain in the output with flags. No missing evidence is converted into a claim of accessibility. This completes ingestion and harmonisation; a remaining gradient interpretation or route-eligibility issue must still be resolved before the affected Step 2 or Step 3 operation proceeds.
+Step 1 is complete when every selected source record is accounted for (the two access-schedule tables are explicitly excluded), all published spatial layers share EPSG:2326 horizontally, original network heights survive, all 244 estates have one documented housing district, and unresolved accessibility or source-semantic questions are explicit in the report. MTR records with uncertain matches remain in the output with flags. No missing evidence is converted into a claim of accessibility. This completes ingestion and harmonisation; a remaining gradient interpretation or route-eligibility issue must still be resolved before the affected Step 2 or Step 3 operation proceeds.
 
 ## Questions carried forward to later steps
 
-These do not prevent writing the Step 1 pipeline:
+Access schedules are already decided: assume all routes are always open, with no date/time inputs or schedule checks. The remaining questions below do not prevent writing the Step 1 pipeline:
 
 - Gradient units, sign convention, and the meaning of source `Shape_Length` need authoritative confirmation before edge costs are calculated.
 - “No stairs” and independent wheelchair access may require different policies for escalators, stair lifts, assisted access, and steep ramps.
