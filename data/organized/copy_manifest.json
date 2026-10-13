@@ -1,0 +1,122 @@
+[
+  {
+    "original": "prh-estates (1).json",
+    "copy": "data/organized/core/estates/prh-estates.json",
+    "bytes": 879925,
+    "sha256": "df6991cb3bf483144c11ce9f7552feec887e2bced918d6166bed80d4b3a7f38d"
+  },
+  {
+    "original": "JSON_BUS.json",
+    "copy": "data/organized/core/bus/route_stop_records.geojson",
+    "bytes": 78691259,
+    "sha256": "36275eccbf443c9b8dd2034678c8c3099990910e9a4d73a68ebc59aeea8ec7a2"
+  },
+  {
+    "original": "mtr_lines_and_stations.csv",
+    "copy": "data/organized/core/mtr/mtr_lines_and_stations.csv",
+    "bytes": 14161,
+    "sha256": "e0e781152e2e6c5f6d7763262acbae76577b71ca4c66b4b7b72a97252175e0c3"
+  },
+  {
+    "original": "barrier_free_facilities.csv",
+    "copy": "data/organized/core/mtr/barrier_free_facilities.csv",
+    "bytes": 93709,
+    "sha256": "f220d56aab3fc129aec4d6ca5ebb57b6e1db70491eb23d1e5d2cc041b8c66daf"
+  },
+  {
+    "original": "barrier_free_facility_category.csv",
+    "copy": "data/organized/core/mtr/barrier_free_facility_category.csv",
+    "bytes": 4604,
+    "sha256": "84ba231566dab0a7ae3f87f9a702f234040fb8b1aea95faf6fe135ab5973f963"
+  },
+  {
+    "original": "3D_Pedestrian_Network_FGDB.zip",
+    "copy": "data/organized/core/pedestrian/3D_Pedestrian_Network_FGDB.zip",
+    "bytes": 39807001,
+    "sha256": "1961f2466a896ff43cee413dc6f5775d6493d9d405af52a5d3d792326ab382b4"
+  },
+  {
+    "original": "portal.csdi.gov.hk_csdi-webpage_metadata_landsd_rcd_1637222018065_52265_html.pdf",
+    "copy": "data/organized/core/pedestrian/network_metadata.pdf",
+    "bytes": 457477,
+    "sha256": "e092484d5215c0f48d1f7fa3090651c785e64987c9a0101ca9e4210e50242cdc"
+  },
+  {
+    "original": "Whole_HK_DTM_5m.zip",
+    "copy": "data/organized/supplementary/terrain/Whole_HK_DTM_5m.zip",
+    "bytes": 28706079,
+    "sha256": "785718f462ae6de3c9e1fed2bf9fe5affe1c1d739c0a969fd62cf3680b4b33ab"
+  },
+  {
+    "original": "facility-hosp.json",
+    "copy": "data/organized/supplementary/hospitals/facility-hosp.json",
+    "bytes": 25974,
+    "sha256": "02a01027c1879f1bb8df27c940e1d1fc5b87d36caa3aaa69ef2e2faa2f4c5918"
+  },
+  {
+    "original": "analysis/maps/district_boundaries.json",
+    "copy": "data/organized/supplementary/map_context/district_boundaries.json",
+    "bytes": 796586,
+    "sha256": "ab2123b5a48c2e39e29ce594a0c51590cf6081922ab2c5c14ff78338b788f760"
+  },
+  {
+    "original": "analysis/maps/hong_kong_land.geojson",
+    "copy": "data/organized/supplementary/map_context/hong_kong_land.geojson",
+    "bytes": 1066904,
+    "sha256": "e25bef79edf05770489712289964acd7e1e77ceda4848c25382efd4abe7dc0b9"
+  },
+  {
+    "original": "analysis/maps/TERRAIN_AND_SERIES_README.md",
+    "copy": "data/organized/supplementary/map_context/original_map_notes.md",
+    "bytes": 3379,
+    "sha256": "87e8c60105bd4e45fad72f81bd9e9d0e20d0c4b7c45013b47e08ee6652920545"
+  },
+  {
+    "original": "data/2020 data github public set/modified_lines_and_stations_APPENDED.csv",
+    "copy": "data/organized/reference/legacy_2020/station_coordinates_APPENDED.csv",
+    "bytes": 6531,
+    "sha256": "6281727ee105d2fbf65d2dd676a3a4f0d622982c785470c29d1d93addeb844a3"
+  },
+  {
+    "original": "data/official_igeocom/data_dictionary_v5.pdf",
+    "copy": "data/organized/core/mtr/official_igeocom/data_dictionary_v5.pdf",
+    "bytes": 510949,
+    "sha256": "76c578514760db54db919d21fa2c70cfed628a0f153f303692c66bee049ee6f0"
+  },
+  {
+    "original": "data/official_igeocom/mtr_access_points.csv",
+    "copy": "data/organized/core/mtr/official_igeocom/mtr_access_points.csv",
+    "bytes": 230057,
+    "sha256": "34cabbd01d1b894c2944e963a15c66dff925cb64685aacca7baca56e40b126b0"
+  },
+  {
+    "original": "data/official_igeocom/mtr_access_points.geojson",
+    "copy": "data/organized/core/mtr/official_igeocom/mtr_access_points.geojson",
+    "bytes": 686322,
+    "sha256": "0c7b0e1f60439b0986806d09067389e3767b99288ecf44817cca57dbe76e112a"
+  },
+  {
+    "original": "data/official_igeocom/railway_stations.geojson",
+    "copy": "data/organized/core/mtr/official_igeocom/railway_stations.geojson",
+    "bytes": 99994,
+    "sha256": "0120e9648a990f4a5cebf7087d118c417b70531db767c29fc3a4ab76c1403cfd"
+  },
+  {
+    "original": "data/official_igeocom/source_csv.zip",
+    "copy": "data/organized/core/mtr/official_igeocom/source_csv.zip",
+    "bytes": 2724531,
+    "sha256": "d96118a4782b8442650f55f4dbaa0c7fc7d8e49bee7147f0d307c251525f96f9"
+  },
+  {
+    "original": "data/official_igeocom/source_geojson.zip",
+    "copy": "data/organized/core/mtr/official_igeocom/source_geojson.zip",
+    "bytes": 4831593,
+    "sha256": "fb76c35b5beb8c25191dc1e40d7e15ed6f2ba04136ad4f8089a3463d3ca93660"
+  },
+  {
+    "original": "data/official_igeocom/source_manifest.json",
+    "copy": "data/organized/core/mtr/official_igeocom/source_manifest.json",
+    "bytes": 1375,
+    "sha256": "59c2781b828190bdcb6cbb3eab034027f19cae6529b8d6f3d7abf525717b4d95"
+  }
+]

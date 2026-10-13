@@ -1,0 +1,504 @@
+{
+  "method": "Routes intersecting district boundary polygons; positive in-district XY length for walking statistics. Crossing routes can appear in both districts. Stored per-route Gradient used, not terrain-derived slope.",
+  "angle_conversion": "degrees = abs(Gradient) * 180/pi; grade_percent = 100*tan(abs(Gradient))",
+  "walking_excluded_feature_codes": [
+    8,
+    9,
+    10,
+    12,
+    13,
+    16,
+    17,
+    18,
+    20,
+    21
+  ],
+  "districts": {
+    "Yuen Long District": {
+      "map_district_number": 18,
+      "all_intersecting_routes": {
+        "route_count": 54996,
+        "finite_gradient_count": 54996,
+        "length_km": 1396.3437595863807,
+        "quantiles_degrees_p50_p90_p95_p99": [
+          0.5284369690968753,
+          4.024816516409834,
+          7.092378979986417,
+          23.899697350706866
+        ],
+        "length_weighted_quantiles_degrees_p50_p90_p95_p99": [
+          0.4002826396232714,
+          2.8239766189491524,
+          4.679835618790475,
+          12.303415516277479
+        ],
+        "max_degrees": 89.82628854747996,
+        "at_least_5_degrees_percent_of_routes": 7.598734453414793,
+        "at_least_10_degrees_percent_of_routes": 3.334787984580697,
+        "at_least_5_degrees_percent_of_length": 4.398883213265363,
+        "at_least_10_degrees_percent_of_length": 1.4144615223246444,
+        "bin_edges_degrees": [
+          0,
+          2,
+          5,
+          10,
+          15,
+          30,
+          90.001
+        ],
+        "bin_route_counts": [
+          43831,
+          6986,
+          2345,
+          711,
+          762,
+          361
+        ]
+      },
+      "walking_including_ramps": {
+        "route_count": 54140,
+        "finite_gradient_count": 54140,
+        "length_km": 1390.8670511562714,
+        "quantiles_degrees_p50_p90_p95_p99": [
+          0.5158052550665235,
+          3.732092608060615,
+          6.176294379803944,
+          17.7081935598593
+        ],
+        "length_weighted_quantiles_degrees_p50_p90_p95_p99": [
+          0.3976201047492985,
+          2.759175665277651,
+          4.5119366394631335,
+          10.562175004478693
+        ],
+        "max_degrees": 88.38097959095064,
+        "at_least_5_degrees_percent_of_routes": 6.7417805688954555,
+        "at_least_10_degrees_percent_of_routes": 2.523088289619505,
+        "at_least_5_degrees_percent_of_length": 4.109814951218542,
+        "at_least_10_degrees_percent_of_length": 1.1420185751816117,
+        "bin_edges_degrees": [
+          0,
+          2,
+          5,
+          10,
+          15,
+          30,
+          90.001
+        ],
+        "bin_route_counts": [
+          43580,
+          6910,
+          2284,
+          638,
+          498,
+          230
+        ]
+      },
+      "steepest_walking_records": [
+        {
+          "route_id": 190043842,
+          "feature_type": 1,
+          "degrees": 88.38097959095064,
+          "alias": "Tin Yiu Estate",
+          "street": "",
+          "within_district_xy_length_metres": 0.039454784672544076
+        },
+        {
+          "route_id": 190021974,
+          "feature_type": 1,
+          "degrees": 79.98127106417944,
+          "alias": "Yuen Long Station",
+          "street": "",
+          "within_district_xy_length_metres": 0.03602179886339212
+        },
+        {
+          "route_id": 190029283,
+          "feature_type": 1,
+          "degrees": 79.83669605077628,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 0.25056186876344755
+        },
+        {
+          "route_id": 190022077,
+          "feature_type": 1,
+          "degrees": 78.82821470091707,
+          "alias": "Long Yat Road",
+          "street": "Long Yat Road",
+          "within_district_xy_length_metres": 0.058201375347618885
+        },
+        {
+          "route_id": 190043919,
+          "feature_type": 1,
+          "degrees": 78.27758965472485,
+          "alias": "Footway",
+          "street": "",
+          "within_district_xy_length_metres": 0.48050308086804616
+        },
+        {
+          "route_id": 190003788,
+          "feature_type": 1,
+          "degrees": 77.98075454501246,
+          "alias": "Chau Tau West Road",
+          "street": "Chau Tau West Road",
+          "within_district_xy_length_metres": 0.6830503631417411
+        },
+        {
+          "route_id": 190006911,
+          "feature_type": 1,
+          "degrees": 76.94489154212394,
+          "alias": "Lau Fau Shan Road",
+          "street": "Lau Fau Shan Road",
+          "within_district_xy_length_metres": 0.7171631329967213
+        },
+        {
+          "route_id": 190033002,
+          "feature_type": 1,
+          "degrees": 76.63717882867098,
+          "alias": "Tai Shu Ha Road West",
+          "street": "Tai Shu Ha Road West",
+          "within_district_xy_length_metres": 0.32076104811139483
+        },
+        {
+          "route_id": 190003511,
+          "feature_type": 1,
+          "degrees": 74.81768717896001,
+          "alias": "Chau Tau West Road",
+          "street": "Chau Tau West Road",
+          "within_district_xy_length_metres": 0.8736516583238411
+        },
+        {
+          "route_id": 190033029,
+          "feature_type": 1,
+          "degrees": 74.6644931614447,
+          "alias": "Tai Shu Ha Road West",
+          "street": "Tai Shu Ha Road West",
+          "within_district_xy_length_metres": 0.11232675642549389
+        },
+        {
+          "route_id": 190031517,
+          "feature_type": 1,
+          "degrees": 73.9807694464858,
+          "alias": "Footway",
+          "street": "",
+          "within_district_xy_length_metres": 0.23726746607448948
+        },
+        {
+          "route_id": 190042682,
+          "feature_type": 1,
+          "degrees": 73.47886873119151,
+          "alias": "Shek Po Road",
+          "street": "Shek Po Road",
+          "within_district_xy_length_metres": 0.915886902939042
+        },
+        {
+          "route_id": 190033483,
+          "feature_type": 1,
+          "degrees": 73.15408531319042,
+          "alias": "Tai Tong Road",
+          "street": "Tai Tong Road",
+          "within_district_xy_length_metres": 0.3613221974538722
+        },
+        {
+          "route_id": 190033013,
+          "feature_type": 1,
+          "degrees": 72.03654603069042,
+          "alias": "Tai Shu Ha Road West",
+          "street": "Tai Shu Ha Road West",
+          "within_district_xy_length_metres": 0.416388880920338
+        },
+        {
+          "route_id": 190026933,
+          "feature_type": 1,
+          "degrees": 71.17756999606148,
+          "alias": "Tong Yan San Tsuen Road",
+          "street": "Tong Yan San Tsuen Road",
+          "within_district_xy_length_metres": 1.3609022180137418
+        },
+        {
+          "route_id": 190007038,
+          "feature_type": 1,
+          "degrees": 70.81575688871887,
+          "alias": "Lau Fau Shan Road",
+          "street": "Lau Fau Shan Road",
+          "within_district_xy_length_metres": 1.0411413010821895
+        },
+        {
+          "route_id": 190045785,
+          "feature_type": 1,
+          "degrees": 70.6369304583228,
+          "alias": "Ping Ha Road",
+          "street": "Ping Ha Road",
+          "within_district_xy_length_metres": 0.6384803209096555
+        },
+        {
+          "route_id": 190048081,
+          "feature_type": 1,
+          "degrees": 70.5940382648215,
+          "alias": "Wang Tat Road",
+          "street": "Wang Tat Road",
+          "within_district_xy_length_metres": 0.5205883691518826
+        },
+        {
+          "route_id": 190027174,
+          "feature_type": 1,
+          "degrees": 69.62927302177299,
+          "alias": "Ma Fung Ling Road",
+          "street": "Ma Fung Ling Road",
+          "within_district_xy_length_metres": 0.02781150884369863
+        },
+        {
+          "route_id": 190026934,
+          "feature_type": 1,
+          "degrees": 68.9786255873692,
+          "alias": "Tong Yan San Tsuen Road",
+          "street": "Tong Yan San Tsuen Road",
+          "within_district_xy_length_metres": 1.560495024514856
+        }
+      ]
+    },
+    "North District": {
+      "map_district_number": 7,
+      "all_intersecting_routes": {
+        "route_count": 30505,
+        "finite_gradient_count": 30505,
+        "length_km": 811.8665376767894,
+        "quantiles_degrees_p50_p90_p95_p99": [
+          0.6703858304460489,
+          5.015771660273785,
+          9.008002233409576,
+          24.931108735087705
+        ],
+        "length_weighted_quantiles_degrees_p50_p90_p95_p99": [
+          0.5690146995847328,
+          4.290325158673458,
+          6.711032881971118,
+          14.053744857580426
+        ],
+        "max_degrees": 89.90912965028895,
+        "at_least_5_degrees_percent_of_routes": 10.021307982297984,
+        "at_least_10_degrees_percent_of_routes": 4.386166202261924,
+        "at_least_5_degrees_percent_of_length": 8.120096914330153,
+        "at_least_10_degrees_percent_of_length": 2.2736338123338276,
+        "bin_edges_degrees": [
+          0,
+          2,
+          5,
+          10,
+          15,
+          30,
+          90.001
+        ],
+        "bin_route_counts": [
+          23170,
+          4278,
+          1719,
+          525,
+          608,
+          205
+        ]
+      },
+      "walking_including_ramps": {
+        "route_count": 29719,
+        "finite_gradient_count": 29719,
+        "length_km": 803.8467986396743,
+        "quantiles_degrees_p50_p90_p95_p99": [
+          0.6388605466423608,
+          4.315324109415931,
+          7.00128493580058,
+          18.631177238887275
+        ],
+        "length_weighted_quantiles_degrees_p50_p90_p95_p99": [
+          0.5602387050367141,
+          3.9897921793512827,
+          6.204040290751501,
+          11.018751320431363
+        ],
+        "max_degrees": 81.5318289299275,
+        "at_least_5_degrees_percent_of_routes": 8.317911100642686,
+        "at_least_10_degrees_percent_of_routes": 2.836569198156062,
+        "at_least_5_degrees_percent_of_length": 7.302329662946826,
+        "at_least_10_degrees_percent_of_length": 1.493893619904656,
+        "bin_edges_degrees": [
+          0,
+          2,
+          5,
+          10,
+          15,
+          30,
+          90.001
+        ],
+        "bin_route_counts": [
+          23054,
+          4193,
+          1629,
+          409,
+          316,
+          118
+        ]
+      },
+      "steepest_walking_records": [
+        {
+          "route_id": 130013655,
+          "feature_type": 1,
+          "degrees": 81.5318289299275,
+          "alias": "Chung Sum Tsuen Lane No.4",
+          "street": "Chung Sum Tsuen Lane No.4",
+          "within_district_xy_length_metres": 0.1096970841133968
+        },
+        {
+          "route_id": 130017904,
+          "feature_type": 1,
+          "degrees": 73.55263314780099,
+          "alias": "Lung Sum Avenue",
+          "street": "Lung Sum Avenue",
+          "within_district_xy_length_metres": 0.09004043551741395
+        },
+        {
+          "route_id": 130009416,
+          "feature_type": 1,
+          "degrees": 72.48867848598405,
+          "alias": "Lui Ming Road Podium",
+          "street": "Lui Ming Road",
+          "within_district_xy_length_metres": 0.2339235985858332
+        },
+        {
+          "route_id": 130012244,
+          "feature_type": 1,
+          "degrees": 71.4731188155238,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 0.8937572937692418
+        },
+        {
+          "route_id": 130008975,
+          "feature_type": 1,
+          "degrees": 71.37613883320437,
+          "alias": "Tin Sam Sitting-Out Area",
+          "street": "None",
+          "within_district_xy_length_metres": 0.6990746036847565
+        },
+        {
+          "route_id": 130008209,
+          "feature_type": 1,
+          "degrees": 68.12536480674667,
+          "alias": "Cheung Wah Estate",
+          "street": "None",
+          "within_district_xy_length_metres": 0.46311095869554514
+        },
+        {
+          "route_id": 130016527,
+          "feature_type": 1,
+          "degrees": 67.44485538501846,
+          "alias": "Choi Yuen Road",
+          "street": "Choi Yuen Road",
+          "within_district_xy_length_metres": 0.9177387916004166
+        },
+        {
+          "route_id": 130012245,
+          "feature_type": 1,
+          "degrees": 66.40820112741488,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 1.0140610736736122
+        },
+        {
+          "route_id": 130010036,
+          "feature_type": 1,
+          "degrees": 63.54095817352422,
+          "alias": "Footway",
+          "street": "",
+          "within_district_xy_length_metres": 0.8127765068342239
+        },
+        {
+          "route_id": 130006514,
+          "feature_type": 1,
+          "degrees": 63.15098476350873,
+          "alias": "Fan Leng Nam Wai",
+          "street": "None",
+          "within_district_xy_length_metres": 0.539013023801196
+        },
+        {
+          "route_id": 130000236,
+          "feature_type": 1,
+          "degrees": 62.64761613034332,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 1.6775937536441397
+        },
+        {
+          "route_id": 130017485,
+          "feature_type": 1,
+          "degrees": 62.590371344074,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 0.23646517639678952
+        },
+        {
+          "route_id": 130025249,
+          "feature_type": 1,
+          "degrees": 62.3134121402747,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 1.1686411639345917
+        },
+        {
+          "route_id": 130026780,
+          "feature_type": 1,
+          "degrees": 62.31012107069945,
+          "alias": "San Wan Road",
+          "street": "San Wan Road",
+          "within_district_xy_length_metres": 0.2310831890871589
+        },
+        {
+          "route_id": 130020202,
+          "feature_type": 1,
+          "degrees": 61.6957951498024,
+          "alias": "Po Kin Road",
+          "street": "Po Kin Road",
+          "within_district_xy_length_metres": 2.411740087088455
+        },
+        {
+          "route_id": 130025595,
+          "feature_type": 1,
+          "degrees": 61.50601433932121,
+          "alias": "Footway",
+          "street": "None",
+          "within_district_xy_length_metres": 1.2742151855610258
+        },
+        {
+          "route_id": 130002893,
+          "feature_type": 1,
+          "degrees": 60.47161810838824,
+          "alias": "Ma Tso Lung Road",
+          "street": "Ma Tso Lung Road",
+          "within_district_xy_length_metres": 0.4119056321314671
+        },
+        {
+          "route_id": 130013759,
+          "feature_type": 1,
+          "degrees": 60.34831816383389,
+          "alias": "Sheung Shui Tung Hing Road",
+          "street": "Sheung Shui Tung Hing Road",
+          "within_district_xy_length_metres": 0.3883009659982532
+        },
+        {
+          "route_id": 290034726,
+          "feature_type": 1,
+          "degrees": 58.60359979821865,
+          "alias": "Sandy Ridge Cemetery",
+          "street": "None",
+          "within_district_xy_length_metres": 1.3565502020320932
+        },
+        {
+          "route_id": 130013010,
+          "feature_type": 1,
+          "degrees": 58.03598884523199,
+          "alias": "Tai Yuen Tsuen Lane No. 9",
+          "street": "Tai Yuen Tsuen Lane No. 9",
+          "within_district_xy_length_metres": 0.7991520814046078
+        }
+      ]
+    }
+  }
+}

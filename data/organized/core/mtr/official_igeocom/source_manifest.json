@@ -1,0 +1,27 @@
+{
+  "retrieved_utc": "2026-10-12T08:50:08.426271+00:00",
+  "dataset_page": "https://data.gov.hk/en-data/dataset/hk-landsd-openmap-development-hkms-digital-geocom",
+  "geojson_url": "https://open.hkmapservice.gov.hk/OpenData/directDownload?productFormat=GEOJSON&productName=iGeoCom&sheetName=iGeoCom",
+  "csv_url": "https://open.hkmapservice.gov.hk/OpenData/directDownload?productFormat=CSV&productName=iGeoCom&sheetName=iGeoCom",
+  "dictionary_url": "https://open.hkmapservice.gov.hk/OpenData/opendata_static/resources/resources_iGeoCom_GeoJSON.zip",
+  "geojson_archive_sha256": "fb76c35b5beb8c25191dc1e40d7e15ed6f2ba04136ad4f8089a3463d3ca93660",
+  "csv_archive_sha256": "d96118a4782b8442650f55f4dbaa0c7fc7d8e49bee7147f0d307c251525f96f9",
+  "all_poi_count": 37379,
+  "access_record_count": 611,
+  "nonblank_access_site_names": 98,
+  "access_records_without_site_name": 1,
+  "railway_station_record_count": 98,
+  "access_subcategory_counts": {
+    "": 362,
+    "MTRLIF": 119,
+    "MTRSLV": 61,
+    "MTRRAM": 56,
+    "MTRSTL": 11,
+    "MTRWCA": 2
+  },
+  "coordinate_systems": {
+    "geometry": "WGS84 longitude, latitude",
+    "EASTING_NORTHING": "Hong Kong 1980 Grid"
+  },
+  "limitations": "Counts are records, not verified unique exits or physical station complexes. Blank SUBCAT means unspecified, not inaccessible. No live equipment status or guaranteed platform access."
+}

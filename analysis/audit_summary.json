@@ -1,0 +1,674 @@
+{
+  "estates": {
+    "records": 244,
+    "unique_names": 244,
+    "with_bfa_link": 199,
+    "missing_coordinates": 0
+  },
+  "bus": {
+    "records": 56209,
+    "unique_stop_ids": 4488,
+    "unique_coordinates": 4487,
+    "stop_ids_with_multiple_coordinates": 0,
+    "companies": {
+      "KMB": 26389,
+      "KMB+CTB": 4984,
+      "LWB": 3540,
+      "LWB+CTB": 22,
+      "CTB": 17408,
+      "NLB": 2591,
+      "LRTFeeder": 790,
+      "XB": 145,
+      "DB": 249,
+      "PI": 91
+    },
+    "date_min": "2020-05-06T00:00:00",
+    "date_max": "2026-09-29T00:00:00",
+    "boarding_codes": {
+      "2": 2664,
+      "3": 50491,
+      "1": 3029,
+      "0": 25
+    }
+  },
+  "mtr": {
+    "rows": 273,
+    "unique_ids": 100,
+    "blank_line_rows": [
+      {
+        "Line Code": "",
+        "Direction": "",
+        "Station Code": "",
+        "Station ID": "",
+        "Chinese Name": "",
+        "English Name": "",
+        "Sequence": ""
+      },
+      {
+        "Line Code": "",
+        "Direction": "",
+        "Station Code": "",
+        "Station ID": "",
+        "Chinese Name": "",
+        "English Name": "",
+        "Sequence": ""
+      },
+      {
+        "Line Code": "",
+        "Direction": "",
+        "Station Code": "",
+        "Station ID": "",
+        "Chinese Name": "",
+        "English Name": "",
+        "Sequence": ""
+      }
+    ],
+    "facilities_rows": 3564,
+    "facility_stations": 99,
+    "categories": 36,
+    "nonempty_exit_coordinates": 0,
+    "facility_ids_without_station_id": [
+      "70",
+      "888"
+    ],
+    "station_ids_without_facility_id": [
+      "44",
+      "45",
+      "46"
+    ],
+    "duplicate_station_facility_keys": 0
+  },
+  "hospitals": {
+    "records": 44
+  },
+  "geographic_examples": [
+    {
+      "estate": "Tak Long Estate",
+      "stop_id": 13325,
+      "stop_name": "Kai Tak - Victoria Skye, Muk On Street",
+      "straight_line_metres": 161.5,
+      "interpretation": "Geographic proximity only; route and boarding accessibility unverified."
+    },
+    {
+      "estate": "Kai Ching Estate",
+      "stop_id": 13106,
+      "stop_name": "KAI TAK (KAI CHING ESTATE)",
+      "straight_line_metres": 112.2,
+      "interpretation": "Geographic proximity only; route and boarding accessibility unverified."
+    },
+    {
+      "estate": "Choi Fook Estate",
+      "stop_id": 13034,
+      "stop_name": "CHOI FOOK",
+      "straight_line_metres": 67.5,
+      "interpretation": "Geographic proximity only; route and boarding accessibility unverified."
+    },
+    {
+      "estate": "Ching Ho Estate",
+      "stop_id": 13124,
+      "stop_name": "ELEGANTIA COLLEGE",
+      "straight_line_metres": 145.1,
+      "interpretation": "Geographic proximity only; route and boarding accessibility unverified."
+    },
+    {
+      "estate": "Hin Yiu Estate",
+      "stop_id": 12748,
+      "stop_name": "HIN YIU ESTATE",
+      "straight_line_metres": 82.9,
+      "interpretation": "Geographic proximity only; route and boarding accessibility unverified."
+    }
+  ],
+  "gdb_domains": {
+    "dTerminalType": {
+      "description": "Type of Terminal",
+      "values": {
+        "ATE": "Airport Terminal",
+        "BTE": "Bus Terminal",
+        "MBT": "Mini Bus Terminal",
+        "TTE": "Taxi Terminal",
+        "FTE": "Ferry Terminal",
+        "MST": "MTR Station",
+        "LRS": "Light Rail Station",
+        "TST": "Tram Station",
+        "PTS": "Peak Tram Station",
+        "CCS": "Cable Car Station"
+      }
+    },
+    "dSiteType": {
+      "description": "Type of Site",
+      "values": {
+        "1": "Farm",
+        "2": "Accommodation",
+        "3": "Commerce",
+        "4": "EducationAndTraining",
+        "5": "HealthAndMedicalService",
+        "6": "Leisure,CultureAndSports",
+        "7": "Organization",
+        "8": "PublicAndSocialService",
+        "9": "Religion",
+        "10": "TouristAttraction",
+        "11": "Military",
+        "12": "Industry",
+        "13": "WorksArea",
+        "14": "Transportation",
+        "15": "Utilities"
+      }
+    },
+    "dFloorUnitDataSource": {
+      "description": "Type of source data for floor information",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "DAP",
+        "4": "MMS",
+        "5": "TD",
+        "6": "AFCD",
+        "7": "HyD",
+        "8": "AsBuilt",
+        "9": "Proposal",
+        "10": "FieldChecking",
+        "11": "Estimation",
+        "12": "Other"
+      }
+    },
+    "dFloorUnitLevelSource": {
+      "description": "Type of source data for floor level information",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "Photo",
+        "4": "MMS",
+        "5": "LiDAR",
+        "6": "TD",
+        "7": "AsBuilt",
+        "8": "Proposal",
+        "9": "FieldChecking",
+        "10": "Estimation",
+        "11": "Other"
+      }
+    },
+    "dAccessTimesDayCode": {
+      "description": "Type of Access Times Code (e.g. MON, TUE, etc...)",
+      "values": {
+        "MON": "Every Monday",
+        "TUE": "Every Tuesday",
+        "WED": "Every Wednesday",
+        "THU": "Every Thursday",
+        "FRI": "Every Friday",
+        "SAT": "Every Saturday",
+        "SUN": "Every Sunday",
+        "ED": "Everyday (Monday - Sunday)",
+        "WD": "All Weekday (Monday - Friday)",
+        "WE": "All Weekend (Saturday - Sunday)",
+        "PH": "All Public Holiday",
+        "EPH": "Eve of all Public Holiday"
+      }
+    },
+    "dAccessTimesType": {
+      "description": "Type of Access Times (e.g. Opening Hours, Closing Hours, etc…)",
+      "values": {
+        "OPEN": "Opening Hours",
+        "CLOSE": "Closing Hours"
+      }
+    },
+    "dPedLocation": {
+      "description": "Indicator to define the location of the network segment (i.e. outdoor or indoor)",
+      "values": {
+        "1": "Outdoor",
+        "2": "Indoor",
+        "3": "Paid"
+      }
+    },
+    "dPedFeatureType": {
+      "description": "List of different type of the network segment (i.e. footway, ramp, staircase, etc…)",
+      "values": {
+        "1": "Footway",
+        "2": "Footbridge",
+        "4": "Subway",
+        "5": "Service Lane",
+        "6": "Traffic Island",
+        "7": "RunIn",
+        "8": "Escalator",
+        "9": "Travelator",
+        "10": "Lift",
+        "11": "Ramp",
+        "12": "Staircase",
+        "13": "Stairlift",
+        "14": "Other",
+        "15": "M_Footway",
+        "16": "M_Escalator",
+        "17": "M_Travelator",
+        "18": "M_Lift",
+        "19": "M_Ramp",
+        "20": "M_Staircase",
+        "21": "M_Stairlift",
+        "22": "M_Others",
+        "23": "Generalized Walkway inside Park",
+        "24": "Footpath",
+        "25": "Village",
+        "26": "Track",
+        "30": "Crossing - Signalized",
+        "31": "Crossing - Zebra",
+        "32": "Crossing - Cautionary",
+        "33": "Crossing - Others"
+      }
+    },
+    "dPedCrossingFeature": {
+      "description": "List of different type of crossing feature(s) across a road crossing",
+      "values": {
+        "1": "Road",
+        "2": "Tramway",
+        "3": "LightRail",
+        "4": "BicycleTrack",
+        "5": "PublicTransportInterchange"
+      }
+    },
+    "dPedCover": {
+      "description": "Indicator to define whether the network segment is under cover or not",
+      "values": {
+        "1": "Covered",
+        "2": "NonCovered",
+        "3": "Unclassified"
+      }
+    },
+    "dPedWheelchairBarrier": {
+      "description": "Indicator to define whether the network segment is suitable for mobility aided users",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dPedWheelchairAccess": {
+      "description": "Indicator to define whether a network segment which is connected to public facilities / buildings / sites is also an accessible entrance or not",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dObstaclesType": {
+      "description": "Type of obstacle on a network segment that might hinder passage for mobility aided user",
+      "values": {
+        "1": "Accessible",
+        "2": "BridgePier",
+        "3": "BusStop",
+        "4": "FireHydrant",
+        "5": "LightPole",
+        "6": "RoadSign",
+        "7": "TrafficLight",
+        "8": "TrafficSign",
+        "9": "SignPole",
+        "10": "Bollard",
+        "11": "Tree",
+        "12": "ElectricBox",
+        "13": "ParkingMeter"
+      }
+    },
+    "dDirection": {
+      "description": "Indictor to define the direction for Escalator, M_Escalator, Travelator, M_Travelator",
+      "values": {
+        "1": "One Way Forward",
+        "-1": "One Way Backward",
+        "0": "Both Ways"
+      }
+    },
+    "dPedPositionCertainty": {
+      "description": "Boolean indicator to define the position certainty of the segment within Country Park and Rural Village Area.",
+      "values": {
+        "0": "Uncertain",
+        "1": "Certain"
+      }
+    },
+    "dPedEnabled": {
+      "description": "Boolean indicator to define whether the network segment is ready and enabled for pedestrian access",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dPedDataSource": {
+      "description": "Data source of the feature",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "DAP",
+        "4": "MMS",
+        "5": "TD",
+        "6": "AFCD",
+        "7": "HyD",
+        "8": "AsBuilt",
+        "9": "Proposal",
+        "10": "FieldChecking",
+        "11": "Estimation",
+        "12": "Other"
+      }
+    },
+    "dPedLevelSource": {
+      "description": "Source of the level information for the network segment",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "Photo",
+        "4": "MMS",
+        "5": "LiDAR",
+        "6": "TD",
+        "7": "AsBuilt",
+        "8": "Proposal",
+        "9": "FieldChecking",
+        "10": "Estimation",
+        "11": "Other",
+        "12": "CEDD"
+      }
+    }
+  },
+  "network_layers": {
+    "PedRouteRelTerminalPoly": {
+      "count": 669,
+      "geometry_type": null,
+      "fields": [
+        "TerminalID",
+        "ChineseName",
+        "EnglishName",
+        "TerminalType",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate"
+      ],
+      "terminal_types": {
+        "MST": 99,
+        "FTE": 25,
+        "TST": 57,
+        "BTE": 216,
+        "TTE": 76,
+        "CCS": 1,
+        "MBT": 125,
+        "LRS": 68,
+        "PTS": 1,
+        "ATE": 1
+      }
+    },
+    "PedRouteRelFloorPoly": {
+      "count": 2596,
+      "geometry_type": null,
+      "fields": [
+        "FloorID",
+        "FloorPolyID",
+        "BuildingID",
+        "EnglishName",
+        "ChineseName",
+        "DataSource",
+        "LevelSource",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate"
+      ]
+    },
+    "PedRouteRelDistancePost": {
+      "count": 3431,
+      "geometry_type": null,
+      "fields": [
+        "PedestrianRouteID",
+        "DistancePost1",
+        "DistancePost2",
+        "AliasNameTC",
+        "AliasNameEN"
+      ]
+    },
+    "AccessTime": {
+      "count": 2413,
+      "geometry_type": null,
+      "fields": [
+        "AccessTimeID",
+        "AccessTimeType",
+        "DescriptionTC",
+        "DescriptionEN",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate"
+      ],
+      "access_types": {
+        "OPEN": 1810,
+        "CLOSE": 603
+      }
+    },
+    "PedRouteRelBldgPoly": {
+      "count": 9084,
+      "geometry_type": null,
+      "fields": [
+        "BuildingID",
+        "ChineseName",
+        "EnglishName",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate"
+      ]
+    },
+    "PedRouteRelSitePoly": {
+      "count": 3363,
+      "geometry_type": null,
+      "fields": [
+        "SiteID",
+        "ChineseName",
+        "EnglishName",
+        "SiteType",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate"
+      ]
+    },
+    "PedestrianRoute": {
+      "count": 465892,
+      "geometry_type": "MultiLineString Z",
+      "fields": [
+        "PedestrianRouteID",
+        "Location",
+        "FeatureType",
+        "AliasNameEN",
+        "AliasNameTC",
+        "CrossingFeature",
+        "WeatherProof",
+        "WheelchairBarrier",
+        "WheelchairAccess",
+        "ObstaclesType",
+        "Gradient",
+        "Direction",
+        "PositionCertainty",
+        "Enabled",
+        "DataSource",
+        "LevelSource",
+        "StreetNameEN",
+        "StreetNameTC",
+        "ST_CODE",
+        "FloorID",
+        "BuildingID_1",
+        "BuildingID_2",
+        "SiteID",
+        "TerminalID",
+        "AccessTimeID",
+        "CreationDate",
+        "ModifiedBy",
+        "LastAmendmentDate",
+        "Shape_Length"
+      ],
+      "Location": {
+        "1": 440108,
+        "2": 25784
+      },
+      "FeatureType": {
+        "1": 354367,
+        "23": 15191,
+        "30": 6903,
+        "12": 22012,
+        "33": 9483,
+        "32": 12568,
+        "7": 10637,
+        "6": 7133,
+        "5": 4640,
+        "2": 9263,
+        "11": 3146,
+        "8": 1773,
+        "4": 1053,
+        "10": 1911,
+        "31": 443,
+        "24": 2709,
+        "25": 2578,
+        "9": 44,
+        "13": 5,
+        "14": 3,
+        "26": 30
+      },
+      "WheelchairBarrier": {
+        "2": 430964,
+        "1": 34928
+      },
+      "WheelchairAccess": {
+        "2": 461715,
+        "1": 4177
+      },
+      "WeatherProof": {
+        "2": 381005,
+        "1": 80043,
+        "3": 4844
+      },
+      "Direction": {
+        "0": 464201,
+        "1": 947,
+        "-1": 744
+      },
+      "Enabled": {
+        "1": 465866,
+        "2": 26
+      },
+      "ObstaclesType": {
+        "nan": 462238,
+        "5.0": 650,
+        "10.0": 815,
+        "11.0": 489,
+        "7.0": 22,
+        "6.0": 104,
+        "9.0": 217,
+        "3.0": 145,
+        "4.0": 130,
+        "8.0": 153,
+        "2.0": 10,
+        "12.0": 517,
+        "13.0": 402
+      },
+      "gradient_quantiles_raw": [
+        0.0,
+        0.01257893,
+        0.15175710600000006,
+        0.6798353447999972,
+        1.57065363
+      ],
+      "AccessTimeID_nonnull": 46276,
+      "TerminalID_nonnull": 10485,
+      "FloorID_nonnull": 14633,
+      "SiteID_nonnull": 187113
+    },
+    "AccessTimeDetails": {
+      "count": 3483,
+      "geometry_type": null,
+      "fields": [
+        "AccessTimeID",
+        "DayCode",
+        "FromTime",
+        "ToTime"
+      ],
+      "day_codes": {
+        "ED": 2558,
+        "MON": 121,
+        "TUE": 161,
+        "WED": 127,
+        "THU": 155,
+        "FRI": 130,
+        "SAT": 132,
+        "SUN": 30,
+        "PH": 29,
+        "WE": 10,
+        "WD": 30
+      }
+    }
+  },
+  "barrier_by_feature_type": {
+    "1": {
+      "2": 347719,
+      "1": 6648
+    },
+    "2": {
+      "2": 9110,
+      "1": 153
+    },
+    "4": {
+      "2": 1049,
+      "1": 4
+    },
+    "5": {
+      "2": 3537,
+      "1": 1103
+    },
+    "6": {
+      "2": 7112,
+      "1": 21
+    },
+    "7": {
+      "2": 10420,
+      "1": 217
+    },
+    "8": {
+      "1": 1742,
+      "2": 31
+    },
+    "9": {
+      "2": 44
+    },
+    "10": {
+      "2": 1911
+    },
+    "11": {
+      "2": 3145,
+      "1": 1
+    },
+    "12": {
+      "1": 21645,
+      "2": 367
+    },
+    "13": {
+      "2": 5
+    },
+    "14": {
+      "2": 3
+    },
+    "23": {
+      "2": 14636,
+      "1": 555
+    },
+    "24": {
+      "1": 2644,
+      "2": 65
+    },
+    "25": {
+      "2": 2551,
+      "1": 27
+    },
+    "26": {
+      "1": 10,
+      "2": 20
+    },
+    "30": {
+      "2": 6888,
+      "1": 15
+    },
+    "31": {
+      "2": 442,
+      "1": 1
+    },
+    "32": {
+      "2": 12488,
+      "1": 80
+    },
+    "33": {
+      "2": 9421,
+      "1": 62
+    }
+  }
+}

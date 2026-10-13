@@ -1,0 +1,26 @@
+{
+  "header": {
+    "ncols": 12751.0,
+    "nrows": 9601.0,
+    "xllcorner": 799997.5,
+    "yllcorner": 799997.5,
+    "cellsize": 5.0,
+    "nodata_value": -9999.0
+  },
+  "native_min": -26.0,
+  "native_max": 958.0,
+  "native_nodata_cells": 0,
+  "display_cell_metres": 20.0,
+  "display_shape": [
+    2400,
+    3187
+  ],
+  "display_extent": [
+    799997.5,
+    863737.5,
+    800002.5,
+    848002.5
+  ],
+  "trimmed_south_metres": 5.0,
+  "trimmed_east_metres": 15.0
+}

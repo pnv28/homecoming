@@ -1,0 +1,20 @@
+{
+  "overview": {
+    "routes": 465892,
+    "rendered_vertices": 937867,
+    "simplification_metres": 35,
+    "png_pixels": [
+      3520,
+      2640
+    ]
+  },
+  "precise": {
+    "routes": 465892,
+    "rendered_vertices": 1963912,
+    "simplification_metres": 0,
+    "png_pixels": [
+      6400,
+      4800
+    ]
+  }
+}

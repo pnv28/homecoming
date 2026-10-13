@@ -1,0 +1,89 @@
+{
+  "interpretation": "Screening only. Gradient thresholds are display/analysis bands inspired by ramp design guidance, not a pass/fail test of outdoor route accessibility. WheelchairAccess indicates accessible entrance connections, not general route passability. WheelchairBarrier domain description is ambiguous; raw True/False counts are reported, with True associated predominantly with stairs/escalators in this file.",
+  "thresholds_grade_percent": [
+    5,
+    8.333333333333334
+  ],
+  "districts": {
+    "Yuen Long": {
+      "all_intersecting_routes": 54996,
+      "walking_routes": 54140,
+      "walking_xy_length_km": 1390.8670511562714,
+      "walking_grade_bands": {
+        "up_to_5_percent": {
+          "route_count": 46782,
+          "route_percent": 86.40930919837459,
+          "xy_length_percent": 90.4846643969405
+        },
+        "over_5_up_to_8_33_percent": {
+          "route_count": 3415,
+          "route_percent": 6.307720724048763,
+          "xy_length_percent": 4.925173331621895
+        },
+        "over_8_33_percent": {
+          "route_count": 3943,
+          "route_percent": 7.282970077576653,
+          "xy_length_percent": 4.590162271437625
+        }
+      },
+      "feature_counts": {
+        "stairs": 720,
+        "escalators": 61,
+        "lifts": 74,
+        "ramps": 381,
+        "travelators": 0,
+        "stairlifts": 1
+      },
+      "ramp_grade_bands_counts": {
+        "up_to_5_percent": 198,
+        "over_5_up_to_8_33_percent": 102,
+        "over_8_33_percent": 81
+      },
+      "wheelchair_barrier_raw_true_routes": 1224,
+      "wheelchair_barrier_raw_true_walking_routes": 594,
+      "accessible_entrance_connection_routes": 308,
+      "not_enabled_routes": 0,
+      "routes_with_named_obstacle": 407
+    },
+    "North": {
+      "all_intersecting_routes": 30505,
+      "walking_routes": 29719,
+      "walking_xy_length_km": 803.8467986396743,
+      "walking_grade_bands": {
+        "up_to_5_percent": {
+          "route_count": 24983,
+          "route_percent": 84.06406675863926,
+          "xy_length_percent": 85.3105290676838
+        },
+        "over_5_up_to_8_33_percent": {
+          "route_count": 2114,
+          "route_percent": 7.113294525387799,
+          "xy_length_percent": 6.838803293216933
+        },
+        "over_8_33_percent": {
+          "route_count": 2622,
+          "route_percent": 8.822638715972946,
+          "xy_length_percent": 7.850667639099261
+        }
+      },
+      "feature_counts": {
+        "stairs": 692,
+        "escalators": 34,
+        "lifts": 59,
+        "ramps": 187,
+        "travelators": 0,
+        "stairlifts": 1
+      },
+      "ramp_grade_bands_counts": {
+        "up_to_5_percent": 80,
+        "over_5_up_to_8_33_percent": 55,
+        "over_8_33_percent": 52
+      },
+      "wheelchair_barrier_raw_true_routes": 1243,
+      "wheelchair_barrier_raw_true_walking_routes": 518,
+      "accessible_entrance_connection_routes": 149,
+      "not_enabled_routes": 0,
+      "routes_with_named_obstacle": 157
+    }
+  }
+}

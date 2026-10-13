@@ -1,0 +1,660 @@
+3D Pedestrian Network
+Reference System Information
+Identification Information
+Distribution Information
+Data Quality Information
+Metadata: 
+  File identifier: 
+      d0317d97-c675-5968-8093-08308a768bcb
+  Language: 
+    Language Code: 
+      eng
+  Parent identifier: 
+    missing
+  Hierarchy level: 
+    Scope code: 
+      dataset
+  Metadata author: 
+    Responsible party: 
+      Organisation name: 
+          Lands Department
+        Free text: 
+          Text Group: 
+            Localised Character String: locale: #EN
+              Lands Department
+          Text Group: 
+            Localised Character String: locale: #ZH
+              地政總署
+          Text Group: 
+            Localised Character String: locale: #CN
+              地政总署
+      Role: 
+        Role code: 
+          custodian
+  Date stamp: 
+      2026-09-16
+  Metadata standard name: 
+      ISO 19139/19115 Metadata for Datasets
+  Metadata standard version: 
+      2003
+  Locale: 
+    Locale: 
+      Language code: 
+        Language Code: 
+          eng
+      Character Encoding: 
+        Character set code: 
+          utf8
+  Locale: 
+    Locale: 
+      Language code: 
+        Language Code: 
+          chi
+      Character Encoding: 
+        Character set code: 
+          utf8
+  Locale: 
+    Locale: 
+      Language code: 
+        Language Code: 
+          chi
+      Character Encoding: 
+        Character set code: 
+          utf8
+Return To Index
+  Reference system info: 
+    Reference system: 
+      Reference system identifier: 
+        RS Identifier: 
+          Code: 
+              2326
+Return To Index
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 1/9
+  Identification info: 
+    Data identification: 
+      Citation: 
+        Citation: 
+          Title: 
+              3D Pedestrian Network
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  3D Pedestrian Network
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  三維⾏⼈道路網
+              Text Group: 
+                Localised Character String: locale: #CN
+                  三维⾏⼈道路⽹
+          Date: 
+            Date: 
+              Date: 
+                  2020-12-03
+              Date type: 
+                Date type code: 
+                  creation
+          Date: 
+            Date: 
+              Date: 
+                  2026-09-16
+              Date type: 
+                Date type code: 
+                  revision
+          Date: 
+            Date: 
+              Date: 
+                  2022-03-31
+              Date type: 
+                Date type code: 
+                  publication
+      Abstract: 
+          The 3D Pedestrian Network, a vector type dataset, is derived from various source of data and data collected by 
+          field checking. It is graphical with attribute data that can be accessed, queried and displayed. It covers 
+          the built-up areas of the whole territory, outlying island include Lantau Island, Peng Chau, Cheung Chau, 
+          Lamma Island and Ma Wan. It also covers the major footways inside villages, major footpaths inside country 
+          parks and the opening hours of the footway inside buildings.
+        Free text: 
+          Text Group: 
+            Localised Character String: locale: #EN
+              The 3D Pedestrian Network, a vector type dataset, is derived from various source of data and data 
+              collected by field checking. It is graphical with attribute data that can be accessed, queried and 
+              displayed. It covers the built-up areas of the whole territory, outlying island include Lantau Island, 
+              Peng Chau, Cheung Chau, Lamma Island and Ma Wan. It also covers the major footways inside villages, 
+              major footpaths inside country parks and the opening hours of the footway inside buildings.
+          Text Group: 
+            Localised Character String: locale: #ZH
+              三維⾏⼈道路網是⼀個包含不同數據來源和經實地考察收集⽽成的數據集。它可於圖⾯上表示，並附有可讀取、查詢和顯示的數據。它覆蓋全港的市區和離島，包括⼤嶼
+          Text Group: 
+            Localised Character String: locale: #CN
+              三维⾏⼈道路⽹是⼀个包含不同数据来源和经实地考察收集⽽成的数据集。它可于图⾯上表示，并附有可读取、查询和显示的数据。它覆盖全港的市区和离岛，包括⼤屿
+      Point of contact: 
+        Responsible party: 
+          Organisation name: 
+              Data Intelligence Section, Technical Division, Survey and Mapping Office, Lands Department, the Government 
+              of the Hong Kong Special Administrative Region
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  Data Intelligence Section, Technical Division, Survey and Mapping Office, Lands Department, the 
+                  Government of the Hong Kong Special Administrative Region
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  ⾹港特別⾏政區  地政總署  測繪處  技術部  地圖數據智能組
+              Text Group: 
+                Localised Character String: locale: #CN
+                  ⾹港特别⾏政区  地政总署  测绘处  技术部  地图数据智能组
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 2/9
+          Position name: 
+              Senior Land Surveyor/Data Intelligence1
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  Senior Land Surveyor/Data Intelligence1
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  ⾼級⼟地測量師 / 數據智能 1
+              Text Group: 
+                Localised Character String: locale: #CN
+                  ⾼级⼟地测量师 / 数据智能 1
+          Contact info: 
+            Contact: 
+              Phone: 
+                Telephone: 
+                  Voice: 
+                      (852) 2231 3022
+                  Facsimile: 
+                      (852) 2877 8520
+              Address: 
+                Address: 
+                  Delivery point: 
+                      23/F, North Point Government Offices, 333 Java Road, North Point, Hong Kong
+                    Free text: 
+                      Text Group: 
+                        Localised Character String: locale: #EN
+                          23/F, North Point Government Offices, 333 Java Road, North Point, Hong Kong
+                      Text Group: 
+                        Localised Character String: locale: #ZH
+                          ⾹港北⻆渣華道 333 號北⻆政府合署 23 樓
+                      Text Group: 
+                        Localised Character String: locale: #CN
+                          ⾹港北⻆渣华道 333 号北⻆政府合署 23 楼
+                  Electronic mail address: 
+                      smocmut@landsd.gov.hk
+          Role: 
+            Role code: 
+              pointOfContact
+      Resource maintenance: 
+        Maintenance information: 
+          Maintenance and update frequency: 
+            Maintenance frequency code: 
+              quarterly
+          Date of next update: 
+              2026-12-16
+          Maintenance note: 
+              Quarterly
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  Quarterly
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  每季
+              Text Group: 
+                Localised Character String: locale: #CN
+                  每季
+      Descriptive keywords: 
+        Keywords: 
+          Keyword: 
+              Common Sharable Spatial Data (CSSD)
+          Thesaurus name: 
+            Citation: 
+              Title: 
+                  Class of spatial data in CSDI, version 1.0
+              Date: 
+                Date: 
+                  Date: 
+                      2021-07-22
+                  Date type: 
+                    Date type code: 
+                      publication
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 3/9
+      Descriptive keywords: 
+        Keywords: 
+          Keyword: 
+              Transportation
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  Transportation
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  運輸
+              Text Group: 
+                Localised Character String: locale: #CN
+                  运输
+          Thesaurus name: 
+            Citation: 
+              Title: 
+                  CSDI data category, version 1.0
+              Date: 
+                Date: 
+                  Date: 
+                      2021-06-24
+                  Date type: 
+                    Date type code: 
+                      publication
+      Descriptive keywords: 
+        Keywords: 
+          Keyword: 
+              3d
+          Keyword: 
+              pedestrian
+          Keyword: 
+              3d pedestrian network
+          Keyword: 
+              transportation
+          Keyword: 
+              routing
+          Keyword: 
+              walkability
+          Keyword: 
+              urban planning
+          Keyword: 
+              connectivity
+          Keyword: 
+              footway
+          Keyword: 
+              footpath
+          Keyword: 
+              hiking trail
+          Keyword: 
+              track
+          Keyword: 
+              village
+          Keyword: 
+              opening hours
+          Keyword: 
+              crossing
+          Keyword: 
+              sidewalk
+          Keyword: 
+              service lane
+          Keyword: 
+              indoor network
+          Keyword: 
+              MTR unpaid area
+          Keyword: 
+              whole territory
+          Keyword: 
+              Hong Kong
+      Language: 
+        Language Code: 
+          eng
+      Topic category: 
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 4/9
+        Topic category code: 
+          transportation
+      Extent: 
+        Extent: 
+          Geographic element: 
+            Geographic bounding box: 
+              West bound longitude: 
+                  113.815
+              East bound longitude: 
+                  114.5
+              South bound latitude: 
+                  22.135
+              North bound latitude: 
+                  22.565
+      Graphic overview: 
+        BrowseGraphic: 
+          File name: 
+              https://portal.csdi.gov.hk/csdi-webpage/preview/landsd_rcd_1637222018065_52265
+          File description: 
+              Thumbnail Image
+          File type: 
+              PNG
+Return To Index
+  Distribution info: 
+    Distribution: 
+      Distribution format: 
+        Format: 
+          Name: 
+              GDB
+          Version: 
+              2.0
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/server/rest/services/common/landsd_rcd_1637222018065_52265/FeatureServer
+              Application profile: 
+                  ARCGIS
+              Name: 
+                  ARCGIS
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/server/services/common/landsd_rcd_1637222018065_52265/MapServer/WFSServer?service=wfs&request=GetCapabilit
+              Application profile: 
+                  WFS
+              Name: 
+                  WFS
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/server/services/common/landsd_rcd_1637222018065_52265/MapServer/WMSServer?service=wms&request=GetCapab
+              Application profile: 
+                  WMS
+              Name: 
+                  WMS
+              Function: 
+                Online function code: 
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 5/9
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/download/common/8e08553df5866e4aeea8f4bf707d525edb9bbb9bcdf4cc8ab29a6f9b067eef0e
+              Application profile: 
+                  FGDB
+              Name: 
+                  FGDB
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/view/common/a6cf8843e67e16ff6fff94af29a6182689a4f8cada257fbe8d57dc432fc172b4
+              Application profile: 
+                  SDS_VIEW
+              Name: 
+                  SDS_VIEW
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/view/common/46a1b8f9fda77d887b6eb13b58db26bd469de536949601ec9eebe14db3ba13ce
+              Application profile: 
+                  SDS_XML
+              Name: 
+                  SDS_XML
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/view/common/b507e9df6b1b0f5f0f0dc7cffd2801d2f51b395b7c08c8d9f387b416215ff8d0
+              Application profile: 
+                  SDS_JSON
+              Name: 
+                  SDS_JSON
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedestrianRoute
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedestrianRoute_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 6/9
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedRouteRelTerm
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedRouteRelTerminalPoly_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedRouteRelFloor
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedRouteRelFloorPoly_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedRouteRelDista
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedRouteRelDistancePost_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=AccessTime
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_AccessTime_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedRouteRelBldgP
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedRouteRelBldgPoly_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 7/9
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=PedRouteRelSiteP
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_PedRouteRelSitePoly_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=landsd_rcd_1637222018065_52265&format=geojson&layer_name=AccessTimeDetails
+              Application profile: 
+                  FILE_API_GEOJSON
+              Name: 
+                  3DPN_P2_20260617_AccessTimeDetails_converted.geojson
+              Function: 
+                Online function code: 
+                  information
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/download/common/86612536e32449339143e11ffac42c18f49b55c4acca111044a0939e1a492dd5
+              Application profile: 
+                  OTHERS
+              Name: 
+                  OTHERS
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/download/common/4f1f5cadaaf4a1a7464fb71086f2a7395a0feda3f373003cb2fb4ac38d39032a
+              Application profile: 
+                  OTHERS
+              Name: 
+                  OTHERS
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/download/common/8b3405a159685eb7bb6ad1e616ab8bf8d25f3d74ef6432c21d311cb6404811df
+              Application profile: 
+                  OTHERS
+              Name: 
+                  OTHERS
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://static.csdi.gov.hk/csdi-webpage/download/common/df25ed3d488b281f1c266bebea60746dce4f69563b0fc94fe214727a789868e4
+              Application profile: 
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 8/9
+                  OTHERS
+              Name: 
+                  OTHERS
+              Function: 
+                Online function code: 
+                  download
+      Transfer options: 
+        Digital transfer options: 
+          Online: 
+            Online Resource: 
+              Linkage: 
+                URL: 
+                  https://portal.csdi.gov.hk/csdi-webpage/archivedDatasetFileListPage/landsd_rcd_1637222018065_52265
+              Application profile: 
+                  ARCHIVE_DATASET
+              Name: 
+                  ARCHIVE_DATASET
+              Function: 
+                Online function code: 
+                  download
+Return To Index
+  Data quality info: 
+    Data quality: 
+      Scope: 
+        Scope: 
+          Hierarchy level: 
+            Scope code: 
+              dataset
+          Extent: 
+            Extent: 
+              Description: 
+                  The accuracy of x, y-value is 1 metre. The accuracy of z-value is 2 metres.
+                Free text: 
+                  Text Group: 
+                    Localised Character String: locale: #EN
+                      The accuracy of x, y-value is 1 metre. The accuracy of z-value is 2 metres.
+                  Text Group: 
+                    Localised Character String: locale: #ZH
+                      XY 值的準確度為⼀⽶。 Z 值的準確度為兩⽶。
+                  Text Group: 
+                    Localised Character String: locale: #CN
+                      XY 值的准确度为⼀⽶。  Z 值的准确度为两⽶。
+      Lineage: 
+        Lineage: 
+          Statement: 
+              2020-12-03: Version 1.0 is launched.
+              2022-09-30: Version 2.0 is launched.
+            Free text: 
+              Text Group: 
+                Localised Character String: locale: #EN
+                  2020-12-03: Version 1.0 is launched.
+                  2022-09-30: Version 2.0 is launched.
+              Text Group: 
+                Localised Character String: locale: #ZH
+                  2020 年 12 ⽉ 3 ⽇： 1.0 版本發布。
+                  2022 年 9 ⽉ 30 ⽇： 2.0 版本發布。
+              Text Group: 
+                Localised Character String: locale: #CN
+                  2020 年 12 ⽉ 3 ⽇： 1.0 版本发布。
+                  2022 年 9 ⽉ 30 ⽇： 2.0 版本发布。
+Return To Index
+08/10/2026, 22:06 portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html
+https://portal.csdi.gov.hk/csdi-webpage/metadata/landsd_rcd_1637222018065_52265/html 9/9
