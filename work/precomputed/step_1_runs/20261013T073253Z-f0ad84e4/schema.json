@@ -1,0 +1,2833 @@
+{
+  "horizontal_crs": "EPSG:2326",
+  "access_policy": {
+    "always_open": true,
+    "ignored_tables": [
+      "AccessTime",
+      "AccessTimeDetails"
+    ],
+    "schedule_reference_policy": "AccessTimeID is an unused original source attribute; no joins or checks"
+  },
+  "original_network_compound_crs_wkt": "COMPD_CS[\"Hong Kong 1980 Grid System + HKPD height\",PROJCS[\"Hong Kong 1980 Grid System\",GEOGCS[\"Hong Kong 1980\",DATUM[\"Hong_Kong_1980\",SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]],AUTHORITY[\"EPSG\",\"6611\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4611\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",22.3121333333333],PARAMETER[\"central_meridian\",114.178555555556],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",836694.05],PARAMETER[\"false_northing\",819069.8],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Northing\",NORTH],AXIS[\"Easting\",EAST],AUTHORITY[\"EPSG\",\"2326\"]],VERT_CS[\"HKPD height\",VERT_DATUM[\"Hong Kong Principal Datum\",2005,AUTHORITY[\"EPSG\",\"5135\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Gravity-related height\",UP],AUTHORITY[\"EPSG\",\"5738\"]]]",
+  "coded_domains": {
+    "dTerminalType": {
+      "description": "Type of Terminal",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "ATE": "Airport Terminal",
+        "BTE": "Bus Terminal",
+        "MBT": "Mini Bus Terminal",
+        "TTE": "Taxi Terminal",
+        "FTE": "Ferry Terminal",
+        "MST": "MTR Station",
+        "LRS": "Light Rail Station",
+        "TST": "Tram Station",
+        "PTS": "Peak Tram Station",
+        "CCS": "Cable Car Station"
+      }
+    },
+    "dSiteType": {
+      "description": "Type of Site",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Farm",
+        "2": "Accommodation",
+        "3": "Commerce",
+        "4": "EducationAndTraining",
+        "5": "HealthAndMedicalService",
+        "6": "Leisure,CultureAndSports",
+        "7": "Organization",
+        "8": "PublicAndSocialService",
+        "9": "Religion",
+        "10": "TouristAttraction",
+        "11": "Military",
+        "12": "Industry",
+        "13": "WorksArea",
+        "14": "Transportation",
+        "15": "Utilities"
+      }
+    },
+    "dFloorUnitDataSource": {
+      "description": "Type of source data for floor information",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "DAP",
+        "4": "MMS",
+        "5": "TD",
+        "6": "AFCD",
+        "7": "HyD",
+        "8": "AsBuilt",
+        "9": "Proposal",
+        "10": "FieldChecking",
+        "11": "Estimation",
+        "12": "Other"
+      }
+    },
+    "dFloorUnitLevelSource": {
+      "description": "Type of source data for floor level information",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "Photo",
+        "4": "MMS",
+        "5": "LiDAR",
+        "6": "TD",
+        "7": "AsBuilt",
+        "8": "Proposal",
+        "9": "FieldChecking",
+        "10": "Estimation",
+        "11": "Other"
+      }
+    },
+    "dAccessTimesDayCode": {
+      "description": "Type of Access Times Code (e.g. MON, TUE, etc...)",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "MON": "Every Monday",
+        "TUE": "Every Tuesday",
+        "WED": "Every Wednesday",
+        "THU": "Every Thursday",
+        "FRI": "Every Friday",
+        "SAT": "Every Saturday",
+        "SUN": "Every Sunday",
+        "ED": "Everyday (Monday - Sunday)",
+        "WD": "All Weekday (Monday - Friday)",
+        "WE": "All Weekend (Saturday - Sunday)",
+        "PH": "All Public Holiday",
+        "EPH": "Eve of all Public Holiday"
+      }
+    },
+    "dAccessTimesType": {
+      "description": "Type of Access Times (e.g. Opening Hours, Closing Hours, etc…)",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "OPEN": "Opening Hours",
+        "CLOSE": "Closing Hours"
+      }
+    },
+    "dPedLocation": {
+      "description": "Indicator to define the location of the network segment (i.e. outdoor or indoor)",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Outdoor",
+        "2": "Indoor",
+        "3": "Paid"
+      }
+    },
+    "dPedFeatureType": {
+      "description": "List of different type of the network segment (i.e. footway, ramp, staircase, etc…)",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Footway",
+        "2": "Footbridge",
+        "4": "Subway",
+        "5": "Service Lane",
+        "6": "Traffic Island",
+        "7": "RunIn",
+        "8": "Escalator",
+        "9": "Travelator",
+        "10": "Lift",
+        "11": "Ramp",
+        "12": "Staircase",
+        "13": "Stairlift",
+        "14": "Other",
+        "15": "M_Footway",
+        "16": "M_Escalator",
+        "17": "M_Travelator",
+        "18": "M_Lift",
+        "19": "M_Ramp",
+        "20": "M_Staircase",
+        "21": "M_Stairlift",
+        "22": "M_Others",
+        "23": "Generalized Walkway inside Park",
+        "24": "Footpath",
+        "25": "Village",
+        "26": "Track",
+        "30": "Crossing - Signalized",
+        "31": "Crossing - Zebra",
+        "32": "Crossing - Cautionary",
+        "33": "Crossing - Others"
+      }
+    },
+    "dPedCrossingFeature": {
+      "description": "List of different type of crossing feature(s) across a road crossing",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Road",
+        "2": "Tramway",
+        "3": "LightRail",
+        "4": "BicycleTrack",
+        "5": "PublicTransportInterchange"
+      }
+    },
+    "dPedCover": {
+      "description": "Indicator to define whether the network segment is under cover or not",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Covered",
+        "2": "NonCovered",
+        "3": "Unclassified"
+      }
+    },
+    "dPedWheelchairBarrier": {
+      "description": "Indicator to define whether the network segment is suitable for mobility aided users",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dPedWheelchairAccess": {
+      "description": "Indicator to define whether a network segment which is connected to public facilities / buildings / sites is also an accessible entrance or not",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dObstaclesType": {
+      "description": "Type of obstacle on a network segment that might hinder passage for mobility aided user",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "Accessible",
+        "2": "BridgePier",
+        "3": "BusStop",
+        "4": "FireHydrant",
+        "5": "LightPole",
+        "6": "RoadSign",
+        "7": "TrafficLight",
+        "8": "TrafficSign",
+        "9": "SignPole",
+        "10": "Bollard",
+        "11": "Tree",
+        "12": "ElectricBox",
+        "13": "ParkingMeter"
+      }
+    },
+    "dDirection": {
+      "description": "Indictor to define the direction for Escalator, M_Escalator, Travelator, M_Travelator",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "One Way Forward",
+        "-1": "One Way Backward",
+        "0": "Both Ways"
+      }
+    },
+    "dPedPositionCertainty": {
+      "description": "Boolean indicator to define the position certainty of the segment within Country Park and Rural Village Area.",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "0": "Uncertain",
+        "1": "Certain"
+      }
+    },
+    "dPedEnabled": {
+      "description": "Boolean indicator to define whether the network segment is ready and enabled for pedestrian access",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "True",
+        "2": "False"
+      }
+    },
+    "dPedDataSource": {
+      "description": "Data source of the feature",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "DAP",
+        "4": "MMS",
+        "5": "TD",
+        "6": "AFCD",
+        "7": "HyD",
+        "8": "AsBuilt",
+        "9": "Proposal",
+        "10": "FieldChecking",
+        "11": "Estimation",
+        "12": "Other"
+      }
+    },
+    "dPedLevelSource": {
+      "description": "Source of the level information for the network segment",
+      "source": "a00000004.gdbtable",
+      "values": {
+        "1": "iB1000",
+        "2": "3DSpatialData",
+        "3": "Photo",
+        "4": "MMS",
+        "5": "LiDAR",
+        "6": "TD",
+        "7": "AsBuilt",
+        "8": "Proposal",
+        "9": "FieldChecking",
+        "10": "Estimation",
+        "11": "Other",
+        "12": "CEDD"
+      }
+    }
+  },
+  "spatial_layers": {
+    "network": {
+      "count": 465892,
+      "fields": {
+        "PedestrianRouteID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "Location": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "FeatureType": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "AliasNameEN": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1718,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "AliasNameTC": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1718,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CrossingFeature": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 431005,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "WeatherProof": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "WheelchairBarrier": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "WheelchairAccess": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ObstaclesType": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 462238,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "Gradient": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "REAL"
+        },
+        "Direction": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "PositionCertainty": {
+          "logical_type": "int16",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "Enabled": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "DataSource": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "LevelSource": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "StreetNameEN": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 204751,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "StreetNameTC": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 204751,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ST_CODE": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 198582,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "FloorID": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 451259,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "BuildingID_1": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 424340,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "BuildingID_2": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 461524,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "SiteID": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 278779,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "TerminalID": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 455407,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "AccessTimeID": {
+          "logical_type": "int32",
+          "nullable": true,
+          "null_count": 419616,
+          "meaning": "Unused original source attribute; schedules are ignored, all routes always open",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "CreationDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ModifiedBy": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LastAmendmentDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Shape_Length": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original length measurement; planar/3D interpretation unresolved",
+          "sqlite_storage_type": "REAL"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1718,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1718,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1718,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "gradient_raw": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Uninterpreted original gradient; units and directional meaning unresolved",
+          "sqlite_storage_type": "REAL"
+        },
+        "Location_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for Location",
+          "sqlite_storage_type": "TEXT"
+        },
+        "FeatureType_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for FeatureType",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CrossingFeature_label": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 431005,
+          "meaning": "Decoded source domain description for CrossingFeature",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WeatherProof_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for WeatherProof",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WheelchairBarrier_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for WheelchairBarrier",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WheelchairAccess_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for WheelchairAccess",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ObstaclesType_label": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 462238,
+          "meaning": "Decoded source domain description for ObstaclesType",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Direction_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for Direction",
+          "sqlite_storage_type": "TEXT"
+        },
+        "PositionCertainty_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for PositionCertainty",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Enabled_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for Enabled",
+          "sqlite_storage_type": "TEXT"
+        },
+        "DataSource_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for DataSource",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LevelSource_label": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Decoded source domain description for LevelSource",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WheelchairBarrier_bool": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit decoded boolean for WheelchairBarrier; unknown codes remain null",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "WheelchairAccess_bool": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit decoded boolean for WheelchairAccess; unknown codes remain null",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "Enabled_bool": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit decoded boolean for Enabled; unknown codes remain null",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "PositionCertainty_bool": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit decoded boolean for PositionCertainty; unknown codes remain null",
+          "sqlite_storage_type": "BOOLEAN"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedestrianRoute",
+        "source_count": 465892,
+        "source_schema": {
+          "PedestrianRouteID": "int32",
+          "Location": "int32",
+          "FeatureType": "int32",
+          "AliasNameEN": "object",
+          "AliasNameTC": "object",
+          "CrossingFeature": "int32",
+          "WeatherProof": "int32",
+          "WheelchairBarrier": "int32",
+          "WheelchairAccess": "int32",
+          "ObstaclesType": "int32",
+          "Gradient": "float64",
+          "Direction": "int32",
+          "PositionCertainty": "int16",
+          "Enabled": "int32",
+          "DataSource": "int32",
+          "LevelSource": "int32",
+          "StreetNameEN": "object",
+          "StreetNameTC": "object",
+          "ST_CODE": "int32",
+          "FloorID": "int32",
+          "BuildingID_1": "int32",
+          "BuildingID_2": "int32",
+          "SiteID": "int32",
+          "TerminalID": "int32",
+          "AccessTimeID": "int32",
+          "CreationDate": "datetime64[ms]",
+          "ModifiedBy": "object",
+          "LastAmendmentDate": "datetime64[ms]",
+          "Shape_Length": "float64"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "gradient_units": "unresolved",
+        "gradient_direction": "unresolved",
+        "shape_length_semantics": "unresolved",
+        "vertical_datum": "Hong Kong Principal Datum",
+        "access_policy": "always_open; AccessTimeID unused; schedule tables excluded"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": "EPSG:5738",
+      "geometry_type": "MultiLineString Z"
+    },
+    "estates": {
+      "count": 244,
+      "fields": {
+        "latitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "longitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 244,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hans": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Simplified Chinese source name, when supplied",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "location_role": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "What the point actually represents; no invented gate/entrance positions",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entrance_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Whether the supplied point is a verified entrance (currently unknown)",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_identity_name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Exact original estate identity name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_administrative_district": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original administrative district, not an allocation category",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_region": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "block_count_raw": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "block_names_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_record": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Zero-based source array index",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 X coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 Y coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "housing_district": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Documented Housing Authority allocation category, separate from administrative district",
+          "sqlite_storage_type": "TEXT"
+        },
+        "crosswalk_residual_m": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Distance between estate and crosswalk points, in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "housing_district_provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Crosswalk source and proxy-boundary documentation",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "estates",
+        "source_count": 244,
+        "source_crs": "EPSG:4326",
+        "crs_evidence": null,
+        "crs_assumption": "WGS84 assumed for named longitude/latitude fields; source JSON has no embedded CRS.",
+        "location_height": "unknown; Z not assigned"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": null,
+      "geometry_type": "Point"
+    },
+    "hospitals": {
+      "count": 44,
+      "fields": {
+        "has_ae": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source A&E availability: true/false/unknown; does not restrict institution eligibility",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "latitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "longitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 44,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hans": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Simplified Chinese source name, when supplied",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "location_role": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "What the point actually represents; no invented gate/entrance positions",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entrance_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Whether the supplied point is a verified entrance (currently unknown)",
+          "sqlite_storage_type": "TEXT"
+        },
+        "cluster": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "address": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_record": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Zero-based source array index",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 X coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 Y coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        }
+      },
+      "metadata": {
+        "source": "hospitals",
+        "source_count": 44,
+        "source_crs": "EPSG:4326",
+        "crs_evidence": null,
+        "crs_assumption": "WGS84 assumed for named longitude/latitude fields; source JSON has no embedded CRS.",
+        "location_height": "unknown; Z not assigned"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": null,
+      "geometry_type": "Point"
+    },
+    "mtr_exits": {
+      "count": 611,
+      "fields": {
+        "source_grid_easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original iGeoCom EASTING attribute, renamed to avoid a case-insensitive storage collision",
+          "sqlite_storage_type": "REAL"
+        },
+        "source_grid_northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original iGeoCom NORTHING attribute, renamed to avoid a case-insensitive storage collision",
+          "sqlite_storage_type": "REAL"
+        },
+        "latitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "longitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "GEONAMEID": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ENGLISHNAME": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CHINESENAME": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CLASS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "TYPE": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "SUBCAT": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 362,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "SOURCE": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "E_FLOOR": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 611,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_FLOOR": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 611,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_SITENAME": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_SITENAME": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_AREA": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_AREA": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_DISTRICT": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_DISTRICT": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_REGION": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_REGION": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_ADDRESS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_ADDRESS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "TEL_NO": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 611,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "FAX_NO": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 611,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WEB_SITE": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 610,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "REV_DATE": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hans": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 611,
+          "meaning": "Simplified Chinese source name, when supplied",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "location_role": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "What the point actually represents; no invented gate/entrance positions",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 X coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 Y coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "source_grid_residual_m": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Distance between projected WGS84 geometry and original iGeoCom grid attributes",
+          "sqlite_storage_type": "REAL"
+        },
+        "station_id": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 29,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_match_status": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "matched/override/ambiguous/unmatched",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_match_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Recorded matching rule or override reason",
+          "sqlite_storage_type": "TEXT"
+        },
+        "exit_code": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 12,
+          "meaning": "Explicit named exit code; null for equipment records without a resolvable exit name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "access_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Dictionary-based iGeoCom evidence, not a routing eligibility decision",
+          "sqlite_storage_type": "TEXT"
+        },
+        "access_evidence_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Per-source entrance evidence; unknowns/differences are retained",
+          "sqlite_storage_type": "TEXT"
+        },
+        "access_evidence_difference": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source evidence differs; neither source is silently overwritten",
+          "sqlite_storage_type": "BOOLEAN"
+        }
+      },
+      "metadata": {
+        "source_field_names": {
+          "source_grid_easting": "EASTING",
+          "source_grid_northing": "NORTHING"
+        },
+        "source": "mtr_exits",
+        "source_count": 611,
+        "source_crs": "EPSG:4326",
+        "crs_evidence": "work/data/data_dictionary_v5.pdf: geometry WGS84, attributes HK1980 Grid",
+        "crs_assumption": null,
+        "location_height": "unknown; Z not assigned"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": null,
+      "geometry_type": "Point"
+    },
+    "railway_stations": {
+      "count": 98,
+      "fields": {
+        "source_grid_easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original iGeoCom EASTING attribute, renamed to avoid a case-insensitive storage collision",
+          "sqlite_storage_type": "REAL"
+        },
+        "source_grid_northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original iGeoCom NORTHING attribute, renamed to avoid a case-insensitive storage collision",
+          "sqlite_storage_type": "REAL"
+        },
+        "latitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "longitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "GEONAMEID": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ENGLISHNAME": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CHINESENAME": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CLASS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "TYPE": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "SUBCAT": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "SOURCE": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "E_FLOOR": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_FLOOR": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_SITENAME": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 60,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_SITENAME": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 60,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_AREA": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_AREA": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_DISTRICT": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_DISTRICT": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_REGION": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_REGION": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "E_ADDRESS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "C_ADDRESS": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "TEL_NO": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "FAX_NO": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "WEB_SITE": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "REV_DATE": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hans": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Simplified Chinese source name, when supplied",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "location_role": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "What the point actually represents; no invented gate/entrance positions",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 X coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 Y coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "source_grid_residual_m": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Distance between projected WGS84 geometry and original iGeoCom grid attributes",
+          "sqlite_storage_type": "REAL"
+        },
+        "station_id": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 4,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_match_status": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "matched/override/ambiguous/unmatched",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_match_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Recorded matching rule or override reason",
+          "sqlite_storage_type": "TEXT"
+        },
+        "exit_code": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 98,
+          "meaning": "Explicit named exit code; null for equipment records without a resolvable exit name",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source_field_names": {
+          "source_grid_easting": "EASTING",
+          "source_grid_northing": "NORTHING"
+        },
+        "source": "railway_stations",
+        "source_count": 98,
+        "source_crs": "EPSG:4326",
+        "crs_evidence": "work/data/data_dictionary_v5.pdf: geometry WGS84, attributes HK1980 Grid",
+        "crs_assumption": null,
+        "location_height": "unknown; Z not assigned"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": null,
+      "geometry_type": "Point"
+    },
+    "bus_stops": {
+      "count": 9264,
+      "fields": {
+        "latitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "longitude": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "REAL"
+        },
+        "GMB": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "KMB": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "CTB": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable entity identifier, unique within this layer",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Display name: English first, then documented Chinese fallback; null if unnamed",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hans": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 9264,
+          "meaning": "Simplified Chinese source name, when supplied",
+          "sqlite_storage_type": "TEXT"
+        },
+        "entity_type": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Kind of geographic entity",
+          "sqlite_storage_type": "TEXT"
+        },
+        "location_role": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "What the point actually represents; no invented gate/entrance positions",
+          "sqlite_storage_type": "TEXT"
+        },
+        "boarding_accessibility": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Unknown unless supported by explicit boarding evidence",
+          "sqlite_storage_type": "TEXT"
+        },
+        "operators_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "JSON array of original service/operator codes, including codes outside named flags",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        },
+        "provenance": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source and lossless record lookup",
+          "sqlite_storage_type": "TEXT"
+        },
+        "easting": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 X coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        },
+        "northing": {
+          "logical_type": "float64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "EPSG:2326 Y coordinate in metres",
+          "sqlite_storage_type": "REAL"
+        }
+      },
+      "metadata": {
+        "source": "bus_stops",
+        "source_count": 9264,
+        "source_crs": "EPSG:4326",
+        "crs_evidence": null,
+        "crs_assumption": "WGS84 assumed from raw GeoJSON point coordinates and named longitude/latitude; checked against both raw inputs.",
+        "location_height": "unknown; Z not assigned"
+      },
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": null,
+      "geometry_type": "Point"
+    }
+  },
+  "reference_tables": {
+    "PedRouteRelTerminalPoly": {
+      "count": 669,
+      "fields": {
+        "TerminalID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ChineseName": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "EnglishName": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "TerminalType": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CreationDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ModifiedBy": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LastAmendmentDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_fid": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native geodatabase record FID, separate from the referenced entity ID",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "record_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable source-table record identity from layer and native FID; preserves entity versions",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedRouteRelTerminalPoly",
+        "source_count": 669,
+        "source_schema": {
+          "TerminalID": "int32",
+          "ChineseName": "object",
+          "EnglishName": "object",
+          "TerminalType": "object",
+          "CreationDate": "datetime64[ms]",
+          "ModifiedBy": "object",
+          "LastAmendmentDate": "datetime64[ms]"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "record_identity": "Native GDB FID; entity references may have multiple versions"
+      }
+    },
+    "PedRouteRelFloorPoly": {
+      "count": 2596,
+      "fields": {
+        "FloorID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "FloorPolyID": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 1353,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "BuildingID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "EnglishName": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 6,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ChineseName": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 188,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "DataSource": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "LevelSource": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "CreationDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ModifiedBy": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LastAmendmentDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_fid": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native geodatabase record FID, separate from the referenced entity ID",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "record_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable source-table record identity from layer and native FID; preserves entity versions",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedRouteRelFloorPoly",
+        "source_count": 2596,
+        "source_schema": {
+          "FloorID": "int32",
+          "FloorPolyID": "object",
+          "BuildingID": "int32",
+          "EnglishName": "object",
+          "ChineseName": "object",
+          "DataSource": "int32",
+          "LevelSource": "int32",
+          "CreationDate": "datetime64[ms]",
+          "ModifiedBy": "object",
+          "LastAmendmentDate": "datetime64[ms]"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "record_identity": "Native GDB FID; entity references may have multiple versions"
+      }
+    },
+    "PedRouteRelDistancePost": {
+      "count": 3431,
+      "fields": {
+        "PedestrianRouteID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "DistancePost1": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "DistancePost2": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "AliasNameTC": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "AliasNameEN": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_fid": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native geodatabase record FID, separate from the referenced entity ID",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "record_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable source-table record identity from layer and native FID; preserves entity versions",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedRouteRelDistancePost",
+        "source_count": 3431,
+        "source_schema": {
+          "PedestrianRouteID": "int32",
+          "DistancePost1": "object",
+          "DistancePost2": "object",
+          "AliasNameTC": "object",
+          "AliasNameEN": "object"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "record_identity": "Native GDB FID; entity references may have multiple versions"
+      }
+    },
+    "PedRouteRelBldgPoly": {
+      "count": 9084,
+      "fields": {
+        "BuildingID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ChineseName": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 2,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "EnglishName": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 5,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "CreationDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ModifiedBy": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LastAmendmentDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_fid": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native geodatabase record FID, separate from the referenced entity ID",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "record_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable source-table record identity from layer and native FID; preserves entity versions",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedRouteRelBldgPoly",
+        "source_count": 9084,
+        "source_schema": {
+          "BuildingID": "int32",
+          "ChineseName": "object",
+          "EnglishName": "object",
+          "CreationDate": "datetime64[ms]",
+          "ModifiedBy": "object",
+          "LastAmendmentDate": "datetime64[ms]"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "record_identity": "Native GDB FID; entity references may have multiple versions"
+      }
+    },
+    "PedRouteRelSitePoly": {
+      "count": 3363,
+      "fields": {
+        "SiteID": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "ChineseName": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "EnglishName": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "SiteType": {
+          "logical_type": "int32",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "CreationDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "ModifiedBy": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "LastAmendmentDate": {
+          "logical_type": "timestamp_text",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original source field; see source_schema and preserved source record",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_fid": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native geodatabase record FID, separate from the referenced entity ID",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "record_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Stable source-table record identity from layer and native FID; preserves entity versions",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {
+        "source": "network",
+        "source_layer": "PedRouteRelSitePoly",
+        "source_count": 3363,
+        "source_schema": {
+          "SiteID": "int32",
+          "ChineseName": "object",
+          "EnglishName": "object",
+          "SiteType": "int32",
+          "CreationDate": "datetime64[ms]",
+          "ModifiedBy": "object",
+          "LastAmendmentDate": "datetime64[ms]"
+        },
+        "timestamp_policy": "Original GDAL string representation retained, including time-zone suffixes",
+        "record_identity": "Native GDB FID; entity references may have multiple versions"
+      }
+    },
+    "housing_crosswalk": {
+      "count": 244,
+      "fields": {
+        "estate_name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_administrative_district": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original administrative district, not an allocation category",
+          "sqlite_storage_type": "TEXT"
+        },
+        "housing_district": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Documented Housing Authority allocation category, separate from administrative district",
+          "sqlite_storage_type": "TEXT"
+        },
+        "latitude": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 latitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "TEXT"
+        },
+        "longitude": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original WGS84 longitude in degrees (see CRS evidence/assumption)",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_stations": {
+      "count": 100,
+      "fields": {
+        "station_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Readable English source name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "name_zh_hant": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Traditional Chinese source name",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_line_memberships": {
+      "count": 270,
+      "fields": {
+        "Line Code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Direction": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Station Code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Station ID": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Chinese Name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "English Name": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Sequence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_facility_categories": {
+      "count": 36,
+      "fields": {
+        "Item_Code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Category_Id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Category_En": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Category_Zh": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Facility_En": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Facility_Zh": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Sorting_Order": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_facilities": {
+      "count": 3564,
+      "fields": {
+        "available": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "Station_No": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Key": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Value": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "AJTextEn": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "AJTextZh": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "Exit_Coordinate_X_Y": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_en": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_zh": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_station_crosswalk": {
+      "count": 709,
+      "fields": {
+        "dataset": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Native source identity where available; null for sources lacking native IDs",
+          "sqlite_storage_type": "TEXT"
+        },
+        "station_id": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 33,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "status": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "exit_code": {
+          "logical_type": "string",
+          "nullable": true,
+          "null_count": 110,
+          "meaning": "Explicit named exit code; null for equipment records without a resolvable exit name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "candidate_station_ids_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_facility_exit_references": {
+      "count": 282,
+      "fields": {
+        "station_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "exit_code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit named exit code; null for equipment records without a resolvable exit name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "available": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "facility_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_key": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "access_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Dictionary-based iGeoCom evidence, not a routing eligibility decision",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_description": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "scope": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "mtr_access_facility_links": {
+      "count": 251,
+      "fields": {
+        "access_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "available": {
+          "logical_type": "bool",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "BOOLEAN"
+        },
+        "station_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "MTR CSV station ID linked by supported crosswalk; null if unresolved",
+          "sqlite_storage_type": "TEXT"
+        },
+        "exit_code": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Explicit named exit code; null for equipment records without a resolvable exit name",
+          "sqlite_storage_type": "TEXT"
+        },
+        "facility_key": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "access_evidence": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Dictionary-based iGeoCom evidence, not a routing eligibility decision",
+          "sqlite_storage_type": "TEXT"
+        },
+        "raw_description": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "scope": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "bus_route_stop_records": {
+      "count": 69364,
+      "fields": {
+        "stopPickDrop": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "routeId": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "routeSeq": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "stopSeq": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "serviceMode": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "lastUpdateDate": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "companyCode": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "stop_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "source_record": {
+          "logical_type": "int64",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Zero-based source array index",
+          "sqlite_storage_type": "INTEGER"
+        },
+        "raw_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Original input record serialised without loss of fields or values",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    },
+    "bus_name_variants": {
+      "count": 2980,
+      "fields": {
+        "stop_id": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "names_en_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        },
+        "names_zh_json": {
+          "logical_type": "string",
+          "nullable": false,
+          "null_count": 0,
+          "meaning": "Source/reference field; see retained records and source manifest",
+          "sqlite_storage_type": "TEXT"
+        }
+      },
+      "metadata": {}
+    }
+  }
+}

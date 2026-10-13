@@ -1,0 +1,2 @@
+work/precomputed/**/*.gpkg filter=lfs diff=lfs merge=lfs -text
+work/precomputed/**/*.sqlite filter=lfs diff=lfs merge=lfs -text

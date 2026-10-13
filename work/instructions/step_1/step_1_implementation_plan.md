@@ -2,7 +2,7 @@
 
 Prepared 13 October 2026 after inspecting the local files with the repository's `.venv`.
 
-Rechecked against the design and source files on 13 October 2026. The additional checks confirmed exact bus-list reconciliation, exact estate-crosswalk coordinates, readable coded domains in the selected network archive, and a successful GeoPackage round trip with 3D multipart paths and nulls. This document remains an implementation plan; the full pipeline has not been built or run.
+Rechecked against the design and source files on 13 October 2026. The additional checks confirmed exact bus-list reconciliation, exact estate-crosswalk coordinates, readable coded domains in the selected network archive, and a successful GeoPackage round trip with 3D multipart paths and nulls. Implementation status: the Python pipeline is built and has completed a full real-data run with 0 errors and 93 warnings; 14 focused tests pass. See `work/README.md` and `work/precomputed/step_1/validation_report.md`. Unresolved source interpretation and matching issues remain flagged, and are unchecked in the human-readable checklist.
 
 ## Objective and scope
 
@@ -28,7 +28,7 @@ All new code and outputs will live under `work/`. Use the repository-root `.venv
 | Original route-stop records | `work/data/JSON_BUS.json`, `work/data/JSON_GMB.json` | 56,209 bus rows and 13,155 GMB rows. Useful for validating the stop list and preserving service/pickup evidence. Read using `utf-8-sig`: a BOM is present in at least the bus input. |
 | MTR CSV references | `data/organized/core/mtr/` | `mtr_lines_and_stations.csv`, `barrier_free_facilities.csv`, `barrier_free_facility_category.csv`. The original accessibility CSV has empty exit-coordinate fields. |
 | Housing district crosswalk | `analysis/maps/estate_housing_district_crosswalk.csv` | Covers all 244 current estate names: Urban 109, Extended Urban 70, New Territories 60, Islands 5. |
-| Source documentation | Both PDFs in `work/data/`; existing reports under `analysis/` | iGeoCom dictionary confirms the two coordinate systems and access subcategory meanings. Network metadata and previous audits are supporting evidence, not substitutes for validating the selected inputs. |
+| Source documentation | Six provider PDFs in `work/data/`; existing reports under `analysis/` | 3DPN dictionary confirms radians and horizontal metres; iGeoCom confirms WGS84 geometry/HK1980 attributes. Estate, hospital and bus specifications define latitude/longitude but do not explicitly name a datum. |
 
 Read `whole_chat_export.md` together with the design. In particular, coordinate harmonisation does not create a graph, and point locations must remain available separately from future snapped locations.
 
@@ -53,7 +53,7 @@ Alternative: GeoPandas + GeoParquet would closely follow the original outline an
 - All working X/Y coordinates use **EPSG:2326, in metres**, with X=easting and Y=northing.
 - Original longitude/latitude and source attributes remain available for audit and display.
 - Use `Transformer.from_crs(..., always_xy=True)` for direct PyProj transformations.
-- Confirm a source CRS from metadata or documented coordinate fields before transforming. Plausible values alone are a diagnostic, not sufficient CRS evidence.
+- Confirm a source CRS from metadata or documented coordinate fields before transforming. Plausible values alone are a diagnostic, not sufficient CRS evidence. The supplied estate, hospital and bus specifications confirm latitude/longitude fields but do not explicitly name their datum; retain the WGS84 assumptions for these inputs. The iGeoCom dictionary explicitly confirms WGS84 geometry and HK1980 attributes.
 - For JSON point lists without embedded CRS metadata, record the source documentation supporting WGS84. If that evidence is unavailable locally, record a clearly labelled WGS84 assumption in configuration and the validation report and check it against independent projected/reference coordinates where possible. Do not silently assign a CRS. An input with neither supported CRS nor an explicit accepted assumption remains unresolved and stops publication.
 - The network already uses HK1980 Grid horizontally. Do not transform its Z coordinates or discard them. Treat HKPD height as separate vertical metadata; do not claim that a two-dimensional transformation converts vertical datums.
 - Facility points have unknown heights. Do not invent Z=0 or sample a terrain raster during Step 1.
@@ -79,7 +79,9 @@ Preserve `PedestrianRouteID`, all vertices, multipart structure, Z values, and t
 
 Keep source codes and add decoded labels using the geodatabase domains. `list_layers()` and `read_info()` do not expose coded domains through the installed Pyogrio public API. The recheck found 18 embedded `GPCodedValueDomain2` XML definitions in this archive's `.gdbtable` files, readable using the standard library; the earlier audit uses this approach too. Implement that bounded metadata extraction separately, record its source, and validate extracted values against observed codes. Existing domain descriptions in `analysis/audit_summary.json` can be a documented fallback, checked against the selected archive. Do not cast coded values directly to Python booleans: for several fields, `1` means true and `2` means false. `WheelchairAccess` describes an accessible entrance connection; it is not a universal path-usability flag.
 
-Preserve `Gradient` as `gradient_raw` with unresolved unit/sign metadata until authoritative evidence is available. Comparing its distribution with vertex-based slopes can detect inconsistencies but cannot alone establish its meaning. The available metadata PDF did not establish gradient units in this inspection. Step 2's cost model must resolve this before using it. Similarly, retain `Shape_Length` as a source attribute; distinguish planar XY length from 3D length rather than assuming which it represents.
+Preserve `Gradient` as `gradient_raw`, with the confirmed unit **radians** from `3DPN_DataDictionary_v2.2.pdf`, PDF page 12. Retain `Shape_Length` as the confirmed **horizontal XY polyline length in metres**, defined on PDF page 14. The pipeline verifies these definitions against the selected PDF and compares every source length with the preserved XY geometry; all 465,892 current lengths match exactly. The portal metadata PDF confirms the horizontal CRS but does not supply these field definitions.
+
+Gradient sign convention and within-path aggregation are not explicitly documented. All current source gradients are nonnegative, despite both rising and falling vertex orders. Do not use the permitted-travel `Direction` field as a slope sign. Step 2 must adopt a documented directional-slope/aggregation rule, deriving uphill/downhill from ordered Z coordinates where appropriate. Confirmed radians can be used in an angle-based penalty, or converted with `tan(angle)` for a rise/run-based model; routing policy itself is outside Step 1.
 
 Assume every route is always open. Do not inspect opening/closing schedules, flag schedule gaps, or add schedule-based restrictions in this or later stages.
 
@@ -93,8 +95,8 @@ For estates:
 
 - Extract English/traditional/simplified Chinese names, source administrative district, region, map coordinates, and block metadata.
 - Set `location_role="estate_map_point"`; do not describe it as a gate or block entrance.
-- Join the existing crosswalk to add a separate `housing_district` field. Match exact source names initially; require unique matches and report coordinate discrepancies. Use explicit alias overrides if necessary, never a silent fuzzy match.
-- Preserve crosswalk provenance and its limitations: town boundaries for Tung Chung and Tseung Kwan O are derived geographic proxies, not HA-issued allocation polygons. Avoid a blanket administrative-district mapping for Islands or Sai Kung.
+- Join the existing **estate allocation lookup** (`work/data/reference/estate_housing_district_crosswalk.csv`, copied from `analysis/maps/estate_housing_district_crosswalk.csv`) to add a separate `housing_district` field. Here “crosswalk” means a data mapping table, not a physical pedestrian crossing. Its latitude/longitude are copied estate map points: all 244 match the estate JSON exactly. Use estate JSON geometry as canonical; lookup coordinate comparison checks identity/snapshot consistency and does not supply entrance or road-crossing locations. Match exact source names, require a unique row, check administrative district/coordinates, and preserve unresolved matches as blocking diagnostics.
+- Preserve the estate allocation lookup provenance and its limitations: town boundaries for Tung Chung and Tseung Kwan O are derived geographic proxies, not HA-issued allocation polygons. Avoid a blanket administrative-district mapping for Islands or Sai Kung.
 
 For hospitals:
 
@@ -238,13 +240,16 @@ Step 1 is complete when every selected source record is accounted for (the two a
 
 ## Questions carried forward to later steps
 
+The current, itemised resolution register is in [the human-readable plan](step_1_implementation_human_readable.md#resolution-register-what-is-confirmed-and-what-remains). It separates confirmed coordinate/measurement definitions from source relationships and later policy choices. The new bus PDF confirms stopPickDrop codes 1/2/3; only code 0 (25 rows at two stop IDs), boarding eligibility implementation and wheelchair boarding evidence remain open in that part. The MTR review has 28 ambiguous matches, 5 unmatched records and 12 exit-code cases. Of 362 unspecified iGeoCom access categories, 23 have positive linked CSV evidence and 339 have none; these counts do not certify accessibility.
+
+
 Access schedules are already decided: assume all routes are always open, with no date/time inputs or schedule checks. The remaining questions below do not prevent writing the Step 1 pipeline:
 
-- Gradient units, sign convention, and the meaning of source `Shape_Length` need authoritative confirmation before edge costs are calculated.
+- Gradient units and `Shape_Length` are resolved: radians and horizontal metres. Gradient sign/within-path aggregation still need a documented routing interpretation, using provider clarification or explicitly defined vertex-based calculations.
 - “No stairs” and independent wheelchair access may require different policies for escalators, stair lifts, assisted access, and steep ramps.
 - Estate and hospital map points are not verified entrances; additional entrance locations may improve later snapping.
 - MTR station/exit aliases may require manual review of the generated match table.
-- Pickup/drop-off code meanings and wheelchair boarding evidence require further documentation for transport eligibility.
+- Pickup/drop-off codes 1/2/3 are documented by the new bus specification. Code 0 remains undocumented; boarding-target filtering still needs implementation, and wheelchair boarding evidence remains unresolved.
 - The later query configuration must decide whether “any hospital” includes every supplied institution or only an A&E subset, and whether GMB is part of bus access.
 - The DTM remains optional for later connector/terrain checks; Step 1 does not resample it or use bare-earth heights to overwrite elevated network geometry.
 
