@@ -4,6 +4,8 @@
 
 Prepared 13 October 2026 after inspecting the local files with the repository's `.venv`.
 
+**Documentation update — 14 October 2026:** accept the existing 276 mobility access points as the complete wheelchair MTR target pool; accept the three equipment-description differences as mobility access without exact ramp/lift reconciliation; use the latest Castle Peak Hospital site amendment; ignore missing terminal/floor/building references as non-blocking investigation tasks. The implementation and saved run below predate these decisions. A new run is not claimed by this documentation update.
+
 Rechecked from original inputs on 13 October 2026 after today's policy decisions, physical MTR integration, candidate/boarding preparation and the GeoDataFrame output requirement. Successful run `20261013T121410Z-c823aaf9` has 476,153 spatial records, zero errors, 14 warning groups and 31 passing tests. All six outputs reopened as actual GeoDataFrames, all sixteen reference tables and eight MTR JSON files passed read-back checks, and all 23 source hashes were rechecked. See `work/precomputed/outputs/current/validation_report.md`. Actual remaining evidence gaps and later graph/routing/ranking work stay unchecked in the human-readable plan.
 
 ## Objective and scope
@@ -114,11 +116,13 @@ Build the masters directly from the configured source snapshot through `mtr_mast
 
 Use `mtr_prepare.attach_masters()` to attach physical station IDs, exit codes and mobility evidence to the spatial layers and create the SQLite relationships. Include 276 mobility records: 249 explicit subcategories plus 27 positive named-exit supplements. Preserve all 611 points, 3,564 facilities and the full review. Do not spread paid-area/station-level facilities across external entrances or equate exit-level equipment evidence with precise equipment coordinates.
 
-General mode starts with all 611 access points and excludes exclusively stair-lift/wheelchair-aid equipment; wheelchair mode starts with 276 mobility-evidence points. Candidate flags implement evidence/equipment preparation, not path connectivity. Keep source coordinates, assisted types, exit-only descriptions, coincident identities and evidence differences. Ten genuinely unnamed exit codes remain null.
+General mode starts with all 611 mapped access points and excludes exclusively stair-lift/wheelchair-aid equipment. Wheelchair mode accepts the existing 276 mobility points as its complete target pool for this model; no extra entrance research or complete station coverage is required. The other 335 points stay general candidates and outside wheelchair targets. Candidate flags prepare selection, not path connectivity. Preserve source coordinates, assisted types, exit-only descriptions and coincident identities. Accept Tin Shui Wai C, Diamond Hill A2 and LOHAS Park B as mobility access without reconciling their ramp/lift/same-level descriptions; preserve both descriptions without selecting an unsupported exact type. Ten genuinely unnamed exit codes remain null.
 
 Legacy override CSVs are empty. Nonempty legacy overrides require explicit migration to physical IDs; do not silently ignore them or apply line-specific IDs. No overrides are needed for this snapshot's physical-name matches.
 
 Save and verify all eight JSON files in the run's `mtr_master/` folder and use the same records for its database. Check physical station foreign keys and facility links. Report remaining IDs 70/888 (72 rows), unknown/unlocated evidence, three equipment differences and three stations without mapped mobility access. `mtr_match_review.csv` now contains ten unnamed codes rather than the old 45 matching cases. Historical runs keep their original reports.
+
+The latest decisions accept the three equipment differences and the 276-point coverage as modelling choices. Keep the original review evidence, but do not require those descriptions or unlocated facilities to be resolved before using the accepted target pool. Route direction, physical path eligibility and connectivity still apply.
 
 ### 5. Standardise and verify the bus/minibus stop list
 
@@ -139,6 +143,8 @@ Make any record exceeding a configured coordinate-residual or crosswalk-coordina
 **Errors that stop publication:** missing required inputs or fields; unsupported/unresolved source CRS for transformation; duplicate primary IDs; non-finite required coordinates; empty/wrong geometry types in the usable output; missing/ambiguous housing-district assignments; failed read/write preservation checks. Retain offending records and diagnostics in a rejection report; never silently discard them.
 
 **Issues that remain visible without stopping ingestion:** unmatched MTR station/exit references; unspecified access categories; entrance uncertainty; unconfirmed gradient semantics; suspicious source publication/update dates; overlapping coordinates. Source publication/update dates describe dataset provenance and do not control route opening hours. Mark them explicitly so later stages can enforce their own requirements.
+
+**Latest accepted-warning treatment:** missing terminal, floor and building references are non-blocking. Preserve their IDs, path geometry and diagnostics, but do not require investigation or drop affected paths because of these missing references. Normal height/level/connectivity checks remain necessary. Missing site and distance-post/path references are separate findings not covered by this instruction. For the Castle Peak Hospital site versions, select the record with the latest parsed `LastAmendmentDate` (13 July 2026, SiteID 1503020249), preserve both raw records, and ensure a canonical join does not duplicate paths. This selection is planned; the saved run still preserves both versions without a preferred one.
 
 Checks will cover:
 
@@ -213,10 +219,22 @@ Resolve input and output paths relative to `work` or the configuration's declare
 
 ## Implementation milestones and completion criteria
 
-1. **Input inventory and writer proof:** explicit sources, environment check, safe extraction, small geometry/table round trip with Z and nulls preserved.
-2. **Core loaders and coordinate harmonisation:** network/five non-schedule support tables and all facility/estate datasets loaded through the common container.
-3. **District and MTR relationships:** verified crosswalk, match evidence, override mechanism and unresolved-case exports; bus-list reconciliation complete.
-4. **Validation and reproducible export:** reports, manifest and outputs produced by one command, with focused fixture checks and a full real-data run.
+`[X]` marks a completed action or an explicitly labelled recorded decision. `[ ]` marks unfinished implementation or unresolved source evidence. Recording an accepted limitation does not repair the source data.
+
+- [X] **1. Input inventory and writer proof:** explicit sources, environment check, safe extraction, small geometry/table round trip with Z and nulls preserved.
+- [X] **2. Core loaders and coordinate harmonisation:** network/five non-schedule support tables and all facility/estate datasets loaded through the common container.
+- [X] **3. District and MTR relationships:** verified crosswalk, match evidence, override mechanism and unresolved-case exports; bus-list reconciliation complete. Reporting source gaps does not resolve them.
+- [X] **4. Validation and reproducible export:** reports, manifest and outputs produced by one command, with focused fixture checks and a full real-data run.
+
+### Latest warning-review checklist — 14 October 2026
+
+- [X] **Decision recorded: MTR coverage.** Accept the existing 276 mobility access points as the complete wheelchair target pool; retain the other 335 as general-mode candidates only, subject to general equipment rules.
+- [X] **Decision recorded: equipment differences.** Accept Tin Shui Wai C, Diamond Hill A2 and LOHAS Park B as mobility access without exact ramp/lift/same-level reconciliation.
+- [X] **Decision recorded: Castle Peak Hospital version.** Use SiteID 1503020249's latest `LastAmendmentDate`, 13 July 2026, while preserving both source versions.
+- [X] **Decision recorded: terminal/floor/building warnings.** Ignore these non-blocking findings as investigation tasks; preserve paths, source IDs and diagnostics. Normal height/connectivity checks still apply.
+- [ ] **Implementation pending.** Apply the latest decisions to executable policy/accepted-warning treatment, implement the Castle Peak Hospital preferred-version selection, verify it and generate a new checked output snapshot.
+- [ ] **Source evidence still unresolved.** Unnamed exit codes, IDs 70/888, unlocated facility descriptions and other missing references remain source gaps. The accepted limitations above are not mandatory investigation tasks; assess other relationships only where a required later operation needs them.
+- [ ] **Later-stage implementation.** Build graph connections, route costs, subcosts and final ranking; the wheelchair speed model and final combining method remain deferred.
 
 The fixture checks should exercise axis order, Z preservation for lifts and multipart paths, `1`/`2` code interpretation, duplicate identifiers, ambiguous joins, blank MTR subcategories, and colocated bus stops with different IDs. These protect transformations that could otherwise produce plausible but incorrect routing inputs.
 
@@ -232,9 +250,10 @@ Access schedules are already decided: assume all routes are always open, with no
 - Gradient/length units and use are settled: supplied magnitude with height-derived sign; at most two rounds of four random interpolated path samples when endpoints are level; ten-point flat classification if both rounds remain level; repeatable samples and summed local interval times. Standard Tobler is adopted for walking using tan(signed angle). Implement/test these rules; wheelchair speed is deferred.
 - General routes retain stairs/escalators/travelators; wheelchair routes exclude them. Lifts/stair lifts/wheelchair aids qualify for wheelchair mode, while wheelchair aids and stair lifts are excluded generally. Ordinary lift timing is 30 seconds travel plus zero wait, and no maximum ramp-slope cutoff applies for now. WheelchairBarrier=1 is excluded for wheelchair mode. Other equipment timing and actual graph connectivity still need implementation.
 - Estate/hospital map-point approximation is accepted; implement sensible connections and topology checks rather than require verified entrance collection.
-- MTR physical station matching is resolved in the separate masters; missing exit labels, facility identities and equipment-location relationships may require specific evidence. Do not reopen solved line-ID ambiguity.
+- MTR physical station matching is resolved. Use the accepted 276-point wheelchair target pool without requiring extra mobility coverage or ramp/lift reconciliation for the three accepted equipment differences. Preserve missing exit labels, facility identities and unlocated descriptions as source unknowns; investigate only if a later feature actually requires those relationships. Do not reopen solved line-ID ambiguity.
 - Unknown boarding codes become derived 99, assumed to allow pickup/drop-off, while raw values stay preserved. Step 1 has implemented KMB/CTB/GMB general and KMB/CTB wheelchair boarding candidates without deleting raw records. Route reachability/costs remain later work.
-- No-preference hospital scope is all 44 institutions. MTR general mode starts with all 611 access points; wheelchair mode starts with 276 mobility-evidence candidates. Both apply equipment rules. Use minimum reachable route cost within each eligible target group and retain three separate subcosts, target IDs, units and reachability. Final combination/scaling is deliberately undecided.
+- No-preference hospital scope is all 44 institutions. MTR general mode starts with all 611 access points, subject to general equipment rules; wheelchair mode uses the accepted complete pool of 276 mobility access points. Actual journeys still obey path rules and connectivity. Use minimum reachable route cost within each target group and preserve three separate subcosts, target IDs, units and reachability. Final combination/scaling is deliberately undecided.
+- Apply the latest Castle Peak Hospital site-version rule and accepted-warning treatment when implementation resumes. Missing terminal/floor/building references do not require investigation. Updating documentation does not update the saved run or its machine-readable policy snapshot.
 - The DTM remains optional for later connector/terrain checks; Step 1 does not resample it or use bare-earth heights to overwrite elevated network geometry.
 
 If documentary gaps require new external data, first identify the exact missing evidence and source. The initial implementation can proceed with local inputs and explicit unknowns.
