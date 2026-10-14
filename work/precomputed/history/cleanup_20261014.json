@@ -1,0 +1,312 @@
+{
+  "cleaned_utc": "2026-10-14T11:05:04.896556+00:00",
+  "request": "Remove superseded build artifacts; retain selected builds, frozen inputs and compact historical evidence",
+  "kept_builds": [
+    "work/precomputed/outputs/mtr_master_runs/20261013T122652Z-run-9juiqhf3",
+    "work/precomputed/outputs/runs/20261014T090829Z-20d0139c",
+    "work/precomputed/outputs/step_2/runs/20261014T105436Z-8fe534aa"
+  ],
+  "superseded_runs": [
+    {
+      "removed_directory": "work/precomputed/outputs/runs/20261013T121410Z-c823aaf9",
+      "history_directory": "work/precomputed/history/step_1/20261013T121410Z-c823aaf9",
+      "original_bytes": 423947077,
+      "retained_metadata_bytes": 250926,
+      "archived_files": [
+        {
+          "original_name": "SUCCESS.json",
+          "archived_name": "original_SUCCESS.json",
+          "sha256": "f08f9978bd1993efca0590b4576080cda7449eab5fb2f24db4df33c1a66f0ce7",
+          "bytes": 139
+        },
+        {
+          "original_name": "entity_ids.json",
+          "archived_name": "entity_ids.json",
+          "sha256": "1d97a2a8c49151cb478da276909f7e31f06963f12ef740fcfc985722684d6255",
+          "bytes": 25934
+        },
+        {
+          "original_name": "model_policy.json",
+          "archived_name": "model_policy.json",
+          "sha256": "b1c20724941f9b510d6cc25a585506160b5b271048bd514ccb944384f555c27d",
+          "bytes": 2618
+        },
+        {
+          "original_name": "mtr_match_review.csv",
+          "archived_name": "mtr_match_review.csv",
+          "sha256": "d2675358754f3c751e466903d5b05b0f87310dcc39e9cd8d55740b17c814cea1",
+          "bytes": 1929
+        },
+        {
+          "original_name": "schema.json",
+          "archived_name": "schema.json",
+          "sha256": "b2433407e3041cf1a002678700c621e48825f3c97a7ed16caa74f81182f92ac5",
+          "bytes": 114065
+        },
+        {
+          "original_name": "source_manifest.json",
+          "archived_name": "source_manifest.json",
+          "sha256": "fc5d6048d3398129ac28492b35ad6b9f82dad4485f7be0e4f58f84d392ef1cbb",
+          "bytes": 43686
+        },
+        {
+          "original_name": "step_1_recheck.json",
+          "archived_name": "step_1_recheck.json",
+          "sha256": "c282cc6c27b3c256bee66ab6688831061c963bf9cb86ab2a25f11889bcc72c8e",
+          "bytes": 831
+        },
+        {
+          "original_name": "validation_report.json",
+          "archived_name": "validation_report.json",
+          "sha256": "7fadcc136ed6ac598a51bf73f7c28a1ee34ebc843c221992458d2bdc039678a1",
+          "bytes": 30010
+        },
+        {
+          "original_name": "validation_report.md",
+          "archived_name": "validation_report.md",
+          "sha256": "dad6fa7d6efae74b01633bc6decd301b97ea2047a4ce5240f815e949322f59b3",
+          "bytes": 22281
+        },
+        {
+          "original_name": "warnings_explained.md",
+          "archived_name": "warnings_explained.md",
+          "sha256": "e6be95af8e01c56e37a843bcd04d42dca6dff44537817e6ba4329e9f49db0d52",
+          "bytes": 8992
+        }
+      ]
+    },
+    {
+      "removed_directory": "work/precomputed/outputs/step_2/runs/20261014T092300Z-399fee39",
+      "history_directory": "work/precomputed/history/step_2/20261014T092300Z-399fee39",
+      "original_bytes": 1198934436,
+      "retained_metadata_bytes": 1389066,
+      "archived_files": [
+        {
+          "original_name": "SUCCESS.json",
+          "archived_name": "original_SUCCESS.json",
+          "sha256": "f8285b2fcab56518cfd0a6ee39c01f33c55d6944fd3388fb418e47ccbac9059e",
+          "bytes": 125
+        },
+        {
+          "original_name": "frozen_input.json",
+          "archived_name": "frozen_input.json",
+          "sha256": "5ea6e3fc8ff5a8555573427d7a92ba06f1a77d343b71cbe36de8256cdf63ddf2",
+          "bytes": 6923
+        },
+        {
+          "original_name": "general_distance_regions.csv",
+          "archived_name": "general_distance_regions.csv",
+          "sha256": "f73647c626789d8888716ce9c0afe1db474529063e792297f684e1fc0075e312",
+          "bytes": 38716
+        },
+        {
+          "original_name": "general_time_regions.csv",
+          "archived_name": "general_time_regions.csv",
+          "sha256": "185bced9e582550fe363af5c645fcea9451a25fd1fc37c87283800976669efd4",
+          "bytes": 38951
+        },
+        {
+          "original_name": "manifest.json",
+          "archived_name": "manifest.json",
+          "sha256": "8fd7c7a5b50ae1c9ddb1f3ce6d24f3b17f49751e75cc165eed920dd0d02c70d5",
+          "bytes": 11901
+        },
+        {
+          "original_name": "model_policy.json",
+          "archived_name": "model_policy.json",
+          "sha256": "155f5d31577d52e4cb2166f95ed6622b60a3df0edc958813c6e31c400a3c0af6",
+          "bytes": 3770
+        },
+        {
+          "original_name": "review_record.json",
+          "archived_name": "review_record.json",
+          "sha256": "521fbba7801f07151c49f9fee01fd0d9d7f067d5480594a5513e713dfbddce0c",
+          "bytes": 1557
+        },
+        {
+          "original_name": "schema.json",
+          "archived_name": "schema.json",
+          "sha256": "e6abe104586abf753945b174f86e1306f34d72ca6772f84add62b8c686931d6d",
+          "bytes": 3273
+        },
+        {
+          "original_name": "validation_report.json",
+          "archived_name": "validation_report.json",
+          "sha256": "44f66d473232c03765211a1899774bc455f86fa8f9ea1646aeb97489c8dbd6d3",
+          "bytes": 7092
+        },
+        {
+          "original_name": "validation_report.md",
+          "archived_name": "validation_report.md",
+          "sha256": "d01e78b4baa80914f617c1ceb5fdfc69f265acaa751b4616d4c8a612efdf707d",
+          "bytes": 5215
+        },
+        {
+          "original_name": "wheelchair_distance_regions.csv",
+          "archived_name": "wheelchair_distance_regions.csv",
+          "sha256": "cd4aafab174ff5732ee1aabb80c4d221d9c55d1594c51100e4fb9707206e0ac7",
+          "bytes": 635477
+        },
+        {
+          "original_name": "wheelchair_time_regions.csv",
+          "archived_name": "wheelchair_time_regions.csv",
+          "sha256": "fbc8ecd5d1983ba1e623aa018c429fa65ec5ca3083d4d90d72420cceabdb4f47",
+          "bytes": 635625
+        }
+      ]
+    },
+    {
+      "removed_directory": "work/precomputed/outputs/step_2/runs/20261014T101626Z-eaef8030",
+      "history_directory": "work/precomputed/history/step_2/20261014T101626Z-eaef8030",
+      "original_bytes": 1284373721,
+      "retained_metadata_bytes": 1406264,
+      "archived_files": [
+        {
+          "original_name": "SUCCESS.json",
+          "archived_name": "original_SUCCESS.json",
+          "sha256": "3b11c10871c375d3cfb573a58327666fa8a62b31e941f8b82377c85f8e365d11",
+          "bytes": 125
+        },
+        {
+          "original_name": "comparison_to_previous.json",
+          "archived_name": "comparison_to_previous.json",
+          "sha256": "a6042ebe2c7d8b741bf7370420cd13981fefe8232d614e6f9ae250a89ec25bfd",
+          "bytes": 3290
+        },
+        {
+          "original_name": "frozen_input.json",
+          "archived_name": "frozen_input.json",
+          "sha256": "5ea6e3fc8ff5a8555573427d7a92ba06f1a77d343b71cbe36de8256cdf63ddf2",
+          "bytes": 6923
+        },
+        {
+          "original_name": "general_distance_regions.csv",
+          "archived_name": "general_distance_regions.csv",
+          "sha256": "8091b471e261de3e27582c3da2c864d78f3c7b0b40099da03d9e887dca9e9e1c",
+          "bytes": 38410
+        },
+        {
+          "original_name": "general_time_regions.csv",
+          "archived_name": "general_time_regions.csv",
+          "sha256": "6be1f9fca3492bee7a81fae19047bc22a18ff3d6dcb08ba46a74d37e2b37758f",
+          "bytes": 38645
+        },
+        {
+          "original_name": "manifest.json",
+          "archived_name": "manifest.json",
+          "sha256": "4004cef495cc0118eeaeea1238abb63e5a11152248c8bfa11817bd50c1c27a62",
+          "bytes": 12146
+        },
+        {
+          "original_name": "model_policy.json",
+          "archived_name": "model_policy.json",
+          "sha256": "155f5d31577d52e4cb2166f95ed6622b60a3df0edc958813c6e31c400a3c0af6",
+          "bytes": 3770
+        },
+        {
+          "original_name": "review_record.json",
+          "archived_name": "review_record.json",
+          "sha256": "3fb27661798b4c73e4f74c2e06d985565b788ba01dcb510d0f2819de117081bb",
+          "bytes": 4525
+        },
+        {
+          "original_name": "schema.json",
+          "archived_name": "schema.json",
+          "sha256": "e6abe104586abf753945b174f86e1306f34d72ca6772f84add62b8c686931d6d",
+          "bytes": 3273
+        },
+        {
+          "original_name": "validation_report.json",
+          "archived_name": "validation_report.json",
+          "sha256": "91e08d3c3451eaed8ea30ffaa43d48308fc5c42fef35fc44dfb72b808cd0005c",
+          "bytes": 14308
+        },
+        {
+          "original_name": "validation_report.md",
+          "archived_name": "validation_report.md",
+          "sha256": "463999385d6788967756d6968fdad4f6120bdf460f2fafe4146a5d463db14f6b",
+          "bytes": 9922
+        },
+        {
+          "original_name": "wheelchair_distance_regions.csv",
+          "archived_name": "wheelchair_distance_regions.csv",
+          "sha256": "6875e18332a3a85e6cfaf6bc3829458e9fd2799b5f281dc4dbe9fafbdec4643e",
+          "bytes": 635170
+        },
+        {
+          "original_name": "wheelchair_time_regions.csv",
+          "archived_name": "wheelchair_time_regions.csv",
+          "sha256": "b6f85b96c4e28e5350aab0935aa4989548ccc24a1fc2dda32adc82a98f70d6ba",
+          "bytes": 635316
+        }
+      ]
+    }
+  ],
+  "failed_staging_runs": [
+    {
+      "directory": "work/cache/step_1_staging/20261013T072546Z-dff8214f",
+      "bytes": 83735
+    },
+    {
+      "directory": "work/cache/step_1_staging/20261013T072719Z-d4d02811",
+      "bytes": 310758432
+    },
+    {
+      "directory": "work/cache/step_1_staging/20261013T080930Z-2ef95100",
+      "bytes": 3291
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T091733Z-3e1f8df3",
+      "bytes": 936117041
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T091904Z-fe428936",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T092154Z-610a4a67",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T092255Z-d8065ded",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T093909Z-bbccd044",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T100933Z-4e8927cf",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T101310Z-a2c6e750",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T101416Z-06054f00",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T101610Z-f7194e9e",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T105402Z-b8caa23f",
+      "bytes": 943
+    },
+    {
+      "directory": "work/cache/step_2_staging/20261014T110237Z-276a1aeb",
+      "bytes": 943
+    }
+  ],
+  "reclaimed_bytes": 4151180907,
+  "reclaimed_gib": 3.866,
+  "verification": {
+    "current_step_2_artifact_hashes": 30,
+    "frozen_step_1_hashes": 7,
+    "selected_links_valid": true,
+    "public_graph_read_and_source_id_regressions_passed": true,
+    "archived_metadata_hashes_exact": true
+  }
+}

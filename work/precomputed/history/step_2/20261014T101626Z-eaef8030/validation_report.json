@@ -1,0 +1,605 @@
+{
+  "status": "passed",
+  "frozen_step_1_run": "20261014T090829Z-20d0139c",
+  "physical": {
+    "source_rows": 465892,
+    "general_eligible_sources": 465861,
+    "wheelchair_eligible_sources": 430496,
+    "union_eligible_sources": 465866,
+    "physical_pieces": 466819,
+    "nodes": 397197,
+    "all_sources_accounted_for": true,
+    "piece_coverage_and_cost_conservation": true,
+    "general_exclusions": {
+      "": 465861,
+      "excluded_path_type": 5,
+      "enabled_false": 26
+    },
+    "wheelchair_exclusions": {
+      "": 430496,
+      "excluded_path_type;wheelchair_barrier": 23387,
+      "wheelchair_barrier": 11541,
+      "excluded_path_type": 442,
+      "enabled_false": 26
+    },
+    "time_forward_status": {
+      "available": 465866,
+      "non_lift_vertical_without_horizontal_run": 25,
+      "unrepresentable_tobler_time": 1
+    },
+    "time_reverse_status": {
+      "available": 465866,
+      "non_lift_vertical_without_horizontal_run": 25,
+      "unrepresentable_tobler_time": 1
+    },
+    "piece_time_forward_status": {
+      "available": 466793,
+      "non_lift_vertical_without_horizontal_run": 25,
+      "unrepresentable_tobler_time": 1
+    },
+    "piece_time_reverse_status": {
+      "available": 466793,
+      "non_lift_vertical_without_horizontal_run": 25,
+      "unrepresentable_tobler_time": 1
+    },
+    "healthy_piece_directions_from_unavailable_sources": 0,
+    "piece_local_costs_and_statuses_checked": true,
+    "review_counts": {
+      "ambiguous_cluster": 12,
+      "topology_summary": 1,
+      "floor_conflict_rejected": 972,
+      "middle_crossing_not_auto_joined": 11790,
+      "overlapping_xy_paths_preserved": 2
+    }
+  },
+  "spatial_roundtrip": {
+    "nodes": {
+      "records": 397197,
+      "all_attributes_and_nulls": true,
+      "xyz_wkb_exact": true,
+      "actual_type": "geopandas.GeoDataFrame",
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": "EPSG:5738"
+    },
+    "edges": {
+      "records": 466819,
+      "all_attributes_and_nulls": true,
+      "xyz_wkb_exact": true,
+      "actual_type": "geopandas.GeoDataFrame",
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": "EPSG:5738"
+    },
+    "sources": {
+      "records": 465892,
+      "all_attributes_and_nulls": true,
+      "xyz_wkb_exact": true,
+      "actual_type": "geopandas.GeoDataFrame",
+      "horizontal_crs": "EPSG:2326",
+      "vertical_crs": "EPSG:5738"
+    }
+  },
+  "profiles_roundtrip_rows": 465892,
+  "review_roundtrip_rows": 12777,
+  "routing": {
+    "general_distance": {
+      "states": 397197,
+      "active_states": 397196,
+      "stored_entries": 923309,
+      "stored_zero_cost_entries": 2,
+      "weak_components": 507,
+      "weak_largest_sizes": [
+        318686,
+        62480,
+        7879,
+        1242,
+        826,
+        661,
+        553,
+        307,
+        130,
+        125,
+        113,
+        109,
+        94,
+        91,
+        84,
+        76,
+        67,
+        64,
+        63,
+        55
+      ],
+      "strong_components": 533,
+      "strong_largest_sizes": [
+        318669,
+        62444,
+        7879,
+        1242,
+        826,
+        661,
+        553,
+        307,
+        130,
+        125,
+        113,
+        109,
+        94,
+        91,
+        84,
+        76,
+        67,
+        64,
+        63,
+        55
+      ],
+      "validation": {
+        "dijkstra_sources": [
+          0,
+          198598,
+          326948
+        ],
+        "save_reopen_costs_exact": true,
+        "relaxation_checks": true
+      }
+    },
+    "general_time": {
+      "states": 400973,
+      "active_states": 400972,
+      "stored_entries": 931310,
+      "stored_zero_cost_entries": 3800,
+      "weak_components": 510,
+      "weak_largest_sizes": [
+        321590,
+        63223,
+        7947,
+        1242,
+        826,
+        661,
+        553,
+        309,
+        130,
+        129,
+        113,
+        109,
+        94,
+        91,
+        84,
+        76,
+        67,
+        64,
+        63,
+        55
+      ],
+      "strong_components": 558,
+      "strong_largest_sizes": [
+        321562,
+        63185,
+        7943,
+        1242,
+        826,
+        661,
+        553,
+        309,
+        130,
+        129,
+        113,
+        109,
+        94,
+        91,
+        84,
+        76,
+        67,
+        64,
+        63,
+        55
+      ],
+      "unavailable_physical_time_directions": {
+        "non_lift_vertical_without_horizontal_run": 50,
+        "unrepresentable_tobler_time": 2
+      },
+      "validation": {
+        "dijkstra_sources": [
+          0,
+          200486,
+          326948
+        ],
+        "save_reopen_costs_exact": true,
+        "relaxation_checks": true
+      },
+      "real_lift_regressions": [
+        {
+          "footway_id": "290063550",
+          "lift_id": "260001786",
+          "footway_endpoint_position": 0,
+          "footway_endpoint_xyz": [
+            841518.0831000004,
+            815331.3900000006,
+            5.526800000006915
+          ],
+          "equal_height_lift_parameter": 0.06170742753720227,
+          "equal_height_lift_xyz": [
+            841518.0648963092,
+            815331.4027549258,
+            5.526800000006915
+          ],
+          "equal_height_horizontal_separation_m": 0.022227516520851923,
+          "accepted_lift_parameters": [
+            0.056989734300481966
+          ],
+          "forward_lift_state_seconds": 30.0,
+          "reverse_lift_state_seconds": 30.0,
+          "direct_connection": true
+        },
+        {
+          "footway_id": "290064373",
+          "lift_id": "280005280",
+          "footway_endpoint_position": 1,
+          "footway_endpoint_xyz": [
+            836276.1688000001,
+            815790.3307000007,
+            4.08969999999681
+          ],
+          "equal_height_lift_parameter": 0.007087160510193952,
+          "equal_height_lift_xyz": [
+            836276.1737638473,
+            815790.3308708014,
+            4.08969999999681
+          ],
+          "equal_height_horizontal_separation_m": 0.004966784888973172,
+          "accepted_lift_parameters": [
+            0.0029571135928673727
+          ],
+          "forward_lift_state_seconds": 30.0,
+          "reverse_lift_state_seconds": 30.0,
+          "direct_connection": true
+        }
+      ]
+    },
+    "wheelchair_distance": {
+      "states": 397197,
+      "active_states": 386254,
+      "stored_entries": 854425,
+      "stored_zero_cost_entries": 2,
+      "weak_components": 8255,
+      "weak_largest_sizes": [
+        231617,
+        48862,
+        47128,
+        4506,
+        1261,
+        1248,
+        911,
+        840,
+        702,
+        681,
+        617,
+        550,
+        451,
+        434,
+        426,
+        383,
+        377,
+        360,
+        335,
+        263
+      ],
+      "strong_components": 8255,
+      "strong_largest_sizes": [
+        231617,
+        48862,
+        47128,
+        4506,
+        1261,
+        1248,
+        911,
+        840,
+        702,
+        681,
+        617,
+        550,
+        451,
+        434,
+        426,
+        383,
+        377,
+        360,
+        335,
+        263
+      ],
+      "validation": {
+        "dijkstra_sources": [
+          0,
+          198540,
+          326948
+        ],
+        "save_reopen_costs_exact": true,
+        "relaxation_checks": true
+      }
+    },
+    "wheelchair_time": {
+      "states": 400973,
+      "active_states": 390029,
+      "stored_entries": 862406,
+      "stored_zero_cost_entries": 3800,
+      "weak_components": 8257,
+      "weak_largest_sizes": [
+        234143,
+        49165,
+        47809,
+        4564,
+        1265,
+        1254,
+        911,
+        846,
+        702,
+        681,
+        621,
+        550,
+        451,
+        434,
+        426,
+        383,
+        377,
+        362,
+        335,
+        265
+      ],
+      "strong_components": 8304,
+      "strong_largest_sizes": [
+        234124,
+        49165,
+        47806,
+        4560,
+        1265,
+        1254,
+        911,
+        846,
+        702,
+        681,
+        621,
+        550,
+        451,
+        434,
+        426,
+        383,
+        377,
+        362,
+        335,
+        265
+      ],
+      "unavailable_physical_time_directions": {
+        "non_lift_vertical_without_horizontal_run": 40,
+        "unrepresentable_tobler_time": 2
+      },
+      "validation": {
+        "dijkstra_sources": [
+          0,
+          200476,
+          326948
+        ],
+        "save_reopen_costs_exact": true,
+        "relaxation_checks": true
+      },
+      "real_lift_regressions": [
+        {
+          "footway_id": "290063550",
+          "lift_id": "260001786",
+          "footway_endpoint_position": 0,
+          "footway_endpoint_xyz": [
+            841518.0831000004,
+            815331.3900000006,
+            5.526800000006915
+          ],
+          "equal_height_lift_parameter": 0.06170742753720227,
+          "equal_height_lift_xyz": [
+            841518.0648963092,
+            815331.4027549258,
+            5.526800000006915
+          ],
+          "equal_height_horizontal_separation_m": 0.022227516520851923,
+          "accepted_lift_parameters": [
+            0.056989734300481966
+          ],
+          "forward_lift_state_seconds": 30.0,
+          "reverse_lift_state_seconds": 30.0,
+          "direct_connection": true
+        },
+        {
+          "footway_id": "290064373",
+          "lift_id": "280005280",
+          "footway_endpoint_position": 1,
+          "footway_endpoint_xyz": [
+            836276.1688000001,
+            815790.3307000007,
+            4.08969999999681
+          ],
+          "equal_height_lift_parameter": 0.007087160510193952,
+          "equal_height_lift_xyz": [
+            836276.1737638473,
+            815790.3308708014,
+            4.08969999999681
+          ],
+          "equal_height_horizontal_separation_m": 0.004966784888973172,
+          "accepted_lift_parameters": [
+            0.0029571135928673727
+          ],
+          "forward_lift_state_seconds": 30.0,
+          "reverse_lift_state_seconds": 30.0,
+          "direct_connection": true
+        }
+      ]
+    }
+  },
+  "comparison_to_previous": {
+    "previous_run": "20261014T092300Z-399fee39",
+    "previous_report_sha256": "44f66d473232c03765211a1899774bc455f86fa8f9ea1646aeb97489c8dbd6d3",
+    "physical": {
+      "nodes": {
+        "before": 397199,
+        "after": 397197,
+        "delta": -2
+      },
+      "physical_pieces": {
+        "before": 466752,
+        "after": 466819,
+        "delta": 67
+      },
+      "source_rows": {
+        "before": 465892,
+        "after": 465892,
+        "delta": 0
+      },
+      "general_eligible_sources": {
+        "before": 465861,
+        "after": 465861,
+        "delta": 0
+      },
+      "wheelchair_eligible_sources": {
+        "before": 430496,
+        "after": 430496,
+        "delta": 0
+      }
+    },
+    "routing": {
+      "general_distance": {
+        "states": {
+          "before": 397199,
+          "after": 397197,
+          "delta": -2
+        },
+        "active_states": {
+          "before": 397198,
+          "after": 397196,
+          "delta": -2
+        },
+        "weak_components": {
+          "before": 511,
+          "after": 507,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 537,
+          "after": 533,
+          "delta": -4
+        },
+        "stored_entries": {
+          "before": 923263,
+          "after": 923309,
+          "delta": 46
+        },
+        "stored_zero_cost_entries": {
+          "before": 2,
+          "after": 2,
+          "delta": 0
+        }
+      },
+      "general_time": {
+        "states": {
+          "before": 400973,
+          "after": 400973,
+          "delta": 0
+        },
+        "active_states": {
+          "before": 400972,
+          "after": 400972,
+          "delta": 0
+        },
+        "weak_components": {
+          "before": 514,
+          "after": 510,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 563,
+          "after": 558,
+          "delta": -5
+        },
+        "stored_entries": {
+          "before": 931222,
+          "after": 931310,
+          "delta": 88
+        },
+        "stored_zero_cost_entries": {
+          "before": 3780,
+          "after": 3800,
+          "delta": 20
+        }
+      },
+      "wheelchair_distance": {
+        "states": {
+          "before": 397199,
+          "after": 397197,
+          "delta": -2
+        },
+        "active_states": {
+          "before": 386255,
+          "after": 386254,
+          "delta": -1
+        },
+        "weak_components": {
+          "before": 8259,
+          "after": 8255,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 8259,
+          "after": 8255,
+          "delta": -4
+        },
+        "stored_entries": {
+          "before": 854385,
+          "after": 854425,
+          "delta": 40
+        },
+        "stored_zero_cost_entries": {
+          "before": 2,
+          "after": 2,
+          "delta": 0
+        }
+      },
+      "wheelchair_time": {
+        "states": {
+          "before": 400973,
+          "after": 400973,
+          "delta": 0
+        },
+        "active_states": {
+          "before": 390028,
+          "after": 390029,
+          "delta": 1
+        },
+        "weak_components": {
+          "before": 8261,
+          "after": 8257,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 8309,
+          "after": 8304,
+          "delta": -5
+        },
+        "stored_entries": {
+          "before": 862324,
+          "after": 862406,
+          "delta": 82
+        },
+        "stored_zero_cost_entries": {
+          "before": 3780,
+          "after": 3800,
+          "delta": 20
+        }
+      }
+    }
+  },
+  "implementation_hashes_rechecked": true,
+  "frozen_hashes_rechecked": true,
+  "runtime_seconds": 566.971,
+  "peak_process_memory_mib": 2081.75,
+  "limitations": [
+    "Ambiguous candidate junctions remain disconnected; review.jsonl preserves evidence.",
+    "Connection height tolerance is a modelling rule, not source elevation accuracy.",
+    "Wheelchair times use the agreed shared Tobler assumption, not measured wheelchair speeds.",
+    "No estate/destination snapping, journey subcosts or final ranking in Step 2.",
+    "Missing supporting references are preserved; site/distance-post lookups are not needed for graph topology."
+  ]
+}

@@ -3,7 +3,7 @@
 > **Latest decisions:** Read [the project context and agent handoff](instructions/project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
 
 
-Step 2 passed a full-data build: **397,199 nodes and 466,752 pieces**, with **465,861 general / 430,496 wheelchair eligible source paths** before splitting. All four mode/metric matrices passed persistence and shortest-path checks. The validated run is `20261014T092300Z-399fee39`.
+The audited Step 2 passed a full-data build: **397,225 nodes and 466,406 pieces**, with **465,861 general / 430,496 wheelchair eligible source paths** before splitting. All four mode/metric matrices passed persistence and shortest-path checks. The validated run is `20261014T105436Z-8fe534aa`. Its [source/routing audit](precomputed/outputs/step_2/current/source_routing_audit.md) records the repaired endpoint connection, 29 recovered healthy pieces and retained original-source limitations.
 
 Step 2 implementation and review: [instructions/step_2_implementation.md](instructions/step_2_implementation.md). The latest plan adopts shared Tobler costs for both modes, excludes disabled paths, and charges 30 seconds per original lift identity on entry. Older deferred-speed notes below describe historical snapshots.
 
@@ -24,9 +24,9 @@ graph = read_graph(wheelchair=False, metric="time")  # or metric="distance"
 costs_seconds = graph.costs_from(node_index=0)
 ```
 
-A time journey starts in the physical node's state with no current lift. Destination costs take the minimum across that node's states; `costs_from` handles both rules. Lift state identities are separate from physical geometry. Preserved source rows, eligibility reasons and source-level cost status are in `graph.physical.sources`. Full sampling evidence remains in the run's `profiles.jsonl`.
+A time journey starts in the physical node's state with no current lift. Destination costs take the minimum across that node's states; `costs_from` handles both rules. Lift state identities are separate from physical geometry. Preserved source rows, eligibility reasons and source-level cost status are in `graph.physical.sources`. Full sampling evidence remains in the run's `profiles.jsonl`. `source_routing_audit.json` retains exact source provenance, rejected-cluster routes and unavailable-piece endpoint reachability. Invalid cost intervals are isolated after junction decisions so healthy adjacent geometry remains usable.
 
-Validated Step 2 runs live under `precomputed/outputs/step_2/runs/`; `step_2/current/` selects a successful run. The manifest freezes one resolved Step 1 run and policy. GeoPackage, sparse matrices, mappings, evidence and review reports remain trackable in Git (large artifacts use the repository's Git LFS conventions). Failed candidates stay in cache and preserve the previous selection.
+Validated Step 2 runs live under `precomputed/outputs/step_2/runs/`; `step_2/current/` selects a successful run. The manifest freezes one resolved Step 1 run and policy. GeoPackage, sparse matrices, mappings, evidence and review reports remain trackable in Git (large artifacts use the repository's Git LFS conventions). Failed candidates stay in cache and preserve the previous selection. Superseded build artifacts were removed at the user's request; compact historical reports are in [precomputed/history](precomputed/history/README.md). The current Step 2 build and its frozen Step 1 dependency remain complete.
 
 Original inputs are stored in `original_data/`, renamed from `data/` at the user's request. Active configuration, code and documentation use the new folder. Historical saved-run manifests retain their paths at the time of that run; resolve an old `work/data/` path through `work/original_data/` when checking those records. The separate repository-root `data/` directory retains its name.
 
@@ -34,7 +34,7 @@ This Python pipeline reads the selected local sources, aligns horizontal locatio
 
 **All routes are assumed always open.** `AccessTime` and `AccessTimeDetails` are not loaded, checked, or exported. Any original `AccessTimeID` is an inert attribute. The pipeline retains all source records and prepares mode-candidate flags from the agreed rules: general paths retain stairs; wheelchair paths exclude ordinary stairs/escalators/travelators and WheelchairBarrier=1; general equipment excludes stair lifts/wheelchair aids. These are candidates, not connected routes or computed costs.
 
-The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite now passes **52 tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
+The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite now passes **89 tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
 
 From the repository root:
 

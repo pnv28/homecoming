@@ -1,0 +1,367 @@
+{
+  "status": "passed",
+  "tests_run": 66,
+  "new_regression_tests": 14,
+  "command": "PYTHONPATH=work/src .venv/bin/python -m unittest discover -s work/tests -v",
+  "test_log": "step_2_repair_tests.txt",
+  "test_log_sha256": "861f86e2b590abc618c5d7a72cd574b93a9c9e51ff5fbc2563e4de1e2e8b9f03",
+  "step_2_run": "20261014T101626Z-eaef8030",
+  "step_1_run": "20261014T090829Z-20d0139c",
+  "previous_step_2_run": "20261014T092300Z-399fee39",
+  "previous_run_preserved_all_hashes": true,
+  "all_artifact_and_implementation_hashes_match": true,
+  "frozen_input_identical": true,
+  "source_geometries_attributes_and_nulls_exact": 465892,
+  "original_profile_evidence_exact": 465892,
+  "before_real_lift_regressions": {
+    "general_time": [
+      {
+        "footway_id": "290063550",
+        "lift_id": "260001786",
+        "footway_endpoint_position": 0,
+        "footway_endpoint_xyz": [
+          841518.0831000004,
+          815331.3900000006,
+          5.526800000006915
+        ],
+        "equal_height_lift_parameter": 0.06170742753720227,
+        "equal_height_lift_xyz": [
+          841518.0648963092,
+          815331.4027549258,
+          5.526800000006915
+        ],
+        "equal_height_horizontal_separation_m": 0.022227516520851923,
+        "accepted_lift_parameters": [],
+        "forward_lift_state_seconds": null,
+        "reverse_lift_state_seconds": null,
+        "direct_connection": false
+      },
+      {
+        "footway_id": "290064373",
+        "lift_id": "280005280",
+        "footway_endpoint_position": 1,
+        "footway_endpoint_xyz": [
+          836276.1688000001,
+          815790.3307000007,
+          4.08969999999681
+        ],
+        "equal_height_lift_parameter": 0.007087160510193952,
+        "equal_height_lift_xyz": [
+          836276.1737638473,
+          815790.3308708014,
+          4.08969999999681
+        ],
+        "equal_height_horizontal_separation_m": 0.004966784888973172,
+        "accepted_lift_parameters": [],
+        "forward_lift_state_seconds": 105.09983560299528,
+        "reverse_lift_state_seconds": null,
+        "direct_connection": false
+      }
+    ],
+    "wheelchair_time": [
+      {
+        "footway_id": "290063550",
+        "lift_id": "260001786",
+        "footway_endpoint_position": 0,
+        "footway_endpoint_xyz": [
+          841518.0831000004,
+          815331.3900000006,
+          5.526800000006915
+        ],
+        "equal_height_lift_parameter": 0.06170742753720227,
+        "equal_height_lift_xyz": [
+          841518.0648963092,
+          815331.4027549258,
+          5.526800000006915
+        ],
+        "equal_height_horizontal_separation_m": 0.022227516520851923,
+        "accepted_lift_parameters": [],
+        "forward_lift_state_seconds": null,
+        "reverse_lift_state_seconds": null,
+        "direct_connection": false
+      },
+      {
+        "footway_id": "290064373",
+        "lift_id": "280005280",
+        "footway_endpoint_position": 1,
+        "footway_endpoint_xyz": [
+          836276.1688000001,
+          815790.3307000007,
+          4.08969999999681
+        ],
+        "equal_height_lift_parameter": 0.007087160510193952,
+        "equal_height_lift_xyz": [
+          836276.1737638473,
+          815790.3308708014,
+          4.08969999999681
+        ],
+        "equal_height_horizontal_separation_m": 0.004966784888973172,
+        "accepted_lift_parameters": [],
+        "forward_lift_state_seconds": 166.09836169491837,
+        "reverse_lift_state_seconds": null,
+        "direct_connection": false
+      }
+    ]
+  },
+  "after_real_lift_regressions": {
+    "general_time": [
+      {
+        "footway_id": "290063550",
+        "lift_id": "260001786",
+        "footway_endpoint_position": 0,
+        "footway_endpoint_xyz": [
+          841518.0831000004,
+          815331.3900000006,
+          5.526800000006915
+        ],
+        "equal_height_lift_parameter": 0.06170742753720227,
+        "equal_height_lift_xyz": [
+          841518.0648963092,
+          815331.4027549258,
+          5.526800000006915
+        ],
+        "equal_height_horizontal_separation_m": 0.022227516520851923,
+        "accepted_lift_parameters": [
+          0.056989734300481966
+        ],
+        "forward_lift_state_seconds": 30.0,
+        "reverse_lift_state_seconds": 30.0,
+        "direct_connection": true
+      },
+      {
+        "footway_id": "290064373",
+        "lift_id": "280005280",
+        "footway_endpoint_position": 1,
+        "footway_endpoint_xyz": [
+          836276.1688000001,
+          815790.3307000007,
+          4.08969999999681
+        ],
+        "equal_height_lift_parameter": 0.007087160510193952,
+        "equal_height_lift_xyz": [
+          836276.1737638473,
+          815790.3308708014,
+          4.08969999999681
+        ],
+        "equal_height_horizontal_separation_m": 0.004966784888973172,
+        "accepted_lift_parameters": [
+          0.0029571135928673727
+        ],
+        "forward_lift_state_seconds": 30.0,
+        "reverse_lift_state_seconds": 30.0,
+        "direct_connection": true
+      }
+    ],
+    "wheelchair_time": [
+      {
+        "footway_id": "290063550",
+        "lift_id": "260001786",
+        "footway_endpoint_position": 0,
+        "footway_endpoint_xyz": [
+          841518.0831000004,
+          815331.3900000006,
+          5.526800000006915
+        ],
+        "equal_height_lift_parameter": 0.06170742753720227,
+        "equal_height_lift_xyz": [
+          841518.0648963092,
+          815331.4027549258,
+          5.526800000006915
+        ],
+        "equal_height_horizontal_separation_m": 0.022227516520851923,
+        "accepted_lift_parameters": [
+          0.056989734300481966
+        ],
+        "forward_lift_state_seconds": 30.0,
+        "reverse_lift_state_seconds": 30.0,
+        "direct_connection": true
+      },
+      {
+        "footway_id": "290064373",
+        "lift_id": "280005280",
+        "footway_endpoint_position": 1,
+        "footway_endpoint_xyz": [
+          836276.1688000001,
+          815790.3307000007,
+          4.08969999999681
+        ],
+        "equal_height_lift_parameter": 0.007087160510193952,
+        "equal_height_lift_xyz": [
+          836276.1737638473,
+          815790.3308708014,
+          4.08969999999681
+        ],
+        "equal_height_horizontal_separation_m": 0.004966784888973172,
+        "accepted_lift_parameters": [
+          0.0029571135928673727
+        ],
+        "forward_lift_state_seconds": 30.0,
+        "reverse_lift_state_seconds": 30.0,
+        "direct_connection": true
+      }
+    ]
+  },
+  "comparison_to_previous": {
+    "previous_run": "20261014T092300Z-399fee39",
+    "previous_report_sha256": "44f66d473232c03765211a1899774bc455f86fa8f9ea1646aeb97489c8dbd6d3",
+    "physical": {
+      "nodes": {
+        "before": 397199,
+        "after": 397197,
+        "delta": -2
+      },
+      "physical_pieces": {
+        "before": 466752,
+        "after": 466819,
+        "delta": 67
+      },
+      "source_rows": {
+        "before": 465892,
+        "after": 465892,
+        "delta": 0
+      },
+      "general_eligible_sources": {
+        "before": 465861,
+        "after": 465861,
+        "delta": 0
+      },
+      "wheelchair_eligible_sources": {
+        "before": 430496,
+        "after": 430496,
+        "delta": 0
+      }
+    },
+    "routing": {
+      "general_distance": {
+        "states": {
+          "before": 397199,
+          "after": 397197,
+          "delta": -2
+        },
+        "active_states": {
+          "before": 397198,
+          "after": 397196,
+          "delta": -2
+        },
+        "weak_components": {
+          "before": 511,
+          "after": 507,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 537,
+          "after": 533,
+          "delta": -4
+        },
+        "stored_entries": {
+          "before": 923263,
+          "after": 923309,
+          "delta": 46
+        },
+        "stored_zero_cost_entries": {
+          "before": 2,
+          "after": 2,
+          "delta": 0
+        }
+      },
+      "general_time": {
+        "states": {
+          "before": 400973,
+          "after": 400973,
+          "delta": 0
+        },
+        "active_states": {
+          "before": 400972,
+          "after": 400972,
+          "delta": 0
+        },
+        "weak_components": {
+          "before": 514,
+          "after": 510,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 563,
+          "after": 558,
+          "delta": -5
+        },
+        "stored_entries": {
+          "before": 931222,
+          "after": 931310,
+          "delta": 88
+        },
+        "stored_zero_cost_entries": {
+          "before": 3780,
+          "after": 3800,
+          "delta": 20
+        }
+      },
+      "wheelchair_distance": {
+        "states": {
+          "before": 397199,
+          "after": 397197,
+          "delta": -2
+        },
+        "active_states": {
+          "before": 386255,
+          "after": 386254,
+          "delta": -1
+        },
+        "weak_components": {
+          "before": 8259,
+          "after": 8255,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 8259,
+          "after": 8255,
+          "delta": -4
+        },
+        "stored_entries": {
+          "before": 854385,
+          "after": 854425,
+          "delta": 40
+        },
+        "stored_zero_cost_entries": {
+          "before": 2,
+          "after": 2,
+          "delta": 0
+        }
+      },
+      "wheelchair_time": {
+        "states": {
+          "before": 400973,
+          "after": 400973,
+          "delta": 0
+        },
+        "active_states": {
+          "before": 390028,
+          "after": 390029,
+          "delta": 1
+        },
+        "weak_components": {
+          "before": 8261,
+          "after": 8257,
+          "delta": -4
+        },
+        "strong_components": {
+          "before": 8309,
+          "after": 8304,
+          "delta": -5
+        },
+        "stored_entries": {
+          "before": 862324,
+          "after": 862406,
+          "delta": 82
+        },
+        "stored_zero_cost_entries": {
+          "before": 3780,
+          "after": 3800,
+          "delta": 20
+        }
+      }
+    }
+  },
+  "recorded_utc": "2026-10-14T10:28:56.432851+00:00",
+  "note": "Failed-build diagnostics emitted by failure-path tests are expected; the suite finished with OK. No commit or push performed."
+}

@@ -51,8 +51,8 @@ Steps we will take:
   - [X] Horizontal separation ≤ 0.10 m.
   - [X] Height difference ≤ 0.025 m.
 - [X] Apply those limits to endpoint-to-endpoint connections, endpoint-to-interior connections and all members of an accepted node cluster. Prevent chained merges from exceeding either limit.
-- [X] Leave ambiguous matches disconnected and report them. Several incident paths sharing one accepted junction are valid.
-- [X] Split a receiving path at an accepted interior connection, interpolating its position and height from the original vertices.
+- [X] Leave ambiguous matches disconnected and report them. Detect separate visits from the traversed geometry between candidate positions, rather than differences in vertex-index parameters. Preserve ordinary bends, shared vertices and closed-path drawing seams. Several incident paths sharing one accepted junction are valid.
+- [X] Split a receiving path at an accepted interior connection, interpolating its position and height from the original vertices. Minimise horizontal separation within the height-permitted interval of each segment; handle vertical, near-vertical and constant-height segments without a near-vertical cutoff.
 - [X] Report middle-to-middle crossings without automatically joining them. An existing endpoint is required.
 - [X] For inferred connections, differing known floor IDs within the same building prevent a merge unless an explicit vertical-transition path provides the connection. Missing supporting references remain accepted limitations.
 - [X] Preserve original geometry separately from derived pieces. Record small alignment corrections without adding separate travel costs.
@@ -94,7 +94,7 @@ Steps we will take:
 - [X] Charge 30 seconds when entering a lift. Continuing through pieces of that same lift adds no charge. Entering a different lift adds another 30 seconds, even without intervening walking.
 - [X] Track the current lift identity in time-routing states. A non-lift edge resets that state, so leaving and subsequently entering a lift starts another use. Waiting time remains zero.
 - [X] Keep hospital distance costs separate: no lift seconds are added to metres.
-- [X] Use stable numeric calculations. Preserve paths with unrepresentable Tobler times for distance routing, flag the affected time directions and omit them from time routing. Do not cap costs or replace gradients. Non-lift vertical geometry without a usable horizontal run receives the same explicit time-unavailable treatment.
+- [X] Use stable numeric calculations. Preserve paths with unrepresentable Tobler times for distance routing and retain source-level diagnostics. Determine each piece’s directional time and status only from intervals that overlap it: an invalid overlapping interval or an overflowing piece total excludes that piece direction from time routing, while healthy pieces remain usable. Do not cap costs or replace gradients. Non-lift vertical intervals without a usable horizontal run receive the same explicit time-unavailable treatment.
 - [X] Preserve gradients, sampling evidence, source lift identities, exclusions and cost-status reasons.
 
 No maximum ramp-slope cutoff applies.
@@ -141,8 +141,55 @@ Steps we will take:
 
 ## Implementation record
 
-- [X] Implement and verify this plan. Successful full-data run: **`20261014T092300Z-399fee39`**; frozen Step 1 input: **`20261014T090829Z-20d0139c`**. The complete suite passes **52 tests**.
+- [X] Record the initial implementation and its original validation. Historical full-data run: **`20261014T092300Z-399fee39`**; frozen Step 1 input: **`20261014T090829Z-20d0139c`**. That initial suite passed **52 tests**; the first regression repair passed **66** and the autonomous audit below passes **89**.
 - [X] Record the explanation, implementation details, numeric limitations, connected regions, runtime/memory and acceptance evidence in [step_2_implementation.md](step_2_implementation.md). Final score combination and estate/destination attachment remain later work.
+
+## Regression repair checklist
+
+Explanation for the team: review found missed height-compatible lift connections, vertex-layout-dependent ambiguity checks, and source-level invalid time leaking into healthy pieces. These are implementation defects; the agreed tolerances, eligibility rules, cost models and original records stay unchanged.
+
+Steps we will take:
+
+- [X] Minimise horizontal separation within each segment's height-permitted parameter interval, including vertical, near-vertical and constant-height segments.
+- [X] Detect separate visits from intervening geometry and traversal continuity, preserving ordinary bends and shared vertices.
+- [X] Determine each piece's directional time and status from overlapping intervals only; retain source diagnostics and update conservation checks.
+- [X] Add synthetic boundary, repeated-visit, mixed-validity and forward/reverse regression tests and both real lift source-ID regressions.
+- [X] Run the complete suite, including lift continuation, three identities and re-entry checks.
+- [X] Rebuild from frozen Step 1 run `20261014T090829Z-20d0139c`; verify all saved outputs and publish a new Step 2 snapshot only on success.
+- [X] Report before/after connectivity, regression results, new run ID and remaining limitations; update the implementation/context documents without rewriting historical runs.
+- [X] Leave changes uncommitted and unpushed, as requested.
+
+Repair publication: **`20261014T101626Z-eaef8030`**, from the same frozen Step 1 input, with **66 passing tests**, 397,197 nodes and 466,819 pieces, complete save/reopen validation and direct forward/reverse checks for both real lift pairs. Detailed before/after component counts and retained limitations are in [the implementation report](step_2_implementation.md#validated-repair-publication). The initial run is preserved.
+
+## Autonomous source and routing audit
+
+Explanation for the team: investigate the remaining 12 rejected junction clusters and 26 sources with unavailable time without changing agreed tolerances, gradients, eligibility or original geometry. Distinguish existing valid routes from actual gaps. Isolate invalid cost intervals so usable adjacent geometry remains accessible; a subdivision is not a new cross-path junction.
+
+Steps we will take:
+
+- [X] Fix the demonstrated endpoint-preference defect: include qualifying existing endpoints before traversal-visit checks and prefer one only after ruling out separate visits.
+- [X] Verify all affected source records against the original geodatabase and frozen successful Step 1 snapshot.
+- [X] Audit all 12 clusters in both modes and metrics, retaining source-ID/coordinate evidence and distinguishing original-path connections, other available routes and unreachable pairs.
+- [X] Explain all 25 sources with vertical intervals and the extreme-gradient source using original geometry and provider definitions; record only evidence-supported correction decisions.
+- [X] Subdivide source paths at changes in interval cost status after junction decisions, preserving healthy portions without adding cross-path connections or crossing invalid intervals.
+- [X] Add meaningful regression tests and pass the full suite, including lift identities and save/reopen checks.
+- [X] Rebuild Step 2 from frozen run `20261014T090829Z-20d0139c`, save and verify reproducible audit evidence before publication, and preserve historical runs.
+- [X] Report routing/count changes and retained source limitations; update the implementation report and project context, leaving changes uncommitted and unpushed.
+
+Autonomous audit publication: **`20261014T105436Z-8fe534aa`**, with **89 passing tests**, 397,225 nodes and 466,406 pieces. The endpoint-preference repair removes the former 89.56 m endpoint detour; the 11 remaining rejected merge clusters have original-source connections for eligible endpoints. Cost-boundary subdivisions restore 29 general / 20 wheelchair healthy pieces. All 26 source-total time flags remain recorded. Full evidence and unchanged component counts are in [the autonomous audit report](step_2_implementation.md#validated-autonomous-audit-publication).
+
+- [ ] Resolve unsupported original vertical geometry and extreme-gradient time limitations if authoritative evidence becomes available. No source geometry, gradient or eligibility replacement is established by the audit.
+
+## User-requested cleanup of old builds
+
+Explanation for the team: the latest explicit cleanup request supersedes preservation of complete superseded runs. Retain the selected Step 2 snapshot and frozen Step 1 input; preserve compact historical reports separately from reusable builds.
+
+Steps we will take:
+
+- [X] Remove three superseded build directories and 14 failed staging directories, retaining historical metadata under `work/precomputed/history/`; reclaim 3.866 GiB.
+- [X] Update historical report links and retain the cleanup inventory.
+- [X] Verify selected builds, frozen dependencies and current graph loading after cleanup.
+- [X] Leave all changes uncommitted and unpushed.
 
 ## Later stages — outside Step 2
 

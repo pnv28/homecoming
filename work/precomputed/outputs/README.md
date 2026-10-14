@@ -1,6 +1,6 @@
 # Prepared Step 1 outputs
 
-The latest complete, validated output is in [current/](current/). Successful snapshots are stored in `runs/`. The current full run is `20261013T121410Z-c823aaf9`: **476,153 spatial records, zero errors, 14 warning groups and 31 passing tests**.
+The latest complete, validated output is in [current/](current/). Successful snapshots are stored in `runs/`. The current full run is `20261014T090829Z-20d0139c`: **476,153 spatial records, zero errors, 14 warning groups and 89 passing repository tests**.
 
 The six spatial datasets are actual GeoPandas GeoDataFrames when loaded through the public API. They are persisted as layers in [harmonised.gpkg](current/harmonised.gpkg): `network`, `estates`, `hospitals`, `mtr_exits`, `railway_stations` and `bus_stops`. The network retains all original XYZ vertices. `schema.json` restores nullable column types, and height metadata is retained separately from horizontal EPSG:2326.
 
@@ -24,13 +24,15 @@ Other files in the selected run:
 - [schema.json](current/schema.json): field types, missing-value rules, CRS and source definitions.
 - [source_manifest.json](current/source_manifest.json): all 23 selected input hashes, software versions, assumptions and output interface.
 - [validation_report.md](current/validation_report.md) and [validation_report.json](current/validation_report.json): complete preservation checks and remaining source gaps.
-- [warnings_explained.md](current/warnings_explained.md): plain-language explanation of each of the fourteen warning groups and what would resolve it.
-- [step_1_recheck.json](current/step_1_recheck.json): independent audit of published GeoDataFrames, raw service records, identities, source hashes and SQLite integrity.
+- [Historical warning explanation](../history/step_1/20261013T121410Z-c823aaf9/warnings_explained.md): explanation for the earlier snapshot; current decisions and warning counts come from the selected validation report and project context.
+- [Historical independent audit](../history/step_1/20261013T121410Z-c823aaf9/step_1_recheck.json): verification performed on the earlier snapshot before cleanup.
 - [mtr_match_review.csv](current/mtr_match_review.csv): ten unnamed source exit codes; their locations and physical station links are known.
 - [entity_ids.json](current/entity_ids.json): stable estate/hospital identity snapshot.
 - [rejected_records.jsonl](current/rejected_records.jsonl): blocking-record diagnostics, empty for this successful run.
 - [SUCCESS.json](current/SUCCESS.json): successful-run identity/completion marker.
 
-All source rows remain available. `general_mode_candidate`, `wheelchair_mode_candidate` and boarding-candidate fields are preparation flags, not computed routes or reachability. Tobler/sampling route costs and final ranking are later work. Actual remaining MTR/network reference gaps stay visible; accepted assumptions are not converted into publisher facts.
+All source rows remain available. `general_mode_candidate`, `wheelchair_mode_candidate` and boarding-candidate fields are preparation flags, not computed routes or reachability. Step 2 now implements Tobler/sampling route costs and lift identity states; destination attachment and final ranking remain later work. Actual remaining MTR/network reference gaps stay visible; accepted assumptions are not converted into publisher facts.
 
-The standalone MTR command writes its independent output to `outputs/mtr_master/` and snapshots to `outputs/mtr_master_runs/`. The MTR snapshot embedded in `current/` belongs to that Step 1 run. The older `precomputed/mtr_master` bookmark points to the selected Step 1 snapshot's master folder; historical runs remain preserved.
+The standalone MTR command writes its independent output to `outputs/mtr_master/` and snapshots to `outputs/mtr_master_runs/`. The MTR snapshot embedded in `current/` belongs to that Step 1 run. The older `precomputed/mtr_master` bookmark points to the selected Step 1 snapshot's master folder; compact historical metadata remains under `../history/`, while superseded full build artifacts were removed at the user's request.
+
+The selected pedestrian graph is [step_2/current](step_2/current/), run `20261014T105436Z-8fe534aa`. Its frozen Step 1 dependency is retained. See the [cleanup inventory](../history/cleanup_20261014.json) for the removed superseded snapshots and failed staging output.

@@ -38,6 +38,15 @@ def tobler_seconds(length, angle):
 
 
 @dataclass
+class PieceCost:
+    distance_m: float
+    forward_seconds: object
+    reverse_seconds: object
+    forward_status: str
+    reverse_status: str
+
+
+@dataclass
 class CostProfile:
     source_id: str
     coords: np.ndarray
@@ -54,19 +63,37 @@ class CostProfile:
     classification: str
     forward_status: str
     reverse_status: str
+    interval_reasons: list
 
     def piece(self, start, end):
-        # Parameter is original vertex index + segment fraction, including
-        # vertical segments (horizontal chainage alone cannot represent them).
+        cost = self.piece_costs(start, end)
+        return cost.distance_m, cost.forward_seconds, cost.reverse_seconds
+
+    def piece_costs(self, start, end):
+        # Vertex index + fraction also represents vertical source intervals.
         lower = np.maximum(self.positions[:-1], start)
         upper = np.minimum(self.positions[1:], end)
         fraction = np.maximum(upper - lower, 0) / np.diff(self.positions)
         distance = float(np.dot(fraction, self.lengths))
-        def part(values, status):
-            if status != 'available':
-                return None
-            return total_or_none([v * f for v, f in zip(values, fraction) if f > 0])
-        return distance, part(self.forward, self.forward_status), part(self.reverse, self.reverse_status)
+        overlaps = np.flatnonzero(fraction > 0)
+        def part(values, direction):
+            times = []
+            for i in overlaps:
+                reason = self.interval_reasons[i]
+                if reason:
+                    return None, reason
+                # An invalid overlapping interval remains unavailable; only
+                # intervals outside this piece are ignored. No costs are capped.
+                value = values[i]
+                if value is None:
+                    return None, 'unrepresentable_tobler_time'
+                value *= float(fraction[i])
+                times.append(value)
+            total = total_or_none(times)
+            return total, 'available' if total is not None else 'unrepresentable_tobler_time'
+        forward, forward_status = part(self.forward, 1)
+        reverse, reverse_status = part(self.reverse, -1)
+        return PieceCost(distance, forward, reverse, forward_status, reverse_status)
 
     def geometry(self, start, end):
         indices = np.arange(len(self.coords))
@@ -82,6 +109,11 @@ class CostProfile:
                 'horizontal_lengths_m': self.lengths.tolist(),
                 'signed_angles_radians': self.signed_angles.tolist(),
                 'forward_seconds': self.forward, 'reverse_seconds': self.reverse,
+                'interval_reasons': self.interval_reasons,
+                'forward_interval_status': [r or ('available' if v is not None else 'unrepresentable_tobler_time')
+                                            for r,v in zip(self.interval_reasons,self.forward)],
+                'reverse_interval_status': [r or ('available' if v is not None else 'unrepresentable_tobler_time')
+                                            for r,v in zip(self.interval_reasons,self.reverse)],
                 'forward_status': self.forward_status, 'reverse_status': self.reverse_status}
 
 
@@ -146,4 +178,4 @@ def build_profile(source_id, coords, gradient, lift=False):
         return reason or ('available' if total_or_none(values) is not None else 'unrepresentable_tobler_time')
     return CostProfile(str(source_id), coords, float(gradient), bool(lift), positions, xyz[:, 2],
                        lengths, angles, forward, reverse, samples, rounds, classification,
-                       status(forward), status(reverse))
+                       status(forward), status(reverse), reasons)

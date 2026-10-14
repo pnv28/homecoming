@@ -161,15 +161,15 @@ def build_physical_graph(network, policy=None, progress=lambda message: None, au
     for i,(row,profile) in enumerate(zip(selected.itertuples(),eligible_profiles)):
         ordered = sorted(cuts[i])
         for start,end in zip(ordered,ordered[1:]):
-            distance,forward,reverse = profile.piece(start,end)
+            cost = profile.piece_costs(start,end)
             rows.append({'edge_id': stable_id('E-', [(str(row.PedestrianRouteID),start),
                                                     (str(row.PedestrianRouteID),end)]),
                 'source_id':str(row.PedestrianRouteID),'start_position':start,'end_position':end,
                 'from_node':cuts[i][start],'to_node':cuts[i][end], 'direction':int(row.Direction),
                 'allow_general':bool(row.allow_general),'allow_wheelchair':bool(row.allow_wheelchair),
                 'lift_id':str(row.PedestrianRouteID) if profile.lift else None,
-                'distance_m':distance,'time_forward_s':forward,'time_reverse_s':reverse,
-                'time_forward_status':profile.forward_status,'time_reverse_status':profile.reverse_status,
+                'distance_m':cost.distance_m,'time_forward_s':cost.forward_seconds,'time_reverse_s':cost.reverse_seconds,
+                'time_forward_status':cost.forward_status,'time_reverse_status':cost.reverse_status,
                 'gradient_radians':profile.gradient,'geometry':profile.geometry(start,end)})
     columns = ['edge_id','source_id','start_position','end_position','from_node','to_node','direction',
                'allow_general','allow_wheelchair','lift_id','distance_m','time_forward_s','time_reverse_s',
@@ -261,7 +261,11 @@ def validate_physical(physical):
     if not np.array_equal(previous[~first],ordered.loc[~first,'start_position']):
         raise AssertionError('Gap/overlap in source pieces')
     grouped = edges.groupby('source_id',sort=False)
-    sums = grouped[['distance_m','time_forward_s','time_reverse_s']].sum(min_count=1)
+    # An entirely time-unavailable graph has object columns containing only
+    # None. Convert aggregate missing values to numeric NaN before isfinite.
+    sums = grouped[['distance_m','time_forward_s','time_reverse_s']].sum(min_count=1).astype(float)
+    for column in ('time_forward_s','time_reverse_s'):
+        sums.loc[(grouped[column].count() != grouped.size()) | ~np.isfinite(sums[column]), column] = np.nan
     ends = grouped.end_position.max()
     profiles = [p for p in physical.profiles if p.source_id in expected]
     values = [p.piece(0,len(p.coords)-1) for p in profiles]
@@ -270,6 +274,18 @@ def validate_physical(physical):
     if not np.allclose(sums.to_numpy(dtype=float),wanted.to_numpy(dtype=float),
                        rtol=2e-12,atol=1e-8,equal_nan=True):
         raise AssertionError('Splitting changed source distance/time')
+    by_source = {p.source_id:p for p in profiles}
+    # Check each stored piece against its overlapping original intervals,
+    # including healthy pieces from sources whose overall time is unavailable.
+    for row in edges.itertuples():
+        expected_piece = by_source[row.source_id].piece_costs(row.start_position,row.end_position)
+        for value,wanted_value,status,wanted_status in (
+            (row.time_forward_s,expected_piece.forward_seconds,row.time_forward_status,expected_piece.forward_status),
+            (row.time_reverse_s,expected_piece.reverse_seconds,row.time_reverse_status,expected_piece.reverse_status)):
+            if status != wanted_status or (pd.isna(value) != (wanted_value is None)):
+                raise AssertionError('Piece directional status does not match overlapping intervals')
+            if wanted_value is not None and not np.isclose(value,wanted_value,rtol=2e-12,atol=1e-8):
+                raise AssertionError('Piece time does not match overlapping intervals')
     final_positions = pd.Series({p.source_id:len(p.coords)-1 for p in profiles}).reindex(ends.index)
     if not np.array_equal(final_positions,ends):
         raise AssertionError('Missing source ends')
@@ -281,6 +297,14 @@ def validate_physical(physical):
             'wheelchair_exclusions':dict(Counter(sources.wheelchair_exclusion)),
             'time_forward_status':dict(Counter(sources.time_forward_status)),
             'time_reverse_status':dict(Counter(sources.time_reverse_status)),
+            'piece_time_forward_status':dict(Counter(edges.time_forward_status)),
+            'piece_time_reverse_status':dict(Counter(edges.time_reverse_status)),
+            'healthy_piece_directions_from_unavailable_sources':int(sum(
+                ((edges['time_'+d+'_status']=='available') &
+                 edges.source_id.isin(sources.loc[sources['time_'+d+'_status']!='available',
+                                                  'PedestrianRouteID'].astype(str))).sum()
+                for d in ('forward','reverse'))),
+            'piece_local_costs_and_statuses_checked':True,
             'review_counts':dict(Counter(r['kind'] for r in physical.review))}
 
 

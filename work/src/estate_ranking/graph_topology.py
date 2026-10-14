@@ -26,20 +26,118 @@ def stable_id(prefix, members):
     return prefix + hashlib.sha256(value.encode()).hexdigest()[:24]
 
 
+def height_ok(z, target):
+    # Inclusive upper bounds avoid cancellation in a subtracted difference.
+    return z <= target + HEIGHT and target <= z + HEIGHT
+
+
+def within_junction(xyz, point):
+    return math.hypot(*(xyz[:2] - point[:2])) <= HORIZONTAL and height_ok(xyz[2], point[2])
+
+
 def projections(coords, point):
-    """All local XY projections, checking Z independently, including verticals."""
-    a, delta = coords[:-1], np.diff(coords, axis=0)
-    h2 = np.sum(delta[:, :2] ** 2, axis=1)
-    f = np.zeros(len(a))
-    horizontal = h2 > 0
-    f[horizontal] = np.sum((point[:2] - a[horizontal, :2]) * delta[horizontal, :2], axis=1) / h2[horizontal]
-    vertical = ~horizontal & (delta[:, 2] != 0)
-    f[vertical] = (point[2] - a[vertical, 2]) / delta[vertical, 2]
-    f = np.clip(f, 0, 1)
-    xyz = a + delta * f[:, None]
-    distance = np.linalg.norm(xyz[:, :2] - point[:2], axis=1)
-    valid = (distance <= HORIZONTAL) & (xyz[:, 2] <= point[2] + HEIGHT) & (point[2] <= xyz[:, 2] + HEIGHT)
-    return [(float(i + f[i]), xyz[i], float(distance[i])) for i in np.flatnonzero(valid)]
+    """Closest XY point on each segment subject to the inclusive height band.
+
+    The height constraint gives a parameter interval. XY distance is convex
+    on a segment, so clamping its unconstrained minimum to that interval gives
+    the joint constrained minimum. A vertical segment has constant XY distance;
+    break that tie by choosing the closest height, without a near-vertical cutoff.
+    """
+    coords, point = np.asarray(coords, dtype=float), np.asarray(point, dtype=float)
+    result = []
+    for i, (a, b) in enumerate(zip(coords[:-1], coords[1:])):
+        delta = b - a
+        dz = float(delta[2])
+        if dz == 0:
+            if not height_ok(a[2], point[2]):
+                continue
+            lower, upper, center = 0., 1., 0.
+        else:
+            offset = float(point[2] - a[2])
+            roots = ((offset - HEIGHT) / dz, (offset + HEIGHT) / dz)
+            lower, upper = min(roots), max(roots)
+            start_ok, end_ok = height_ok(a[2], point[2]), height_ok(b[2], point[2])
+            if (lower > 1 or upper < 0) and not (start_ok or end_ok):
+                continue
+            lower, upper = max(0., min(lower, 1.)), min(1., max(upper, 0.))
+            # Keep qualifying source endpoints despite division roundoff.
+            if start_ok:
+                lower = 0.
+            if end_ok:
+                upper = 1.
+            center = max(lower, min(offset / dz, upper))
+        horizontal = math.hypot(float(delta[0]), float(delta[1]))
+        if horizontal == 0:
+            fraction = center
+        else:
+            unit = delta[:2] / horizontal
+            fraction = float(np.dot(point[:2] - a[:2], unit)) / horizontal
+            fraction = max(lower, min(fraction, upper))
+        position = float(i + fraction)
+        xyz = interpolate_xyz(coords, position)
+        if not height_ok(xyz[2], point[2]):
+            # Quantisation of the parameter/XYZ can round a boundary just out
+            # of the band. Search toward a qualifying height, never enlarge it.
+            inside = float(i + center)
+            inside_xyz = interpolate_xyz(coords, inside)
+            if not height_ok(inside_xyz[2], point[2]):
+                continue
+            outside = position
+            for _ in range(64):
+                midpoint = (inside + outside) / 2
+                if midpoint == inside or midpoint == outside:
+                    break
+                if height_ok(interpolate_xyz(coords, midpoint)[2], point[2]):
+                    inside = midpoint
+                else:
+                    outside = midpoint
+            position = inside
+            xyz = interpolate_xyz(coords, position)
+        distance = math.hypot(*(xyz[:2] - point[:2]))
+        if distance <= HORIZONTAL and height_ok(xyz[2], point[2]):
+            result.append((position, xyz, float(distance)))
+    return result
+
+
+def _span_within(coords, point, start, end):
+    """A straight segment is convex; checking intervening vertices suffices."""
+    vertices = coords[int(math.floor(start))+1:int(math.ceil(end))]
+    return all(within_junction(xyz, point) for xyz in vertices)
+
+
+def projection_visits(coords, point, candidates):
+    """Connected visits through the permitted XYZ neighbourhood in path order.
+
+    Numeric vertex-index gaps carry no distance meaning. Two candidates belong
+    to one visit only when the traversed path between them stays in the same
+    endpoint neighbourhood. This joins ordinary bends/shared vertices while
+    separating a retraced branch whose turnaround leaves the neighbourhood.
+    """
+    ordered = sorted({c[0]: c for c in candidates}.values(), key=lambda c: c[0])
+    groups = []
+    for candidate in ordered:
+        if groups and _span_within(coords, point, groups[-1][-1][0], candidate[0]):
+            groups[-1].append(candidate)
+        else:
+            groups.append([candidate])
+    # A closed source's drawing seam is one ordinary shared junction, not a
+    # second visit. Join only the two groups connected through that seam.
+    if (len(groups) > 1 and np.array_equal(coords[0], coords[-1]) and
+        within_junction(coords[0], point) and
+        _span_within(coords, point, 0., groups[0][0][0]) and
+        _span_within(coords, point, groups[-1][-1][0], len(coords)-1)):
+        groups[0] = groups[-1] + groups[0]
+        groups.pop()
+    return groups
+
+
+def separate_interior_visits(coords, positions):
+    positions = sorted(set(positions))
+    if len(positions) < 2:
+        return False
+    point = interpolate_xyz(coords, positions[0])
+    candidates = [(t, interpolate_xyz(coords, t), 0.) for t in positions]
+    return len(projection_visits(coords, point, candidates)) > 1
 
 
 def build_topology(sources, profiles, review, progress=lambda message: None):
@@ -69,6 +167,8 @@ def build_topology(sources, profiles, review, progress=lambda message: None):
     path_lines = np.array([LineString(c) for c in coords], dtype=object)
     tree = STRtree(path_lines)
     projection_sites = {}
+    projection_supports = defaultdict(set)
+    ambiguous_attachments = set()
     floor_rejections = set()
     for start in range(0, endpoint_count, 10000):
         points = shapely.points(np.asarray(site_xyz[start:min(start+10000, endpoint_count)]))
@@ -82,59 +182,90 @@ def build_topology(sources, profiles, review, progress=lambda message: None):
                 floor_rejections.add(('endpoint_to_interior', site, path))
                 continue
             candidates = projections(coords[path], site_xyz[site])
+            # The constrained XY minimum can lie just inside a segment even
+            # when its existing endpoint also satisfies both limits. Include
+            # that endpoint as evidence before identifying visits. Otherwise
+            # an unnecessary interior cut can create a non-clique with its own
+            # endpoint and reject a supported junction. Separate traversal
+            # visits must still be ruled out before preferring any endpoint.
+            for t in (0., float(len(coords[path]) - 1)):
+                endpoint = interpolate_xyz(coords[path], t)
+                if within_junction(endpoint, site_xyz[site]):
+                    candidates.append((t, endpoint,
+                                       float(np.linalg.norm(endpoint[:2] - site_xyz[site][:2]))))
             if not candidates:
                 continue
-            # Prefer a qualifying existing endpoint of this receiving path.
-            if any(t == 0 or t == len(coords[path])-1 for t, _, _ in candidates):
-                continue
-            # Adjacent-segment projections at a bend describe one nearby place;
-            # separate visits to the same position are ambiguous source evidence.
-            positions = sorted({t for t, _, _ in candidates})
-            if positions[-1] - positions[0] > 1:
+            visits = projection_visits(coords[path], site_xyz[site], candidates)
+            if len(visits) > 1:
+                ambiguous_attachments.add((site, path))
                 review.append({'kind': 'ambiguous_interior_projection', 'endpoint_members':
                     [(ids[i], t) for i,t in members[site]], 'receiving_source': ids[path],
-                    'candidate_positions': positions})
+                    'endpoint_xyz': site_xyz[site].tolist(),
+                    'candidate_positions': sorted({t for t,_,_ in candidates}),
+                    'visits': [[{'position': t, 'xyz': xyz.tolist(), 'horizontal_m': distance}
+                                for t,xyz,distance in visit] for visit in visits],
+                    'reason': 'separate_traversal_visits'})
+                continue
+            # Prefer an existing receiving endpoint only after ruling out
+            # another visit; drawing seams of closed paths remain valid.
+            if any(t == 0 or t == len(coords[path])-1 for t, _, _ in candidates):
                 continue
             t, xyz, _ = min(candidates, key=lambda item: (item[2], item[0]))
             projection_sites[(path, t)] = xyz
+            projection_supports[(path, t)].add(site)
         if start % 100000 == 0:
             progress('Endpoint/interior candidates: {}/{}'.format(min(start+10000, endpoint_count), endpoint_count))
+    supported_pairs = []
     for key in sorted(projection_sites):
+        supported_pairs.extend((site, len(members)) for site in sorted(projection_supports[key]))
         site_xyz.append(projection_sites[key])
         members.append([key])
     xyz = np.asarray(site_xyz)
     points = shapely.points(xyz)
-    tree = STRtree(points)
+    def attachment_ok(left, right):
+        return not (any((left, p) in ambiguous_attachments for p,_ in members[right]) or
+                    any((right, p) in ambiguous_attachments for p,_ in members[left]))
+    # Derived cuts are not new independent endpoints. Only original endpoint
+    # pairs and explicitly supported endpoint projections seed connections.
+    # Otherwise a lift cut near its own end creates a spurious chained merge.
+    tree = STRtree(points[:endpoint_count])
     adjacency_a, adjacency_b = [], []
-    for start in range(0, len(points), 20000):
-        pairs = tree.query(points[start:start+20000], predicate='dwithin', distance=HORIZONTAL)
+    for start in range(0, endpoint_count, 20000):
+        pairs = tree.query(points[start:min(start+20000, endpoint_count)], predicate='dwithin', distance=HORIZONTAL)
         a, b = pairs[0] + start, pairs[1]
         keep = (a < b) & (xyz[a, 2] <= xyz[b, 2] + HEIGHT) & (xyz[b, 2] <= xyz[a, 2] + HEIGHT)
         for left, right in zip(a[keep].tolist(), b[keep].tolist()):
+            if not attachment_ok(left, right):
+                continue
             if all(floor_ok(i,j) for i,_ in members[left] for j,_ in members[right]):
                 adjacency_a.append(left)
                 adjacency_b.append(right)
             else:
                 floor_rejections.add(('candidate_sites', left, right))
+    for left, right in supported_pairs:
+        if within_junction(xyz[left], xyz[right]):
+            adjacency_a.append(left)
+            adjacency_b.append(right)
     adjacency = coo_matrix((np.ones(len(adjacency_a), dtype=np.int8), (adjacency_a, adjacency_b)),
                            shape=(len(points),len(points))).tocsr()
     _, labels = connected_components(adjacency, directed=False)
     groups = defaultdict(list)
     for i, label in enumerate(labels):
         groups[int(label)].append(i)
-    degree = np.bincount(np.asarray(adjacency_a + adjacency_b, dtype=int), minlength=len(points))
     clusters = []
     for group in groups.values():
         # Connected candidate components must be cliques. No greedy/chained
         # merge can choose an arbitrary side of an ambiguous neighbourhood.
-        complete = all(degree[i] == len(group)-1 for i in group)
+        complete = all(within_junction(xyz[a], xyz[b]) and attachment_ok(a,b) and
+                       all(floor_ok(i,j) for i,_ in members[a] for j,_ in members[b])
+                       for offset,a in enumerate(group) for b in group[offset+1:])
         # A cluster must not collapse separate interior visits of one path.
         visits = defaultdict(list)
         for i in group:
             for path,t in members[i]:
                 visits[path].append(t)
-        repeated_interior = any(max(v)-min(v)>1 and any(0<t<len(coords[p])-1 for t in v)
-                                for p,v in visits.items())
+        repeated_interior = any(separate_interior_visits(coords[p], v)
+                                for p,v in visits.items() if any(0<t<len(coords[p])-1 for t in v))
         if complete and not repeated_interior:
             if any(i < endpoint_count for i in group):
                 clusters.append(group)
@@ -162,6 +293,35 @@ def build_topology(sources, profiles, review, progress=lambda message: None):
                 'alignment_xy_m':float(np.linalg.norm(original[:2]-np.array(representative[:2]))),
                 'alignment_z_m':float(original[2]-representative[2])})
             cuts[path][t] = node_id
+    # Cost boundaries are subdivisions of one original traversal, not junction
+    # candidates. Add them after all inferred connections have been decided so
+    # an invalid interval cannot hide its healthy neighbours, or seed a new
+    # cross-path proximity join. Existing supported cuts are reused.
+    cost_boundary_nodes = 0
+    for path, profile in enumerate(profiles):
+        statuses = [(reason or ('available' if f is not None else 'unrepresentable_tobler_time'),
+                     reason or ('available' if r is not None else 'unrepresentable_tobler_time'))
+                    for reason, f, r in zip(profile.interval_reasons, profile.forward, profile.reverse)]
+        for index in range(1, len(statuses)):
+            if statuses[index - 1] == statuses[index]:
+                continue
+            t = float(profile.positions[index])
+            if t in cuts[path]:
+                continue
+            original = interpolate_xyz(coords[path], t)
+            node_id = stable_id('N-', [(ids[path], t)])
+            nodes.append({'node_id':node_id, 'member_count':1,
+                          'max_horizontal_m':0., 'max_height_m':0.,
+                          'geometry':Point(original)})
+            memberships.append({'node_id':node_id, 'source_index':path, 'position':t,
+                                'alignment_xy_m':0., 'alignment_z_m':0.})
+            cuts[path][t] = node_id
+            cost_boundary_nodes += 1
+            review.append({'kind':'cost_boundary_split', 'source_id':ids[path],
+                           'position':t, 'xyz':original.tolist(),
+                           'before_status':list(statuses[index - 1]),
+                           'after_status':list(statuses[index]),
+                           'connection_rule':'single_source_subdivision_no_new_junction'})
     frame = gpd.GeoDataFrame(nodes, crs=2326).sort_values('node_id').reset_index(drop=True)
     frame['node_index'] = np.arange(len(frame))
     lookup = dict(zip(frame.node_id, frame.node_index))
@@ -173,7 +333,9 @@ def build_topology(sources, profiles, review, progress=lambda message: None):
         cuts[path] = {t:lookup[n] for t,n in cuts[path].items()}
     review.append({'kind':'topology_summary','exact_endpoint_sites':endpoint_count,
                    'interior_candidate_sites':len(projection_sites), 'floor_rejections':len(floor_rejections),
-                   'accepted_nodes':len(frame)})
+                   'accepted_nodes':len(frame),
+                   'cost_boundary_nodes':cost_boundary_nodes,
+                   'candidate_evidence':'original_endpoint_pairs_and_supported_projections'})
     def source_context(path):
         return {'source_id':ids[path], 'floor_id':None if pd.isna(floors[path]) else int(floors[path]),
                 'building_ids':sorted(int(v) for v in buildings[path]),

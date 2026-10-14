@@ -1,0 +1,31 @@
+1/6 Freeze the successful Step 1 run and policy
+2/6 Build source costs and height-aware physical topology
+Source profiles: 0/465892
+Source profiles: 100000/465892
+Source profiles: 200000/465892
+Source profiles: 300000/465892
+Source profiles: 400000/465892
+Endpoint/interior candidates: 10000/398569
+Endpoint/interior candidates: 110000/398569
+Endpoint/interior candidates: 210000/398569
+Endpoint/interior candidates: 310000/398569
+Creating physical pieces
+Crossing audit: 10000/465866
+Crossing audit: 110000/465866
+Crossing audit: 210000/465866
+Crossing audit: 310000/465866
+Crossing audit: 410000/465866
+Audit original source evidence and remaining junction/cost diagnostics
+3/6 Save and reopen every physical geometry, attribute, null and correction
+4/6 Build, save and validate general_distance
+Audit source-ID-based routes in reopened general_distance
+4/6 Build, save and validate general_time
+Audit source-ID-based routes in reopened general_time
+4/6 Build, save and validate wheelchair_distance
+Audit source-ID-based routes in reopened wheelchair_distance
+4/6 Build, save and validate wheelchair_time
+Audit source-ID-based routes in reopened wheelchair_time
+5/6 Recheck frozen hashes and write validation/manifest
+6/6 Publish only the validated run
+Complete: /Users/pidge/projects/hacksdg_homecoming/work/precomputed/outputs/step_2/current
+{"physical": {"source_rows": 465892, "general_eligible_sources": 465861, "wheelchair_eligible_sources": 430496, "union_eligible_sources": 465866, "physical_pieces": 466406, "nodes": 397225, "all_sources_accounted_for": true, "piece_coverage_and_cost_conservation": true, "general_exclusions": {"": 465861, "excluded_path_type": 5, "enabled_false": 26}, "wheelchair_exclusions": {"": 430496, "excluded_path_type;wheelchair_barrier": 23387, "wheelchair_barrier": 11541, "excluded_path_type": 442, "enabled_false": 26}, "time_forward_status": {"available": 465866, "non_lift_vertical_without_horizontal_run": 25, "unrepresentable_tobler_time": 1}, "time_reverse_status": {"available": 465866, "non_lift_vertical_without_horizontal_run": 25, "unrepresentable_tobler_time": 1}, "piece_time_forward_status": {"available": 466380, "non_lift_vertical_without_horizontal_run": 25, "unrepresentable_tobler_time": 1}, "piece_time_reverse_status": {"available": 466380, "non_lift_vertical_without_horizontal_run": 25, "unrepresentable_tobler_time": 1}, "healthy_piece_directions_from_unavailable_sources": 58, "piece_local_costs_and_statuses_checked": true, "review_counts": {"ambiguous_cluster": 11, "cost_boundary_split": 29, "topology_summary": 1, "floor_conflict_rejected": 972, "middle_crossing_not_auto_joined": 11790, "overlapping_xy_paths_preserved": 2}}, "runtime_seconds": 315.966, "peak_process_memory_mib": 2212.844}

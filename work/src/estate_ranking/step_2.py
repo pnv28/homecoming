@@ -26,6 +26,9 @@ from .export import write_json
 from .graph import (WORK, build_physical_graph, connectivity, read_physical,
                     _read_routing, routing_graph, save_physical, save_routing, validate_physical)
 from .ingest import read_json, sha256
+from .graph_regressions import check_lift_connections
+from .graph_audit import prepare_audit, audit_routing, audit_summary, audit_markdown
+from .graph_cluster_audit import check_repaired_endpoint_cluster
 
 
 def progress(message):
@@ -177,12 +180,16 @@ def write_report(directory,report):
 def run(input_directory=None, output_root=None):
     start = time.perf_counter()
     code_paths = [Path(__file__).with_name(name) for name in
-                  ['step_2.py','graph.py','graph_costs.py','graph_topology.py','policy.py']]
+                  ['step_2.py','graph.py','graph_costs.py','graph_topology.py','graph_regressions.py','policy.py',
+                   'graph_audit.py','graph_cluster_audit.py','graph_vertical_audit.py','graph_gradient_audit.py']]
     code_hashes = {p.name:sha256(p) for p in code_paths}
     output_root = Path(output_root or WORK/'precomputed/outputs/step_2')
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-'+uuid.uuid4().hex[:8]
     directory = WORK/'cache/step_2_staging'/run_id
     directory.mkdir(parents=True)
+    previous = (output_root/'current').resolve() if (output_root/'current').exists() else None
+    previous_report = (read_json(previous/'validation_report.json')
+                       if previous and (previous/'validation_report.json').exists() else None)
     try:
         progress('1/6 Freeze the successful Step 1 run and policy')
         source,frozen = freeze_input(input_directory or WORK/'precomputed/outputs/current')
@@ -194,6 +201,8 @@ def run(input_directory=None, output_root=None):
         if len(physical.sources)==465892:
             if (int(physical.sources.allow_general.sum()),int(physical.sources.allow_wheelchair.sum())) != (465861,430496):
                 raise AssertionError('Eligible source counts differ from agreed snapshot')
+        progress('Audit original source evidence and remaining junction/cost diagnostics')
+        audit = prepare_audit(physical, source, frozen)
         progress('3/6 Save and reopen every physical geometry, attribute, null and correction')
         save_physical(directory,physical)
         reopened = read_physical(directory)
@@ -211,23 +220,56 @@ def run(input_directory=None, output_root=None):
                 save_routing(directory,graph)
                 loaded = _read_routing(directory,reopened,wheelchair,metric)
                 summary['validation'] = verify_routing(graph,loaded)
+                if metric=='time' and len(physical.sources)==465892:
+                    summary['real_lift_regressions'] = check_lift_connections(loaded)
+                if len(physical.sources)==465892:
+                    summary['real_endpoint_preference_regression'] = check_repaired_endpoint_cluster(loaded)
+                progress('Audit source-ID-based routes in reopened '+key)
+                audit['routing'][key] = audit_routing(loaded, audit)
                 report['routing'][key] = summary
                 del graph,loaded
                 gc.collect()
         progress('5/6 Recheck frozen hashes and write validation/manifest')
+        write_json(directory/'source_routing_audit.json',audit)
+        if read_json(directory/'source_routing_audit.json') != audit:
+            raise AssertionError('Source/routing audit changed on reopen')
+        (directory/'source_routing_audit.md').write_text(audit_markdown(audit))
+        report['source_routing_audit'] = audit_summary(audit)
+        report['source_routing_audit_roundtrip'] = True
         for name,digest in frozen['files'].items():
             if sha256(source/name) != digest:
                 raise ValueError('Frozen Step 1 artifact changed during build: '+name)
+        for name, item in audit['inputs'].items():
+            if sha256(WORK/item['path']) != item['sha256']:
+                raise ValueError('Original audit input changed during build: '+name)
         if read_json(directory/'model_policy.json') != frozen['policy']:
             raise AssertionError('Graph policy differs from frozen input policy')
         if any(sha256(p) != code_hashes[p.name] for p in code_paths):
             raise ValueError('Implementation changed during build')
+        if previous_report:
+            keys = ['nodes','physical_pieces','source_rows','general_eligible_sources','wheelchair_eligible_sources']
+            comparison = {'previous_run':previous.name,
+                          'previous_report_sha256':sha256(previous/'validation_report.json'),
+                          'physical':{k:{'before':previous_report['physical'][k],
+                                         'after':report['physical'][k],
+                                         'delta':report['physical'][k]-previous_report['physical'][k]} for k in keys},
+                          'routing':{}}
+            for key,value in report['routing'].items():
+                comparison['routing'][key] = {k:{'before':previous_report['routing'][key][k],
+                                                 'after':value[k],
+                                                 'delta':value[k]-previous_report['routing'][key][k]}
+                                              for k in ['states','active_states','weak_components','strong_components',
+                                                        'stored_entries','stored_zero_cost_entries']}
+            report['comparison_to_previous'] = comparison
+            write_json(directory/'comparison_to_previous.json',comparison)
         report['implementation_hashes_rechecked'] = True
         report['frozen_hashes_rechecked'] = True
+        report['audit_input_hashes_rechecked'] = True
         report['runtime_seconds'] = round(time.perf_counter()-start,3)
         peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         report['peak_process_memory_mib'] = round(peak/(1024**2 if sys.platform=='darwin' else 1024),3)
-        report['limitations'] = ['Ambiguous candidate junctions remain disconnected; review.jsonl preserves evidence.',
+        report['limitations'] = ['Ambiguous inferred merges remain declined; source_routing_audit.json distinguishes existing paths from missing routes.',
+            'Original non-lift vertical intervals and unrepresentable Tobler times remain unavailable; healthy adjacent pieces remain usable.',
             'Connection height tolerance is a modelling rule, not source elevation accuracy.',
             'Wheelchair times use the agreed shared Tobler assumption, not measured wheelchair speeds.',
             'No estate/destination snapping, journey subcosts or final ranking in Step 2.',
@@ -241,6 +283,9 @@ def run(input_directory=None, output_root=None):
             'all_sources_accounted_for':True,'all_spatial_values_reopened':True,
             'all_profiles_and_review_reopened':True,'all_four_matrices_reopened':True,
             'shortest_path_validation_passed':True,'input_and_code_hashes_rechecked':True,
+            'real_lift_regressions':{k:v['real_lift_regressions'] for k,v in report['routing'].items()
+                                     if 'real_lift_regressions' in v},
+            'source_routing_audit':report['source_routing_audit'],
             'limitations':report['limitations']})
         write_json(directory/'SUCCESS.json',{'run_id':run_id,'validation':'passed',
                     'completed_utc':datetime.now(timezone.utc).isoformat()})

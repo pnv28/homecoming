@@ -1,0 +1,161 @@
+{
+  "previous_run": "20261014T101626Z-eaef8030",
+  "previous_report_sha256": "91e08d3c3451eaed8ea30ffaa43d48308fc5c42fef35fc44dfb72b808cd0005c",
+  "physical": {
+    "nodes": {
+      "before": 397197,
+      "after": 397225,
+      "delta": 28
+    },
+    "physical_pieces": {
+      "before": 466819,
+      "after": 466406,
+      "delta": -413
+    },
+    "source_rows": {
+      "before": 465892,
+      "after": 465892,
+      "delta": 0
+    },
+    "general_eligible_sources": {
+      "before": 465861,
+      "after": 465861,
+      "delta": 0
+    },
+    "wheelchair_eligible_sources": {
+      "before": 430496,
+      "after": 430496,
+      "delta": 0
+    }
+  },
+  "routing": {
+    "general_distance": {
+      "states": {
+        "before": 397197,
+        "after": 397225,
+        "delta": 28
+      },
+      "active_states": {
+        "before": 397196,
+        "after": 397224,
+        "delta": 28
+      },
+      "weak_components": {
+        "before": 507,
+        "after": 507,
+        "delta": 0
+      },
+      "strong_components": {
+        "before": 533,
+        "after": 533,
+        "delta": 0
+      },
+      "stored_entries": {
+        "before": 923309,
+        "after": 923256,
+        "delta": -53
+      },
+      "stored_zero_cost_entries": {
+        "before": 2,
+        "after": 50,
+        "delta": 48
+      }
+    },
+    "general_time": {
+      "states": {
+        "before": 400973,
+        "after": 401001,
+        "delta": 28
+      },
+      "active_states": {
+        "before": 400972,
+        "after": 401000,
+        "delta": 28
+      },
+      "weak_components": {
+        "before": 510,
+        "after": 510,
+        "delta": 0
+      },
+      "strong_components": {
+        "before": 558,
+        "after": 558,
+        "delta": 0
+      },
+      "stored_entries": {
+        "before": 931310,
+        "after": 931221,
+        "delta": -89
+      },
+      "stored_zero_cost_entries": {
+        "before": 3800,
+        "after": 3782,
+        "delta": -18
+      }
+    },
+    "wheelchair_distance": {
+      "states": {
+        "before": 397197,
+        "after": 397225,
+        "delta": 28
+      },
+      "active_states": {
+        "before": 386254,
+        "after": 386273,
+        "delta": 19
+      },
+      "weak_components": {
+        "before": 8255,
+        "after": 8255,
+        "delta": 0
+      },
+      "strong_components": {
+        "before": 8255,
+        "after": 8255,
+        "delta": 0
+      },
+      "stored_entries": {
+        "before": 854425,
+        "after": 854356,
+        "delta": -69
+      },
+      "stored_zero_cost_entries": {
+        "before": 2,
+        "after": 40,
+        "delta": 38
+      }
+    },
+    "wheelchair_time": {
+      "states": {
+        "before": 400973,
+        "after": 401001,
+        "delta": 28
+      },
+      "active_states": {
+        "before": 390029,
+        "after": 390048,
+        "delta": 19
+      },
+      "weak_components": {
+        "before": 8257,
+        "after": 8257,
+        "delta": 0
+      },
+      "strong_components": {
+        "before": 8304,
+        "after": 8304,
+        "delta": 0
+      },
+      "stored_entries": {
+        "before": 862406,
+        "after": 862301,
+        "delta": -105
+      },
+      "stored_zero_cost_entries": {
+        "before": 3800,
+        "after": 3782,
+        "delta": -18
+      }
+    }
+  }
+}
