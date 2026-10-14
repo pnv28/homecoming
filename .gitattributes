@@ -3,3 +3,5 @@ work/precomputed/**/*.sqlite filter=lfs diff=lfs merge=lfs -text
 work/precomputed/outputs/step_2/runs/**/*.npz filter=lfs diff=lfs merge=lfs -text
 work/precomputed/outputs/step_2/runs/**/*.csv filter=lfs diff=lfs merge=lfs -text
 work/precomputed/outputs/step_2/runs/**/*.jsonl filter=lfs diff=lfs merge=lfs -text
+work/precomputed/outputs/step_3/runs/**/*.npz filter=lfs diff=lfs merge=lfs -text
+work/precomputed/outputs/step_3/runs/**/*.csv filter=lfs diff=lfs merge=lfs -text

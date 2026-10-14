@@ -1,6 +1,6 @@
 # Project context, agreed instructions, and agent handoff
 
-Last updated: 14 October 2026.
+Last updated: 2026-10-14 23:08:55 HKT (UTC+08:00)
 
 ## Read this first
 
@@ -15,7 +15,11 @@ Distinguish these statuses:
 - **Accepted assumption:** the user deliberately accepts it for this model, even when source documentation is incomplete.
 - **Open decision or suggested implementation:** do not present it as agreed or completed.
 
-**Latest request:** update this context after the verified cleanup and instruction-file reorganisation. Step 2 documents now live in `work/instructions/step_2/`; use the links below. This documentation update does not authorise another commit or push.
+**Latest request:** implement and verify the agreed Step 3 attachment plan. Implementation is complete in local successful run **`20261014T145819Z-4d15d1a3`**. No commit or push was requested or performed.
+
+**Step 3 result:** preserve all **244 estates, 44 hospitals, 611 MTR access points and 9,264 bus stops** (10,163 source points), with **20,814 mode/metric records**. The augmented physical graph has **406,540 nodes / 475,721 pieces**. All four routing matrices pass exact reopen and shortest-path checks; original profile evidence, directional cost conservation and upstream source-ID endpoint/lift regressions pass. **112 tests pass**. Frozen Step 2 `20261014T105436Z-8fe534aa` and Step 1 `20261014T090829Z-20d0139c` are unchanged and retained. Read [the Step 3 implementation](step_3/step_3_implementation.md), [completed plan](step_3/step_3_plan.md) and [full validation report](../precomputed/outputs/step_3/current/validation_report.md).
+
+**Step 3 connector assumptions:** one closest suitable ordinary outdoor path per point/mode/metric; ordinary indoor paths are a flagged fallback within the same limit. Limits are inclusive: **200 m** for estates/hospitals/MTR and **50 m** for buses. Straight horizontal connectors count distance and flat Tobler time. Source-point heights remain unknown; only derived attachment points carry interpolated original HKPD height. Unknown levels, ties, near alternative levels, indoor fallback and non-bus connectors over 50 m are recorded. No automatic attachment to bridges, tunnels, stairs or equipment interiors. Estate terminals depart only, destination terminals arrive only (including lift states); terminals cannot form network shortcuts. Every excluded/unattached record remains visible. Attachment does not establish estate-to-target reachability; hospital preferences, subcosts and ranking remain later work.
 
 **Cleanup result:** cleaned old build artifacts. Removed the superseded Step 1 run `20261013T121410Z-c823aaf9`, Step 2 runs `20261014T092300Z-399fee39` / `20261014T101626Z-eaef8030`, and 14 failed staging directories, reclaiming **3.866 GiB**. Keep the selected Step 2 run `20261014T105436Z-8fe534aa`, its frozen Step 1 input `20261014T090829Z-20d0139c`, the active MTR output, original sources and verified network extraction. Compact historical reports/manifests are retained under `precomputed/history/`. This explicit cleanup request supersedes older instructions to retain complete historical builds; older test reports describe checks performed before cleanup. Do not restore removed bulky outputs merely to satisfy those historical statements. No commit or push requested. See [the cleanup inventory](../precomputed/history/cleanup_20261014.json).
 
@@ -37,7 +41,7 @@ Distinguish these statuses:
 
 The MTR physical-station and mobility-access masters are implemented as separate outputs described below. The source-folder rename to **`work/original_data`** is complete. Historical saved-run manifests retain their original paths: resolve their old `work/data/` or work-relative `data/` prefix through `work/original_data/` or `original_data/`. The repository-root `data/` directory is unchanged.
 
-**Other agreed policies:** allow stairs for general journeys; the implemented graph `wheelchair` parameter excludes stairs, escalators and travelators. Wheelchair bus candidates exclude GMB services. Bus scope is KMB/CTB/GMB only. Unknown boarding codes become derived code 99 and are assumed to allow both pickup and drop-off. If no hospital is selected, consider all 44 institutions. Each estate has three subcosts (MTR, bus, hospital); their final combination is deliberately undecided. Standard Tobler is adopted for all eligible non-lift paths in both modes under the Step 2 modelling assumption. Equal endpoint heights use at most two rounds of four random internal samples, with repeatable sampling and separately summed uphill/downhill interval times. Step 2 implements these pedestrian graph and cost rules; estate/destination attachment, journey subcosts and ranking remain later work.
+**Other agreed policies:** allow stairs for general journeys; the implemented graph `wheelchair` parameter excludes stairs, escalators and travelators. Wheelchair bus candidates exclude GMB services. Bus scope is KMB/CTB/GMB only. Unknown boarding codes become derived code 99 and are assumed to allow both pickup and drop-off. If no hospital is selected, consider all 44 institutions. Each estate has three subcosts (MTR, bus, hospital); their final combination is deliberately undecided. Standard Tobler is adopted for all eligible non-lift paths in both modes under the Step 2 modelling assumption. Equal endpoint heights use at most two rounds of four random internal samples, with repeatable sampling and separately summed uphill/downhill interval times. Step 2 implements the pedestrian graph and cost rules; Step 3 implements estate/destination attachments. Journey subcosts and ranking remain later work.
 
 ## 1. Project goal
 
@@ -47,7 +51,7 @@ The four allocation categories are **Urban, Extended Urban, New Territories, and
 
 Use the pedestrian network for journeys. Hospitals use pedestrian-network distance; public transport uses gradient-adjusted walking time. Straight-line distances are not the ranking metric. District filtering applies to candidate estates; do not restrict the walking network or targets to that district merely because the user selected it.
 
-The agreed mode rules supersede the original universal no-stairs requirement: allow stairs in the general network. The implemented graph `wheelchair` parameter selects the relevant path eligibility rules. With `wheelchair=true`, exclude stairs, escalators and travelators. Both modes use Tobler for every eligible non-lift interval and the lift-entry rule in Section 5.5. Estate/destination attachment and journey calculations remain later work.
+The agreed mode rules supersede the original universal no-stairs requirement: allow stairs in the general network. The implemented graph `wheelchair` parameter selects the relevant path eligibility rules. With `wheelchair=true`, exclude stairs, escalators and travelators. Both modes use Tobler for every eligible non-lift interval and the lift-entry rule in Section 5.5. Step 3 implements estate/destination attachment; journey subcosts remain Step 4.
 
 **Final-output terminology:** an estate's final **cost** combines three separate **subcosts**: MTR, bus and hospital. The transport subcost algorithms use gradient-adjusted walking time; the hospital subcost algorithm uses pedestrian-network distance. The method of combining or scaling these three subcosts into the final cost has **not been decided**. Do not silently adopt a weighted sum, illustrative weights or a single minimum across MTR/bus/hospital.
 
@@ -92,7 +96,7 @@ Working X/Y coordinates use EPSG:2326, with X=easting and Y=northing. Direct PyP
 
 Do not require collection of verified gates, entrances or block coordinates before proceeding. Label these points honestly as map points rather than certified entrances. Heights are unknown for those point inputs; do not manufacture Z=0.
 
-Later snapping still needs to connect each approximate point to an appropriate pedestrian path. Connector distance and implausible connections should remain visible. A maximum snap distance and detailed connector rule have not been agreed.
+Step 3 connects each approximate point to a suitable ordinary path under the agreed inclusive 200 m/50 m limits. Connector distance, level uncertainty, indoor fallback and unattached statuses remain visible. See the Step 3 result and plan above for the implemented rules.
 
 ### 3.4 Height-aware pedestrian junctions
 
@@ -311,7 +315,7 @@ The `outputs/current`, `outputs/step_2/current` and `outputs/mtr_master` links s
 
 The [history directory](../precomputed/history/README.md) contains compact reports, manifests, policies, identity records and regional summaries for the three removed snapshots. These are metadata archives, not loadable builds: geometry, routing matrices, profiles and mappings from those superseded runs were removed. `original_SUCCESS.json` records an old completion and is not a current successful-build marker. Historical artifact hashes and earlier test reports describe checks performed before cleanup; the cleanup inventory records retained metadata hashes and the successful post-cleanup checks.
 
-**Historical Step 1 scope:** that run did not implement production graph construction, Enabled filtering, snapping/connector construction, routing costs, distance/time caches, or ranking. Step 2 now implements graph construction and both cost models; use its implementation/review document for full-data publication status. Estate/destination connectors and ranking remain later work. The local gradient demonstrations are examples, not completion of these later stages.
+**Historical Step 1 scope:** that run did not implement production graph construction, Enabled filtering, snapping/connector construction, routing costs, distance/time caches, or ranking. Step 2 now implements graph construction and both cost models; use its implementation/review document for full-data publication status. Step 3 now implements estate/destination connectors; journey subcosts and ranking remain later work. The local gradient demonstrations are examples, not completion of these later stages.
 
 The previous successful full Step 1 snapshot was **`20261013T121410Z-c823aaf9`**, then selected through `work/precomputed/outputs/current/`. It passed with **zero errors, 14 warning groups and 31 passing tests**. All six GeoDataFrames, sixteen reference tables, eight embedded MTR JSON files and the policy snapshot passed full read-back checks. All 23 source hashes were rechecked before publication. Its full build was removed during cleanup; its reports remain in the history directory. The still earlier `20261013T081016Z-b7e527bb` run and its 93 row-level warnings are historical references, not an available current build. Lower warning count reflects resolved physical matching, accepted assumptions recorded as assumptions, and grouped retained source gaps; it does not mean all missing evidence was resolved.
 
@@ -411,7 +415,7 @@ The statuses below distinguish remaining implementation/source questions from ac
 - [X] **Old-build cleanup and verification:** remove three superseded builds and 14 failed candidates, reclaim 3.866 GiB, retain compact historical metadata, and verify all 30 selected Step 2 artifact hashes, seven frozen Step 1 hashes, selected links, metadata hashes and current graph loading/source-ID regressions. The current builds and original inputs remain available.
 - [ ] **Original vertical/gradient limitations:** 25 sources contain original vertical intervals and one source has unrepresentable Tobler time. Healthy adjacent pieces are now usable; replacement source geometry/gradient is unsupported. Four invalid pieces per mode still have no finite endpoint time route. Do not interpret recorded evidence as a source repair.
 - [X] **Physical graph implementation:** Step 2 implements and tests directed connections, complete compatible clusters, height/floor checks, mode exclusions and disabled-path filtering. Step 1 continues to preserve all source rows and prepare base candidates. No schedule checks or maximum ramp-slope cutoff are introduced.
-- [X] **MTR candidate preparation/integration:** all 611 points are retained, physical identities/evidence are integrated and base mode/equipment candidate flags are prepared. Step 2 implements pedestrian graph connections and mode filtering. Attaching MTR access points to the graph and calculating estate-to-MTR journeys remain Steps 3 and 4.
+- [X] **MTR candidate preparation/integration:** all 611 points are retained, physical identities/evidence are integrated and base mode/equipment candidate flags are prepared. Step 2 implements pedestrian graph connections and mode filtering. Step 3 now attaches eligible MTR access points; calculating estate-to-MTR journeys remains Step 4.
 - [ ] **Unnamed MTR access codes:** physical station matching is resolved in the new masters. Of the old 12 parsing cases, two alternate name formats now parse; ten source points genuinely supply no named exit code. Retain their coordinates and null codes unless supported exit labels are obtained. The old 45-case report has not been rewritten.
 - [ ] **Facility IDs 70/888:** 72 facility rows refer to these station IDs absent from the station CSV. These are two missing station identities, not 72 stations. Identify/document them without guessing.
 - [X] **Equipment-difference decision recorded:** accept Tin Shui Wai C, Diamond Hill A2 and LOHAS Park B as mobility access points; no exact ramp/lift/same-level reconciliation is required. Both source descriptions remain preserved. This closes the modelling question, not the documentary difference.
@@ -422,7 +426,7 @@ The statuses below distinguish remaining implementation/source questions from ac
 - [X] **Apply the latest warning-review decisions in implementation:** executable policy and canonical site lookup were updated and validated in Step 1 run `20261014T090829Z-20d0139c`. All original versions and unresolved reference evidence remain preserved.
 - [X] **Bus candidate preparation:** derive unknown code 99 with assumed pickup/drop-off permission, retain raw values and derive KMB/CTB/GMB general candidates plus KMB/CTB wheelchair candidates. Actual route reachability/cost calculation is unfinished.
 - [ ] **Hospital-scope implementation:** all 44 institutions are included when none is selected. Implement the settled rule; do not reopen A&E-only scope as an unanswered question.
-- [ ] **Estate/destination attachment:** Step 2 has implemented and tested internal network connections and tolerances. Step 3 still needs connector rules and snapping for estate/hospital map points and transport targets. The map-point approximation is accepted; maximum snap distance and detailed connector rules remain undecided.
+- [X] **Estate/destination attachment:** Step 3 is implemented and fully verified in `20261014T145819Z-4d15d1a3`. The agreed 200 m/50 m limits, flat connector costs, outdoor preference, indoor fallback, level warnings, source-profile subdivisions and directed terminals are implemented. See the Step 3 result above. Subcosts and final ranking remain later work.
 - [ ] **Subcost/ranking implementation:** minimum reachable route cost within each eligible target group is agreed. Implement the three separate subcosts and retain target IDs/units/reachability. Combining/scaling them into final cost and handling wholly unreachable target groups in that final ranking are deliberately deferred; original recommended weights are not agreed settings.
 - [ ] **Optional later checks:** DTM use, new-estate allocation verification, dataset-currency review and interpretation of co-located records where relevant. Do not turn these into unnecessary prerequisites for accepted assumptions.
 
@@ -442,11 +446,12 @@ The farther points belong to one source polyline. The same magnitude is therefor
 ## 12. Documents to consult next
 
 1. This handoff for the latest user decisions and remaining choices.
-2. [Step 2 plan](step_2/step_2_plan.md) and [implementation/review](step_2/step_2_implementation.md) for current graph/cost rules and validated outputs.
-3. [Step 1 human-readable plan](step_1/step_1_implementation_human_readable.md) for detailed explanations and checklists. Its older resolution entries must be interpreted with the later accepted assumptions above.
-4. [Step 1 technical plan](step_1/step_1_implementation_plan.md) for implementation structure.
-5. [Original estate-ranking design](estate_ranking_design.md) for the overall pipeline; later decisions here override earlier suggestions, notably the hospital distance model and ignored schedules.
-6. [Earlier chat export](whole_chat_export.md) for historical context; it does not contain all decisions made after it was prepared.
-7. [Provider-document review](../precomputed/docs/step_1_provider_documentation_review.md), [latest validation report](../precomputed/outputs/current/validation_report.md), and [MTR review CSV](../precomputed/outputs/current/mtr_match_review.csv) for evidence and snapshot details.
+2. [Step 3 plan](step_3/step_3_plan.md) and [implementation](step_3/step_3_implementation.md) for facility connections, terminal APIs and validated coverage.
+3. [Step 2 plan](step_2/step_2_plan.md) and [implementation/review](step_2/step_2_implementation.md) for current graph/cost rules and validated outputs.
+4. [Step 1 human-readable plan](step_1/step_1_implementation_human_readable.md) for detailed explanations and checklists. Its older resolution entries must be interpreted with the later accepted assumptions above.
+5. [Step 1 technical plan](step_1/step_1_implementation_plan.md) for implementation structure.
+6. [Original estate-ranking design](estate_ranking_design.md) for the overall pipeline; later decisions here override earlier suggestions, notably the hospital distance model and ignored schedules.
+7. [Earlier chat export](whole_chat_export.md) for historical context; it does not contain all decisions made after it was prepared.
+8. [Provider-document review](../precomputed/docs/step_1_provider_documentation_review.md), [latest validation report](../precomputed/outputs/current/validation_report.md), and [MTR review CSV](../precomputed/outputs/current/mtr_match_review.csv) for evidence and snapshot details.
 
 When a future decision is made, update this handoff and affected checklist items. Record whether the change is a modelling assumption, a source-confirmed fact, or implemented behaviour. Keep unresolved items unchecked and do not claim that a discussion or demonstration completed production routing.

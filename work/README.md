@@ -3,9 +3,21 @@
 > **Latest decisions:** Read [the project context and agent handoff](instructions/project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
 
 
+Step 3 is implemented and fully verified in **`20261014T145819Z-4d15d1a3`**. It accounts for all **10,163 facility points** and publishes four augmented routing graphs. Read [the Step 3 guide](instructions/step_3/step_3_implementation.md) and [full-data validation report](precomputed/outputs/step_3/current/validation_report.md). Estate subcosts and ranking remain later work.
+
+```sh
+PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_3
+```
+
+```python
+from estate_ranking.attachments import read_attached_graph
+graph = read_attached_graph(wheelchair=False, metric="time")
+# graph.entities / attachments / connectors / terminals preserve source identities and statuses.
+```
+
 The audited Step 2 passed a full-data build: **397,225 nodes and 466,406 pieces**, with **465,861 general / 430,496 wheelchair eligible source paths** before splitting. All four mode/metric matrices passed persistence and shortest-path checks. The validated run is `20261014T105436Z-8fe534aa`. Its [source/routing audit](precomputed/outputs/step_2/current/source_routing_audit.md) records the repaired endpoint connection, 29 recovered healthy pieces and retained original-source limitations.
 
-Step 2 implementation and review: [instructions/step_2_implementation.md](instructions/step_2_implementation.md). The latest plan adopts shared Tobler costs for both modes, excludes disabled paths, and charges 30 seconds per original lift identity on entry. Older deferred-speed notes below describe historical snapshots.
+Step 2 implementation and review: [instructions/step_2/step_2_implementation.md](instructions/step_2/step_2_implementation.md). The latest plan adopts shared Tobler costs for both modes, excludes disabled paths, and charges 30 seconds per original lift identity on entry. Older deferred-speed notes below describe historical snapshots.
 
 Build all four directed graphs from the successful Step 1 snapshot, from the repository root:
 
@@ -34,7 +46,7 @@ This Python pipeline reads the selected local sources, aligns horizontal locatio
 
 **All routes are assumed always open.** `AccessTime` and `AccessTimeDetails` are not loaded, checked, or exported. Any original `AccessTimeID` is an inert attribute. The pipeline retains all source records and prepares mode-candidate flags from the agreed rules: general paths retain stairs; wheelchair paths exclude ordinary stairs/escalators/travelators and WheelchairBarrier=1; general equipment excludes stair lifts/wheelchair aids. These are candidates, not connected routes or computed costs.
 
-The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite now passes **89 tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
+The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite now passes **112 tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
 
 From the repository root:
 

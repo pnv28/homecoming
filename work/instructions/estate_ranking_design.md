@@ -1,6 +1,6 @@
 # Estate ranking: current design and implementation stages
 
-Updated 14 October 2026 after the user's warning-review decisions. Read [project_context_and_decisions.md](project_context_and_decisions.md) for the complete decisions. [routing_policy.json](../config/routing_policy.json) and the saved Step 1 run describe the previous implementation; the latest decisions below have been documented but not applied in a new output run. These instructions supersede the earlier universal no-stairs outline.
+Updated 14 October 2026 after the verified Step 3 implementation. Read [project_context_and_decisions.md](project_context_and_decisions.md) for complete decisions. Step 1 `20261014T090829Z-20d0139c`, Step 2 `20261014T105436Z-8fe534aa` and Step 3 `20261014T145819Z-4d15d1a3` are successful saved outputs. Steps 4 and 5 remain later work.
 
 ## Purpose and final output
 
@@ -39,7 +39,7 @@ Use the existing 276 mobility access records as the complete wheelchair MTR targ
 
 Bus operator selection applies to services before aggregating stops. Joint services qualify through an allowed operator; a mixed GMB/KMB stop is not discarded when its KMB service qualifies. Other operators remain preserved in source data but are outside the bus subcost.
 
-There is no maximum ramp-slope cutoff for now. Preserve all original rows so both modes can be calculated later. Candidate flags prepare the rules; they do not establish real network connectivity or physical equipment coordinates. Wheelchair speed is explicitly deferred, and current walking estimates must not be presented as a wheelchair travel-time model.
+There is no maximum ramp-slope cutoff for now. Preserve all original rows so both modes can be calculated later. Candidate flags prepare the rules; they do not establish real network connectivity or physical equipment coordinates. Both modes use the agreed shared standard Tobler assumption on eligible non-lift paths; this is a modelling choice, not a measured wheelchair speed.
 
 ## 1. Harmonise and prepare the data — implemented and rechecked
 
@@ -61,7 +61,7 @@ Original inputs are in `work/original_data/`; selected older supplementary files
 8. Validate identities, geometry, coordinates, source accounting, estate assignments and required relationships. Save diagnostics for unresolved source references; do not invent missing station identities or equipment locations.
 9. Write staged GeoPackage/SQLite/JSON/CSV outputs. Reopen every geometry/attribute/null/reference value, including the actual GeoDataFrames, and recheck all 23 source hashes before selecting the successful run.
 
-For the next implementation update, select the Castle Peak Hospital supporting site record with the latest `LastAmendmentDate`: SiteID 1503020249, amended **13 July 2026**. Preserve both original site records, but use only the selected version where one canonical site description is needed. This does not create a second hospital target. Missing terminal, floor and building references are non-blocking Step 1 warnings; ignore them as investigation tasks and do not discard their paths. Preserve the original IDs and diagnostics. This decision does not waive ordinary geometry, height or connectivity checks. Missing site references and distance-post/path references are separate findings whose status is unchanged.
+Step 1 selects the Castle Peak Hospital supporting site record with the latest `LastAmendmentDate`: SiteID 1503020249, amended **13 July 2026**. Preserve both original site records, but use only the selected version where one canonical site description is needed. This does not create a second hospital target. Missing terminal, floor and building references are non-blocking Step 1 warnings; ignore them as investigation tasks and do not discard their paths. Preserve the original IDs and diagnostics. This decision does not waive ordinary geometry, height or connectivity checks. Missing site references and distance-post/path references are separate findings whose status is unchanged.
 
 The full rerun passed with **476,153 spatial records, zero blocking errors, 14 warning groups and 31 passing tests**. Warnings document actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
 
@@ -86,7 +86,7 @@ network = read_geodataframe("precomputed/outputs/current", "network")
 
 The loaders restore nullable integer/boolean/string fields and preserve CRS, geometry Z and vertical metadata. Internal `SpatialDataset` containers support efficient ingestion; they are not the public output type. See [both Step 1 plans](step_1/) for detailed explanations and completed checklists.
 
-## 2. Build directed pedestrian connections and route costs — later work
+## 2. Build directed pedestrian connections and route costs — implemented and verified
 
 ### Explanation for the team
 
@@ -95,7 +95,7 @@ A graph connects usable pieces of the pedestrian network. A point where a bridge
 ### Steps we will take
 
 1. Apply the selected mode's candidates/equipment rules, preserving raw sources and explicit unknowns. Inspect `Enabled` semantics where needed without reintroducing schedules. Do not require investigation of the accepted missing terminal/floor/building references; use available geometry, heights and connection evidence. Assess other source gaps only where a required operation depends on them.
-2. Build nodes/connections at appropriate endpoints and junctions. Split paths where a real connection meets their interior. Preserve separate levels and avoid merging every coincident XY location. Choose and verify connection tolerances against the source accuracy/data.
+2. Build nodes/connections at appropriate endpoints and junctions. Split paths where a real connection meets their interior. Preserve separate levels and avoid merging every coincident XY location. Use the agreed inferred-junction tolerances of 0.10 m horizontal / 0.025 m height; they do not establish source elevation accuracy.
 3. Keep each source feature's gradient magnitude `n`, measured in radians. Use +n for rising heights and -n for falling heights in travel order. Reversing travel reverses those signs; the provider `Direction` field controls permitted travel, not slope sign.
 4. When endpoints A/B have equal heights despite a nonzero/differing gradient indication, take four repeatable random internal samples along the actual XYZ polyline. Interpolate from its existing vertices. If those samples remain level, take four additional distinct samples between the same A/B, giving ten points total. Stop after at most two rounds. If all remain level, assume relatively flat and use derived zero slope, preserving the raw gradient. If heights vary, order the points along the path and preserve separately signed portions. Do not recursively create further sampling rounds.
 5. For walking transport costs, use standard Tobler:
@@ -108,19 +108,28 @@ time_seconds = horizontal_length_metres * 3.6 / speed_kmh
 
 This converts the provider angle to rise/run input without recalculating its magnitude from heights. Sum separately signed interval times; a climb followed by a descent must account for both costs. Sampling uses exact height equality for now and seed 20261013, recorded in the policy snapshot. Reuse canonical sample positions for reverse travel.
 
-6. Use **30 seconds lift travel plus zero waiting time per lift use**, an accepted arbitrary assumption. Do not apply Tobler to a vertical lift or assign zero time from its zero horizontal length. Do not charge separately at every vertex. Other equipment timing and the wheelchair speed model remain to be specified.
+6. Use **30 seconds lift travel plus zero waiting time per lift use**, an accepted arbitrary assumption. Do not apply Tobler to a vertical lift or assign zero time from its zero horizontal length. Charge on entry to an original lift identity; its split-piece continuations are free, and a different identity incurs another 30 seconds. Non-lift travel resets lift identity. All other eligible equipment and both modes use standard Tobler.
 7. For hospital costs, use horizontal network distance in metres without slope/time penalties. Do not add lift seconds to hospital metres. Both hospital and transport journeys respect the selected mode's physical rules and direction constraints.
 8. Verify nonnegative costs, permitted directions, crossing levels and connectivity, including stairs allowed for general mode and excluded for wheelchair mode. Report unreachable paths/targets explicitly.
 
-Tobler was researched from the [user-supplied page](https://en.wikipedia.org/wiki/Tobler%27s_hiking_function) and [original report](https://escholarship.org/uc/item/05r820mz.pdf). Standard walking speed is about 5.04 km/h at zero slope. Its walking curve is adopted; wheelchair speed is deliberately deferred.
+Tobler was researched from the [user-supplied page](https://en.wikipedia.org/wiki/Tobler%27s_hiking_function) and [original report](https://escholarship.org/uc/item/05r820mz.pdf). Standard walking speed is about 5.04 km/h at zero slope. Its walking curve is adopted as the shared assumption for both modes.
 
-## 3. Connect estates and facilities to the graph — later work
+## 3. Connect estates and facilities to the graph — implemented and verified
 
-1. Attach accepted estate/hospital map points and eligible transport access/boarding points to suitable paths. Preserve source positions alongside derived connections.
-2. Use appropriate network levels and entrance/equipment evidence where available. Do not attach an access point to a nearby bridge solely because its XY distance is short.
-3. Decide and verify connector distances/tolerances; show unusually long or implausible connections. Never assign unknown point heights to zero without evidence.
-4. Split an edge at a legitimate connector position where needed. Attribute its length/cost consistently and preserve directionality.
-5. Keep failed or uncertain connections visible. The terrain model remains optional for later connector checks and must not overwrite elevated network Z.
+### Explanation for the team
+
+Connections preserve each supplied 2D map point and place an attachment on an eligible ordinary path. Outdoor paths are preferred; indoor paths are a flagged fallback. Straight flat connectors are accepted approximations, with inclusive limits of 200 m for estates/hospitals/MTR and 50 m for bus stops. Derived attachment points have original interpolated HKPD heights; facility heights remain unknown.
+
+### Completed actions
+
+1. [X] Freeze and verify the successful Step 2 and referenced Step 1 inputs and policies. Preserve all 10,163 original points and destination flags, including exclusions.
+2. [X] Select one closest suitable source position per mode and relevant metric, retaining segment identity for repeated visits. Exclude bridges, tunnels, stairs and equipment interiors from automatic attachment; retain them for subsequent routing where permitted.
+3. [X] Record indoor fallback, unknown levels, exact ties, near alternative heights/floors, long connectors and unattached reasons. Count horizontal distance and flat Tobler time; save zero-distance mappings without degenerate lines.
+4. [X] Collect all selections, reuse eligible same-source nodes within the existing tolerances, then subdivide original pieces without new cross-path junctions. Verify original profile evidence and preserve directional costs, samples, availability and lift identities.
+5. [X] Compile four augmented graphs with outgoing estate terminals and incoming destination terminals accepting lift states. Preserve distinct coincident identities and prevent shortcuts through facility terminals.
+6. [X] Validate all point records, spatial/null/cost roundtrips, terminals, shortest paths, components and frozen hashes before selecting a successful run under `outputs/step_3/current`.
+
+Read [the completed Step 3 plan](step_3/step_3_plan.md), [implementation/API guide](step_3/step_3_implementation.md) and [full-data validation](../precomputed/outputs/step_3/current/validation_report.md). Estate subcosts and final ranking remain later work.
 
 ## 4. Compute and cache the three subcosts — later work
 
@@ -138,6 +147,6 @@ Weights, scaling, reachability treatment, tie handling and the final combining m
 
 ## Remaining evidence and implementation boundaries
 
-Physical MTR identity matching is resolved. The user accepts the existing 276 mobility access points as the complete wheelchair MTR target pool, including the three equipment-description differences; additional mobility coverage and exact ramp/lift reconciliation are not prerequisites. Facility IDs 70/888, unnamed codes and unlocated descriptions remain preserved source unknowns; do not invent identities or coordinates. Missing terminal/floor/building references are accepted non-blocking limitations with no required investigation. Missing site and distance-post/path references remain separate findings. Castle Peak Hospital's latest-amendment selection is decided, with implementation still pending. Current allocation categories are complete; new estates require verification because the lookup uses documented geographic proxies.
+Physical MTR identity matching is resolved. The user accepts the existing 276 mobility access points as the complete wheelchair MTR target pool, including the three equipment-description differences; additional mobility coverage and exact ramp/lift reconciliation are not prerequisites. Facility IDs 70/888, unnamed codes and unlocated descriptions remain preserved source unknowns; do not invent identities or coordinates. Missing terminal/floor/building references are accepted non-blocking limitations with no required investigation. Missing site and distance-post/path references remain separate findings. Castle Peak Hospital's latest-amendment selection is implemented in the frozen Step 1 snapshot. Current allocation categories are complete; new estates require verification because the lookup uses documented geographic proxies.
 
 Step 1 prepares and preserves data and agreed candidate selections. It does not establish connected accessible journeys, execute the signed-gradient sampling/Tobler routing model, calculate the three subcosts or produce a final ranked list. Continue with later stages using the current context and saved policy, keeping unresolved items unchecked.
