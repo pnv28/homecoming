@@ -67,5 +67,30 @@ def add_network_candidates(network, policy, report):
         "rows_removed": 0, "wheelchair_barrier_true_excluded": True}
     report.checks["model_policy"] = {
         "recorded": True, "graph_or_route_costs_computed": False,
-        "walking_model": "standard_tobler", "wheelchair_speed_deferred": True,
+        "walking_model": "standard_tobler", "wheelchair_speed_deferred": False,
         "final_combination_decided": False}
+
+
+def canonical_sites(tables, policy, report):
+    """Preserve all source versions; expose a unique, explicitly selected lookup."""
+    from datetime import datetime
+    from .models import Table
+    table = next(t for t in tables if t.name == "PedRouteRelSitePoly")
+    groups = {}
+    for row in table.rows():
+        groups.setdefault(row["SiteID"], []).append(row)
+    selected = []
+    choice = policy["source_review"]["canonical_site"]
+    for key, rows in sorted(groups.items()):
+        if len(rows) > 1:
+            if key != choice["SiteID"]:
+                raise ValueError("Unreviewed site versions: " + str(key))
+            rows.sort(key=lambda r: datetime.strptime(r["LastAmendmentDate"], "%Y/%m/%d %H:%M:%S"))
+            if rows[-1]["LastAmendmentDate"] != choice["LastAmendmentDate"]:
+                raise ValueError("Canonical site date differs from accepted snapshot")
+        selected.append(rows[-1])
+    canonical = Table.from_rows("canonical_site_references", selected, types=table.types,
+                               metadata={"selection": choice, "all_original_versions_preserved": True})
+    report.checks["canonical_site_references"] = {"unique_sites": len(selected),
+        "castle_peak_record": next(r for r in selected if r["SiteID"] == choice["SiteID"])}
+    return canonical

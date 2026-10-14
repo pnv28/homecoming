@@ -154,7 +154,7 @@ def validate(datasets, tables, config, report):
         duplicates = {str(k): n for k, n in counts.items() if n > 1}
         if duplicates:
             report.warning("reference_versions", table,
-                           "Multiple source records share an entity ID; all versions retained, no canonical version chosen",
+                           "Multiple source records share an entity ID; all versions retained; canonical_site_references records the accepted selection",
                            details={"entity_field": primary, "duplicates": duplicates})
     for field, table in [("TerminalID", "PedRouteRelTerminalPoly"),
                          ("FloorID", "PedRouteRelFloorPoly"), ("SiteID", "PedRouteRelSitePoly")]:

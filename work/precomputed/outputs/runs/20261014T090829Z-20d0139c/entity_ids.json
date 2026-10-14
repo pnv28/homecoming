@@ -1,0 +1,866 @@
+{
+  "estate:Tak Long Estate": {
+    "id": "estate:05d5f317519c59ab84d4d2ae3e5b86fc"
+  },
+  "estate:Kai Ching Estate": {
+    "id": "estate:0241843d03545903b41f514c8c54e04a"
+  },
+  "estate:Choi Fook Estate": {
+    "id": "estate:422f747122975bac97a153a934501c5f"
+  },
+  "estate:Ching Ho Estate": {
+    "id": "estate:93ade74d78cb5049a3d475999563e6b8"
+  },
+  "estate:Hin Yiu Estate": {
+    "id": "estate:57a98e084b795fc09d2b9fbb685b71ce"
+  },
+  "estate:Mei Tin Estate": {
+    "id": "estate:2e89629cdaee5a7a8ec91a1b72dd5f40"
+  },
+  "estate:Cheung Ching Estate": {
+    "id": "estate:25a09a574441514895517d5864f23951"
+  },
+  "estate:Fu Shan Estate": {
+    "id": "estate:27340029ce8c5c7eaeab4559d2187f89"
+  },
+  "estate:Tai Hang Tung Estate": {
+    "id": "estate:7bb90ac6f56755278d866218dfcd0542"
+  },
+  "estate:Choi Tak Estate": {
+    "id": "estate:0fdf604a678c52f88c960b3010ac9610"
+  },
+  "estate:Lei Muk Shue (1) Estate": {
+    "id": "estate:56db9197cc55568684a7f904941b24ee"
+  },
+  "estate:Lei Muk Shue (2) Estate": {
+    "id": "estate:12ddd99a404659dd8d14f30aaabc416c"
+  },
+  "estate:Lei Muk Shue Estate": {
+    "id": "estate:fc352216e66e5b57a7e60c08625ee871"
+  },
+  "estate:Ka Fuk Estate": {
+    "id": "estate:42289e2c519e58c19998b77fd454191b"
+  },
+  "estate:Upper Ngau Tau Kok Estate": {
+    "id": "estate:74fa6106ebb056e590a58754da3cece3"
+  },
+  "estate:Yue Wan Estate": {
+    "id": "estate:74bcb512dc8253fe8cde5c578645aac3"
+  },
+  "estate:Fu Tung Estate": {
+    "id": "estate:f09fcc3d9b5b591eabb067ee9c6faeeb"
+  },
+  "estate:Nga Ning Court": {
+    "id": "estate:a1691f042ec2504e86ea2c3a2ba915a5"
+  },
+  "estate:Kam Peng Estate": {
+    "id": "estate:cc88f4db68af5ef0b835baab84f1ffa8"
+  },
+  "estate:Yat Tung (1) Estate": {
+    "id": "estate:d067e04a955d558ba7d9510a5c360511"
+  },
+  "estate:Yat Tung (2) Estate": {
+    "id": "estate:a7523758ea785ac0b98b3eef986fe93b"
+  },
+  "estate:Cheung Fat Estate": {
+    "id": "estate:fc9356d4ffa1593a8b56c59dfb93c1e9"
+  },
+  "estate:Lower Ngau Tau Kok Estate": {
+    "id": "estate:c11dfca969455e2bbc285eae530ed5cd"
+  },
+  "estate:Wang Tau Hom Estate": {
+    "id": "estate:054ce505801757a1b566c18882f02839"
+  },
+  "estate:Cheung Hang Estate": {
+    "id": "estate:18a4fb1190295c86b1a32f6586f43a04"
+  },
+  "estate:Cheung On Estate": {
+    "id": "estate:396b2576395c5b2ba28981d19201c0dd"
+  },
+  "estate:Yau Lai Estate": {
+    "id": "estate:bb62b088db865573bf0098714490441f"
+  },
+  "estate:Ap Lei Chau Estate": {
+    "id": "estate:9bd85e3501a050bb8d72c2d8281816cf"
+  },
+  "estate:Lei Tung Estate": {
+    "id": "estate:3d902e75cf505f728c8ff609a04ab617"
+  },
+  "estate:Fuk Loi Estate": {
+    "id": "estate:830cce14c0a35703a68485fa822e7eac"
+  },
+  "estate:Wu King Estate": {
+    "id": "estate:0b5579c96f0557dda8b9f986a1f2ce3e"
+  },
+  "estate:Lam Tin Estate": {
+    "id": "estate:af66c6bb60b95e9d9c03fbefaf5722c2"
+  },
+  "estate:Mei Tung Estate": {
+    "id": "estate:2f14f8b9a6e85b29a50429b10396a08b"
+  },
+  "estate:Hing Wah (1) Estate": {
+    "id": "estate:16364eb34597564b8dd0707b370cb9f5"
+  },
+  "estate:Cheung Kwai Estate": {
+    "id": "estate:457d334c3ce85314b4327f6000412ae6"
+  },
+  "estate:Hing Wah (2) Estate": {
+    "id": "estate:74aa0c317c9b5e1183742d67ec23652e"
+  },
+  "estate:Hong Tung Estate": {
+    "id": "estate:a8478e48c7e457928bcd94a9356fb5ed"
+  },
+  "estate:Model Housing Estate": {
+    "id": "estate:aabd9e589ae8504088c872b282c30113"
+  },
+  "estate:Oi Tung Estate": {
+    "id": "estate:2bd331e39ada58caa40acac0e47a062c"
+  },
+  "estate:Siu Sai Wan Estate": {
+    "id": "estate:81dd921cc1f25955b1d45acc08bf58e1"
+  },
+  "estate:Tsui Lok Estate": {
+    "id": "estate:ae92097622a05ef89b6f662798626768"
+  },
+  "estate:Tsui Wan Estate": {
+    "id": "estate:a15992931f0957d7818a5d0d2b21b651"
+  },
+  "estate:Wan Tsui Estate": {
+    "id": "estate:cf1d7dbab7f95c7d865e00710d2af01c"
+  },
+  "estate:Yiu Tung Estate": {
+    "id": "estate:105540f58ab45b76a8b16fc2996a1cb5"
+  },
+  "estate:Sun Chui Estate": {
+    "id": "estate:ed1dd5e524b259d294f1bd39712ea66a"
+  },
+  "estate:Sun Tin Wai Estate": {
+    "id": "estate:3f16e74fee185a1ab4f2e61b8897cc9c"
+  },
+  "estate:Po Tin Estate": {
+    "id": "estate:4061ae6f70e75b3d937d2bce204867dc"
+  },
+  "estate:Wo Che Estate": {
+    "id": "estate:87f2b58efef85c2b90ad1d1e22022dc2"
+  },
+  "estate:Sam Shing Estate": {
+    "id": "estate:cd46ffef596c512b960dfd402e5dbf62"
+  },
+  "estate:Yiu On Estate": {
+    "id": "estate:84ac1afda12f5bf2931e35efa1e68594"
+  },
+  "estate:Wing Cheong Estate": {
+    "id": "estate:f086e033765e5c97b306931df98a19f3"
+  },
+  "estate:Choi Yuen Estate": {
+    "id": "estate:0bfec2f4dca7538988960ac294d38506"
+  },
+  "estate:Tai Ping Estate": {
+    "id": "estate:334c68981a325a199f8ff6f74cf11a64"
+  },
+  "estate:Tin Ping Estate": {
+    "id": "estate:f862e2928a325cb7a1c3e311eb10e618"
+  },
+  "estate:Wah Ming Estate": {
+    "id": "estate:7fed67677a41578aa6f4970f5b4138d6"
+  },
+  "estate:Wah Sum Estate": {
+    "id": "estate:bb0c5c94f48e5d508b6a703694ef8450"
+  },
+  "estate:Yung Shing Court": {
+    "id": "estate:103be91e34e85ad582a89bc5b49e76d7"
+  },
+  "estate:Ma Hang Estate": {
+    "id": "estate:5d503520c5b4508397b0b295ec8f1b7e"
+  },
+  "estate:Shek Pai Wan Estate": {
+    "id": "estate:5b874d3ba64f5dfcadcc4fe7bcadde9e"
+  },
+  "estate:Wah Fu (I) Estate": {
+    "id": "estate:daf9bf071301532a915a571728c088c2"
+  },
+  "estate:Wah Fu (II) Estate": {
+    "id": "estate:0d7caa0053055418b2408b0a07e87594"
+  },
+  "estate:Wah Kwai Estate": {
+    "id": "estate:deac989b0fb1561cbea79d964f2b4f2d"
+  },
+  "estate:Oi Man Estate": {
+    "id": "estate:644f08d8fc0b55ae9b3a077e1af90cae"
+  },
+  "estate:Hoi Fu Court": {
+    "id": "estate:e161dd5d236e56cb84ce9fc0b3a9c0d8"
+  },
+  "estate:Chai Wan Estate": {
+    "id": "estate:e425cd556c41547f88bbfcc359d4bdd0"
+  },
+  "estate:Fung Wah Estate": {
+    "id": "estate:11a6d8bbbfce574da6342e8ef6d188b2"
+  },
+  "estate:Hing Man Estate": {
+    "id": "estate:6de03cb8bc725d159a4a0ca58dfd4e0e"
+  },
+  "estate:Cheung Wah Estate": {
+    "id": "estate:562106489a91586fb31b818843b59716"
+  },
+  "estate:Tai Wo Estate": {
+    "id": "estate:f55474e8d1eb56c7b8107649b7d7d96d"
+  },
+  "estate:Choi Ming Court": {
+    "id": "estate:a70e82bed7b95cbab72404cc207b7051"
+  },
+  "estate:Wan Tau Tong Estate": {
+    "id": "estate:0ae8f9009ec05126b25759ab1ec76dc6"
+  },
+  "estate:Choi Wan (I) Estate": {
+    "id": "estate:f109a3f6df01571cae6e735f6fc48e4f"
+  },
+  "estate:Chuk Yuen (North) Estate": {
+    "id": "estate:8b5f78ca22f056288ac25d58deadea63"
+  },
+  "estate:Chuk Yuen South Estate": {
+    "id": "estate:eb4572da9c87505582b998eec6728c77"
+  },
+  "estate:Lower Wong Tai Sin (2) Estate": {
+    "id": "estate:1fcaab8620dd522a88df9e357b6ff3c9"
+  },
+  "estate:Kin Ming Estate": {
+    "id": "estate:c1b6a9b766345945a99af5e9d795023b"
+  },
+  "estate:Fung Tak Estate": {
+    "id": "estate:ccdbb02edd455abcbd4c6b8eed6b2ba9"
+  },
+  "estate:King Lam Estate": {
+    "id": "estate:5b06d693b13e5577b5336626f8f4b351"
+  },
+  "estate:Lok Fu Estate": {
+    "id": "estate:0ad507bebbd65246bd576586606bf84d"
+  },
+  "estate:Yau Oi Estate": {
+    "id": "estate:cf6aca453e235294ac1db180a62a9d0b"
+  },
+  "estate:Shin Ming Estate": {
+    "id": "estate:8ef53032a89552479d82cf4ad073ef32"
+  },
+  "estate:Tin King Estate": {
+    "id": "estate:b98adf5fce6e5a99af6dd588a4f1cffb"
+  },
+  "estate:Tai Wo Hau Estate": {
+    "id": "estate:534c943749f952bdb583881d916242b0"
+  },
+  "estate:Lung Hang Estate": {
+    "id": "estate:ada509cb2dba57d184a60bd034b8a6f0"
+  },
+  "estate:Wah Lai Estate": {
+    "id": "estate:465806b3800551768d739d9490171584"
+  },
+  "estate:Tsing Yi Estate": {
+    "id": "estate:a54a9ca377b85b1bb7242575f38bd03d"
+  },
+  "estate:Kwai Hing Estate": {
+    "id": "estate:db873ef45f1d5545a122c2fe67186c5a"
+  },
+  "estate:Mei Lam Estate": {
+    "id": "estate:dc9b72e6dab15c858fd84ab7ee55f6bb"
+  },
+  "estate:Shek Lei (II) Estate": {
+    "id": "estate:606311d210025ac89a2600d21056336c"
+  },
+  "estate:Fu Tai Estate": {
+    "id": "estate:05832531b32954989f8bbeb3a692b304"
+  },
+  "estate:Kin Sang Estate": {
+    "id": "estate:0c263c601606513c8b3d8fb796070143"
+  },
+  "estate:Leung King Estate": {
+    "id": "estate:b876a5a03e225d6e9f6c305563a27e36"
+  },
+  "estate:Sha Kok Estate": {
+    "id": "estate:33e3768d7ce95d418723b8d0e273866b"
+  },
+  "estate:Shek Mun Estate": {
+    "id": "estate:5e4f1357fe535bdb8974fa79e0c603bf"
+  },
+  "estate:Yau Tong Estate": {
+    "id": "estate:693b65a0c6e455cb91bc8eaffa8bb5b9"
+  },
+  "estate:Ngan Wan Estate": {
+    "id": "estate:6c33caef7397515393c6c9c09d6548fa"
+  },
+  "estate:Hau Tak Estate": {
+    "id": "estate:99e609eb91385bbfb19862ee8c7a338a"
+  },
+  "estate:Lung Tin Estate": {
+    "id": "estate:2d22bee899cc532c95349d9fc959a288"
+  },
+  "estate:Hung Hom Estate": {
+    "id": "estate:a2157866ddc65f5ebe794e0d4eef3da9"
+  },
+  "estate:Shatin Pass Estate": {
+    "id": "estate:5c76820ace165e429ccdf18510d1cacc"
+  },
+  "estate:Choi Ying Estate": {
+    "id": "estate:80a96b4e79b35122a5b7ed7316287fea"
+  },
+  "estate:Ping Shek Estate": {
+    "id": "estate:390c931d0f7d5fc9855339168679a073"
+  },
+  "estate:Fu Shin Estate": {
+    "id": "estate:2d8aeaafee87518ba20213fbde961579"
+  },
+  "estate:Nam Cheong Estate": {
+    "id": "estate:fe39ebba474950f2a9a84303e8261c21"
+  },
+  "estate:Fu Cheong Estate": {
+    "id": "estate:c5d3def50885538fa5d513f58961db6c"
+  },
+  "estate:Lai Kok Estate": {
+    "id": "estate:22d05896fe4b5e969966b7e8d88c3108"
+  },
+  "estate:Lai On Estate": {
+    "id": "estate:f5162cd16ae952ac854a54e46151f9b0"
+  },
+  "estate:Lei Cheng Uk Estate": {
+    "id": "estate:4aa7077a5c0352a785be3ddf7a8d5f99"
+  },
+  "estate:Ko Cheung Court": {
+    "id": "estate:2b27979a7bcd5b4ea20488092bbd44a8"
+  },
+  "estate:Kwai Chung Estate": {
+    "id": "estate:8e8acb496b015e169ef21c115627d872"
+  },
+  "estate:Kwai Shing West Estate": {
+    "id": "estate:b6a017bded445ceaaa2eb95dcdc0453a"
+  },
+  "estate:Lai King Estate": {
+    "id": "estate:96c31ac80f145021b8afa29b9ca2ca0e"
+  },
+  "estate:Lai Yiu Estate": {
+    "id": "estate:ac8917c4f41f5196b0cfa3ac9141a503"
+  },
+  "estate:Hoi Lai Estate": {
+    "id": "estate:d4840fa9afd65f36aca9080338915369"
+  },
+  "estate:Ho Man Tin Estate": {
+    "id": "estate:278f92e08aed5fa39569dbbe050d06c4"
+  },
+  "estate:Shun Tin Estate": {
+    "id": "estate:63ff663941685159aca4845b6f12c1ab"
+  },
+  "estate:Chung On Estate": {
+    "id": "estate:cb974b6f864559b1983a170f3c235ba8"
+  },
+  "estate:Cheung Hong Estate": {
+    "id": "estate:d5ed924b73865fe383f0c0ff33815927"
+  },
+  "estate:Un Chau Estate": {
+    "id": "estate:42df883bc3f8565b9a142677f957605b"
+  },
+  "estate:Tai Yuen Estate": {
+    "id": "estate:60b02ec8c50d51c7896ee41d4dbfa0c1"
+  },
+  "estate:Lower Wong Tai Sin (1) Estate": {
+    "id": "estate:5b682774084051bbb42cff1806af8e60"
+  },
+  "estate:Tung Tau (II) Estate": {
+    "id": "estate:7232f0b0bc1e5fa7aa02ed6ef97e9435"
+  },
+  "estate:Upper Wong Tai Sin Estate": {
+    "id": "estate:aa521b5a39fc54009736870573224ecb"
+  },
+  "estate:Po Lam Estate": {
+    "id": "estate:cb5e21a383d159a5988e43e584306844"
+  },
+  "estate:Tsz Ching Estate": {
+    "id": "estate:f665e4fd80bf5036881ab45f9c43b1c3"
+  },
+  "estate:Sheung Tak Estate": {
+    "id": "estate:5f765b16fc515be48c09817652c120d9"
+  },
+  "estate:Tsz Hong Estate": {
+    "id": "estate:9bc7a7b328805c3d92b73f4fd00564be"
+  },
+  "estate:Tsz Man Estate": {
+    "id": "estate:f6b5cbee89ac5dec9abb3a229731240b"
+  },
+  "estate:Tsui Lam Estate": {
+    "id": "estate:df74d950e27253b38b4bb604a72164ed"
+  },
+  "estate:Ming Tak Estate": {
+    "id": "estate:126b56b288175c69980163693777539f"
+  },
+  "estate:Chun Shek Estate": {
+    "id": "estate:c894f8d28dea57d3aabcc17426d25ad0"
+  },
+  "estate:Heng On Estate": {
+    "id": "estate:66f7b85a53a65b45875943e3b537b41e"
+  },
+  "estate:Kwai Shing East Estate": {
+    "id": "estate:519aca1dc60a5029ba9c3bccb0a8cb6a"
+  },
+  "estate:Hin Keng Estate": {
+    "id": "estate:4d234a7b79005a8dbc27fee28aa0b8e3"
+  },
+  "estate:On Yam Estate": {
+    "id": "estate:83d32ef1a0fa56178f18672b74956adc"
+  },
+  "estate:Lee On Estate": {
+    "id": "estate:7a3d70ec3f7954caab55bbdf222bc599"
+  },
+  "estate:Shek Lei (I) Estate": {
+    "id": "estate:b8c8dde540335eb4b58a938cded7ab7d"
+  },
+  "estate:Tai Hing Estate": {
+    "id": "estate:dec45ef82d315271a1afb0e3f8f0c4fe"
+  },
+  "estate:Cheung Wang Estate": {
+    "id": "estate:7a976b5d7eee5060b907afda57a10b8d"
+  },
+  "estate:Easeful Court": {
+    "id": "estate:536711e1efda57c4bca6e51fc69a6dc5"
+  },
+  "estate:Kwai Fong Estate": {
+    "id": "estate:ef8eaf7f5f3652d2bdb1685bc56eb449"
+  },
+  "estate:Shek Wai Kok Estate": {
+    "id": "estate:cce328929e7d586c8529bd5369dd6d96"
+  },
+  "estate:Fu Heng Estate": {
+    "id": "estate:90339a7e06fd54cb9c3dc4e12617142e"
+  },
+  "estate:Choi Fai Estate": {
+    "id": "estate:3b2da6c1f1f4543787c1a8ac0c78dc77"
+  },
+  "estate:Kwong Fuk Estate": {
+    "id": "estate:95c3d8fd28d55023817672be4b64f713"
+  },
+  "estate:Wan Hon Estate": {
+    "id": "estate:6fb8d78a26535d72968db668198c629b"
+  },
+  "estate:Wo Lok Estate": {
+    "id": "estate:57eba98ed2c0516b9a87c171165cab28"
+  },
+  "estate:Choi Wan (2) Estate": {
+    "id": "estate:faf330bdada351ac8074860ab20ac325"
+  },
+  "estate:Grandeur Terrace": {
+    "id": "estate:1b1e298ddf4c56f79853b641c3cc4046"
+  },
+  "estate:Long Ping Estate": {
+    "id": "estate:e098a54104fd51d2818256a74fdd50ee"
+  },
+  "estate:Shui Pin Wai Estate": {
+    "id": "estate:1738b44aa6e153b88153023506bdf4a0"
+  },
+  "estate:Tin Chak Estate": {
+    "id": "estate:be054d2698af551fb2402076595e9542"
+  },
+  "estate:Tin Shui (1) Estate": {
+    "id": "estate:a16cb76f40445940b544c4da24e8b75d"
+  },
+  "estate:Tin Tsz Estate": {
+    "id": "estate:72dc73199f37502fb70107ae9f692db6"
+  },
+  "estate:Tin Yiu (1) Estate": {
+    "id": "estate:2deb0406d72d51f2bdce8cf48a94e145"
+  },
+  "estate:Tin Wah Estate": {
+    "id": "estate:ebe110f7b7265f3498c062d763fb0ab9"
+  },
+  "estate:Choi Ha Estate": {
+    "id": "estate:77170112c12f5c0ab05839f73737e478"
+  },
+  "estate:Tin Yan Estate": {
+    "id": "estate:bebe54c3e67b5886a6c8920b1eda7bbd"
+  },
+  "estate:Tin Yat Estate": {
+    "id": "estate:2ffd676bb8b952308a2da842d985ba21"
+  },
+  "estate:Yan On Estate": {
+    "id": "estate:33a4eea950e25e02b88897be93363c43"
+  },
+  "estate:Tin Yiu (2) Estate": {
+    "id": "estate:29a83d82e53d54eb9445af67d61d4880"
+  },
+  "estate:Sau Mau Ping (South) Estate": {
+    "id": "estate:3ae1e2ca679e50e3b7a3bc0c16b23ad1"
+  },
+  "estate:Tin Yuet Estate": {
+    "id": "estate:f6316404da275d0e98c81fd827ab4fbd"
+  },
+  "estate:Ko Yee Estate": {
+    "id": "estate:5890e44d09af5eaa839b01035ffd51ba"
+  },
+  "estate:Hing Tin Estate": {
+    "id": "estate:dd3b3b7c869c58ba9e1af90495806c4b"
+  },
+  "estate:Kai Tin Estate": {
+    "id": "estate:6519aab5613f55dda789a4620dbaaadb"
+  },
+  "estate:Kai Yip Estate": {
+    "id": "estate:356c02ef0f3e57f3ac6752c8cfdb2656"
+  },
+  "estate:Shan King Estate": {
+    "id": "estate:e7f7e18d5cc653b99c08a9522a42078a"
+  },
+  "estate:Kwong Tin Estate": {
+    "id": "estate:db63b65548b85f5db7ce4ccc6275e19d"
+  },
+  "estate:Lok Wah South Estate": {
+    "id": "estate:8d648c346dcf533ea92d6db82a077c8f"
+  },
+  "estate:Lok Wah North Estate": {
+    "id": "estate:304cb21c94385d6b94737d64b25d3a88"
+  },
+  "estate:On Tin Estate": {
+    "id": "estate:4d38d76cc1c653e8b37a785b4b18ceb3"
+  },
+  "estate:Ping Tin Estate": {
+    "id": "estate:1bb5e48f7a9f57e184dc9d8856ba04ff"
+  },
+  "estate:Po Tat Estate": {
+    "id": "estate:7aa59a91e27457d4a83b45d4339b4e79"
+  },
+  "estate:Sau Mau Ping Estate": {
+    "id": "estate:270551e347985dd6ada64c8cfaf34afe"
+  },
+  "estate:Shun On Estate": {
+    "id": "estate:0384e43859d75d1a9bf59bfaf2b7fbf6"
+  },
+  "estate:Tak Tin Estate": {
+    "id": "estate:0662eed0c907537ebba6cc16592fc430"
+  },
+  "estate:Tsui Ping (North) Estate": {
+    "id": "estate:98fd336ace1859e19ac4fd987bc28e8f"
+  },
+  "estate:Tsui Ping (South) Estate": {
+    "id": "estate:8f1e325c21fa5693bb773be88eb15686"
+  },
+  "estate:Sheung Lok Estate": {
+    "id": "estate:d66f57172f17516bb327dca5ef602a53"
+  },
+  "estate:Pok Hong Estate": {
+    "id": "estate:e9a99c3069a0596489f5ed21b230430a"
+  },
+  "estate:Cheung Shan Estate": {
+    "id": "estate:e8261f4d6a695f04bbb0815347be1803"
+  },
+  "estate:Shek Kip Mei Estate": {
+    "id": "estate:84604c31854e5e569b0ff241e18631c2"
+  },
+  "estate:Pak Tin Estate": {
+    "id": "estate:dd69fec546065500aef241874041c569"
+  },
+  "estate:Nam Shan Estate": {
+    "id": "estate:928eb8d5fe2655a685c65c5df3cbb4e7"
+  },
+  "estate:Tin Wan Estate": {
+    "id": "estate:58bee844a70458fcad120859fc14d848"
+  },
+  "estate:On Ting Estate": {
+    "id": "estate:f69f289262c653ca91382094c8ce8685"
+  },
+  "estate:Fortune Estate": {
+    "id": "estate:40cc07851bc1580e9d3126255597b34a"
+  },
+  "estate:Butterfly Estate": {
+    "id": "estate:109dbd6c56b85b8ea081f5c96e7a5fa6"
+  },
+  "estate:Tin Ching Estate": {
+    "id": "estate:52316a7b45c75a359f13c1ae38c0aa62"
+  },
+  "estate:Tin Heng Estate": {
+    "id": "estate:a900b0c573275a5897a087b5d59384fb"
+  },
+  "estate:Tin Shui (2) Estate": {
+    "id": "estate:40eefec41bca52ed9aba709b4ec29a91"
+  },
+  "estate:Sai Wan Estate": {
+    "id": "estate:db1e9eb82d185757889377f7217d5849"
+  },
+  "estate:Hing Tung Estate": {
+    "id": "estate:f250d1f999d755a289996cd8a950e580"
+  },
+  "estate:Choi Hung Estate": {
+    "id": "estate:d2bd6555fdb75d7aadbc06f4f42a710a"
+  },
+  "estate:High Prosperity Terrace": {
+    "id": "estate:7b74cc9a5dd25c37a0ec610579078f69"
+  },
+  "estate:Tsz Lok Estate": {
+    "id": "estate:f92ad8d2a9e55349b8ceaaff1627b805"
+  },
+  "estate:Kwong Yuen Estate": {
+    "id": "estate:f88f2da1a5b25eed8c2f482f272cba6d"
+  },
+  "estate:Lek Yuen Estate": {
+    "id": "estate:f147e5cc1bfd51fab3b64337a44240fe"
+  },
+  "estate:Ma Tau Wai Estate": {
+    "id": "estate:5935709b4791502b9aa30f8783b84a29"
+  },
+  "estate:Shek Yam Estate": {
+    "id": "estate:f96d827457135a4b8c05fc769f0ca764"
+  },
+  "estate:Chak On Estate": {
+    "id": "estate:00195bfa84795f6090066cba54706425"
+  },
+  "estate:Cheung Lung Wai Estate": {
+    "id": "estate:cb1a588197e75854a50218f1f20af079"
+  },
+  "estate:Long Ching Estate": {
+    "id": "estate:60016f5702ce527a8e13c769f0c38902"
+  },
+  "estate:Lei Yue Mun Estate": {
+    "id": "estate:67f4b55d84c65349b4011996e77a1fdd"
+  },
+  "estate:Shun Lee Estate": {
+    "id": "estate:0f15fc525eda5396ada6d55abe9e62fb"
+  },
+  "estate:Yee Ming Estate": {
+    "id": "estate:b59ce44ed7295771a12f44543daff863"
+  },
+  "estate:Shui Chuen O Estate": {
+    "id": "estate:b874faac21d75281b27ffbf44b06e387"
+  },
+  "estate:Lung Yat Estate": {
+    "id": "estate:2e5ef9c55ccf50e69cc2dc23d3b0bb09"
+  },
+  "estate:Fung Wo Estate": {
+    "id": "estate:e3c0602714695caf877596e307ff798a"
+  },
+  "estate:Po Heung Estate": {
+    "id": "estate:d1637c3dec5e5f9b93131bebedc8bfdb"
+  },
+  "estate:So Uk Estate": {
+    "id": "estate:f31f6afcffb4538896fd2d9ea74b15c3"
+  },
+  "estate:Wah Ha Estate": {
+    "id": "estate:794fcce7049a55c7aede72fff01a072f"
+  },
+  "estate:Cheung Sha Wan Estate": {
+    "id": "estate:3803b891c5e85a30be163471cd379b7a"
+  },
+  "estate:Hung Fuk Estate": {
+    "id": "estate:dca24b84e19a55f69fbcb47e3197cc9e"
+  },
+  "estate:Tung Wui Estate": {
+    "id": "estate:4561a13abe595d9fa4fa6e899bd1eba5"
+  },
+  "estate:Kwai Luen Estate": {
+    "id": "estate:c0a7aefd158a53aeacd784838953ae98"
+  },
+  "estate:On Tat Estate": {
+    "id": "estate:b78e98583fdb5d12a264a7ef6364fa86"
+  },
+  "estate:Ying Tung Estate": {
+    "id": "estate:a21c157c8c7651f7843e84ae34fa23cd"
+  },
+  "estate:Yan Tin Estate": {
+    "id": "estate:87ba170e74285fd98952f5e01471ee6d"
+  },
+  "estate:Kwai Tsui Estate": {
+    "id": "estate:e4a3a413926d50ac82a035555db5d30c"
+  },
+  "estate:Long Shin Estate": {
+    "id": "estate:d31acac5a44b5db3adc4f2f41c68fb5a"
+  },
+  "estate:On Tai Estate": {
+    "id": "estate:943afc8a787e5ca5a33ae0b9bf7f313e"
+  },
+  "estate:Lin Tsui Estate": {
+    "id": "estate:8cf788702a1d5ac99b6a7ade0849b567"
+  },
+  "estate:Mun Tung Estate": {
+    "id": "estate:03fbdc1bf10b5a2bb57d49134eb722bf"
+  },
+  "estate:Hoi Ying Estate": {
+    "id": "estate:a66d5a5de9545be98b7d5e5417c6ce26"
+  },
+  "estate:Po Shek Wu Estate": {
+    "id": "estate:3f4a3fe2d7c65fe78bd45c36eed09368"
+  },
+  "estate:Shek Yam East Estate": {
+    "id": "estate:9d960e33fd9c5a4ea345c808b2cc0656"
+  },
+  "estate:Kai Chuen Court": {
+    "id": "estate:d65c328777f750028ad92279012a567e"
+  },
+  "estate:Lai Tsui Court": {
+    "id": "estate:38b982162771590ab129c7cb51326b81"
+  },
+  "estate:Fai Ming Estate": {
+    "id": "estate:c9da0d2f904a56d898d36c6434e59db7"
+  },
+  "estate:Hoi Tat Estate": {
+    "id": "estate:9be6378984c9571694f149c124e524ec"
+  },
+  "estate:Chun Yeung Estate": {
+    "id": "estate:6a76af8890bd5455b3d7b2e46e1352b2"
+  },
+  "estate:Hin Fat Estate": {
+    "id": "estate:4aedc43f4f0a5d6f8c0f576e3953cfa6"
+  },
+  "estate:Yip Wong Estate": {
+    "id": "estate:ed4d19f615025a1d8c040dfa54f89e74"
+  },
+  "estate:Fu Tip Estate": {
+    "id": "estate:287a7db1eca15ef1bb87cc87d54013fd"
+  },
+  "estate:Queens Hill Estate": {
+    "id": "estate:9f9812ef39f255f597e33ac3cdef43b6"
+  },
+  "estate:Wo Tin Estate": {
+    "id": "estate:e0475cc6955753b2996e7149ce34268d"
+  },
+  "estate:Ching Tin Estate": {
+    "id": "estate:d36c7b55adff5fd8aa4f5ab090b64235"
+  },
+  "estate:Cheung Tung Estate": {
+    "id": "estate:4a38b13bd07a5e518d1349dfbd8d5931"
+  },
+  "estate:Choi Shek Estate": {
+    "id": "estate:0a6947d5395f5260abc85b12285367c8"
+  },
+  "estate:Moon Tin Estate": {
+    "id": "estate:c54a298d89e0587689fc9bf1626855ac"
+  },
+  "estate:Chun Tung Estate": {
+    "id": "estate:00f120391b505ff8a1e7423e879d7ba1"
+  },
+  "estate:Fung Wong Leng Estate": {
+    "id": "estate:0320ab04f798549ea725f0282ca4964f"
+  },
+  "hospital:Cheshire Home, Chung Hom Kok": {
+    "id": "hospital:350b6dc5c5e553908539cd8bdbfe1735"
+  },
+  "hospital:Grantham Hospital": {
+    "id": "hospital:0919b560b33c50cb8d51e3b11ebe62f5"
+  },
+  "hospital:MacLehose Medical Rehabilitation Centre": {
+    "id": "hospital:af851343895351edb143c1a243a1e302"
+  },
+  "hospital:Pamela Youde Nethersole Eastern Hospital": {
+    "id": "hospital:d1ac30e4c60f5f1399c6d8721ee2910d"
+  },
+  "hospital:Queen Mary Hospital": {
+    "id": "hospital:2225c0bfaf8e59ca85a0957e5aabb3b9"
+  },
+  "hospital:Ruttonjee Hospital": {
+    "id": "hospital:c2ac3d43e6e954f0a36221964dd6a861"
+  },
+  "hospital:St. John Hospital": {
+    "id": "hospital:c3f156b680db569782dac267598eaf9f"
+  },
+  "hospital:Tang Shiu Kin Hospital": {
+    "id": "hospital:b1e54f99a2cd5b69863bb0501f82ffa4"
+  },
+  "hospital:The Duchess of Kent Children's Hospital at Sandy Bay": {
+    "id": "hospital:665e3298e7455689bac25515368ed745"
+  },
+  "hospital:Tsan Yuk Hospital": {
+    "id": "hospital:31d8849ea3025adab3bd33b26ebb016a"
+  },
+  "hospital:Tung Wah Eastern Hospital": {
+    "id": "hospital:a5077731150f530c9bb1a76250c070c7"
+  },
+  "hospital:Tung Wah Group of Hospitals Fung Yiu King Hospital": {
+    "id": "hospital:1768ec9eae61543cbb6072e13163af44"
+  },
+  "hospital:Tung Wah Hospital": {
+    "id": "hospital:77e3a8f674d6583793f9e915f1f9a4fe"
+  },
+  "hospital:Wong Chuk Hang Hospital": {
+    "id": "hospital:900049ead5cc5738957710b2e746c7c7"
+  },
+  "hospital:Hong Kong Buddhist Hospital": {
+    "id": "hospital:22b5d69e130e56a892214769c9700031"
+  },
+  "hospital:Hong Kong Children's Hospital": {
+    "id": "hospital:0f4cf0233885599ebdf7825c86be8e62"
+  },
+  "hospital:Hong Kong Eye Hospital": {
+    "id": "hospital:8c6f89201a715e479a8eae37a2c243a3"
+  },
+  "hospital:Hong Kong Red Cross Blood Transfusion Service": {
+    "id": "hospital:61452395bcc6563cb5e9c920cf92b310"
+  },
+  "hospital:Kai Tak Hospital": {
+    "id": "hospital:b75e0cf87154522f84c46d697458a7b4"
+  },
+  "hospital:Kowloon Hospital": {
+    "id": "hospital:f1f04203886e5deda93f776ba2050c39"
+  },
+  "hospital:Kwong Wah Hospital": {
+    "id": "hospital:9abbff63d1d75d62907ecefd465c0151"
+  },
+  "hospital:Our Lady of Maryknoll Hospital": {
+    "id": "hospital:a7bc0ed97b2a5946ab6cc655734921df"
+  },
+  "hospital:Queen Elizabeth Hospital": {
+    "id": "hospital:7e1080d2dc6b5ff8befadd9b350b4f0e"
+  },
+  "hospital:Tung Wah Group of Hospitals Wong Tai Sin Hospital": {
+    "id": "hospital:13847b997cef5ec4bfcf9c06b6e3c2ed"
+  },
+  "hospital:Haven of Hope Hospital": {
+    "id": "hospital:32fa23ce4ece5a27b381a1ccd12f3770"
+  },
+  "hospital:Tseung Kwan O Hospital": {
+    "id": "hospital:9e73641a692855dc8de83fc4ce4478a6"
+  },
+  "hospital:United Christian Hospital": {
+    "id": "hospital:fbc5d759b90b5742a12cf61ed0e63168"
+  },
+  "hospital:Caritas Medical Centre": {
+    "id": "hospital:80806b60fe4154a2861ff49f9b73ac70"
+  },
+  "hospital:Kwai Chung Hospital": {
+    "id": "hospital:aedb269e032757e7ae91c0554af2f4e2"
+  },
+  "hospital:North Lantau Hospital": {
+    "id": "hospital:e27fc0704726529eae7aa9869397852a"
+  },
+  "hospital:Princess Margaret Hospital": {
+    "id": "hospital:a7a86deaf3b854e093055515aa69ed94"
+  },
+  "hospital:Yan Chai Hospital": {
+    "id": "hospital:0911f4e8925c5d259bff70f647d6d199"
+  },
+  "hospital:Alice Ho Miu Ling Nethersole Hospital": {
+    "id": "hospital:59f73c410a9e573086bb474ba110597e"
+  },
+  "hospital:Bradbury Hospice": {
+    "id": "hospital:c3768d669eea5a9fbcbda9eae72f6485"
+  },
+  "hospital:Cheshire Home, Shatin": {
+    "id": "hospital:8fa87d997e1c5609895c11ea68d52d95"
+  },
+  "hospital:North District Hospital": {
+    "id": "hospital:06265160c217508eb8636e050304ff59"
+  },
+  "hospital:Prince of Wales Hospital": {
+    "id": "hospital:ae02089e9abd534b8585dc286b7f5a7d"
+  },
+  "hospital:Shatin Hospital": {
+    "id": "hospital:2a58c3bea49c51c0961f9904ae6d26a8"
+  },
+  "hospital:Tai Po Hospital": {
+    "id": "hospital:6afbb56f0d6a5c238448321bb535bb59"
+  },
+  "hospital:Castle Peak Hospital": {
+    "id": "hospital:3e8e88202f9650eeb089925bc635dec4"
+  },
+  "hospital:Pok Oi Hospital": {
+    "id": "hospital:bf5bdf2021f55031aa0225434db8cc1e"
+  },
+  "hospital:Siu Lam Hospital": {
+    "id": "hospital:9da6559ef7ad554cbd280618fef2285e"
+  },
+  "hospital:Tin Shui Wai Hospital": {
+    "id": "hospital:01d9723352465dafab1e36daa8e8e696"
+  },
+  "hospital:Tuen Mun Hospital": {
+    "id": "hospital:139d9e770e65579ab9d17686dae05105"
+  }
+}

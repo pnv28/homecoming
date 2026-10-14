@@ -1,2 +1,7 @@
 cache/
 config/entity_ids.json
+
+# Share successful precomputed builds with collaborators through Git/GitHub.
+!/precomputed/
+!/precomputed/**
+.DS_Store

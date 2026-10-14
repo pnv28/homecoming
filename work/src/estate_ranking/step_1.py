@@ -16,7 +16,7 @@ from .ingest import (confirm_network_definitions, inspect_network, inventory_sou
                      read_csv, read_json, safe_extract_network, sha256)
 from .mtr_master import prepare as prepare_mtr, write_checked as write_mtr
 from .mtr_prepare import attach_masters
-from .policy import add_network_candidates, load_policy
+from .policy import add_network_candidates, canonical_sites, load_policy
 from .validate import ValidationReport, validate, write_report
 
 
@@ -71,6 +71,7 @@ def run(config_path):
         network, tables = load_network(gdb, inspection)
         decode_network(network, inspection["domains"], report)
         add_network_candidates(network, policy, report)
+        tables.append(canonical_sites(tables, policy, report))
         estates = load_estates(paths["estates"], registry)
         hospitals = load_hospitals(paths["hospitals"], registry, report)
         exits = load_mtr_exits(paths["mtr_exits"])

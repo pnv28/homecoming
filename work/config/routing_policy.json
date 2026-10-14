@@ -2,7 +2,11 @@
   "policy_version": 1,
   "always_open": true,
   "coordinates": {
-    "assumed_wgs84_sources": ["estates", "hospitals", "bus_stops"],
+    "assumed_wgs84_sources": [
+      "estates",
+      "hospitals",
+      "bus_stops"
+    ],
     "estate_hospital_location": "supplied_map_point_approximation"
   },
   "gradient": {
@@ -29,22 +33,45 @@
     "slope_offset": 0.05,
     "lift_travel_seconds": 30.0,
     "lift_wait_seconds": 0.0,
-    "wheelchair_speed_model": null,
-    "other_equipment_time_model": null,
-    "maximum_ramp_slope": null
+    "wheelchair_speed_model": "standard_tobler",
+    "other_equipment_time_model": "standard_tobler",
+    "maximum_ramp_slope": null,
+    "lift_identity": "PedestrianRouteID",
+    "lift_charge": "on_entry_same_identity_continuation_free_non_lift_resets",
+    "nonfinite_time": "exclude_direction_from_time_preserve_distance"
   },
   "modes": {
     "general": {
-      "excluded_path_types": ["Stairlift", "M_Stairlift"],
-      "excluded_access_equipment": ["stair_lift", "wheelchair_aid"],
-      "bus_operators": ["KMB", "CTB", "GMB"],
+      "excluded_path_types": [
+        "Stairlift",
+        "M_Stairlift"
+      ],
+      "excluded_access_equipment": [
+        "stair_lift",
+        "wheelchair_aid"
+      ],
+      "bus_operators": [
+        "KMB",
+        "CTB",
+        "GMB"
+      ],
       "mtr_candidate_source": "all_mapped_access_points"
     },
     "wheelchair": {
-      "excluded_path_types": ["Staircase", "M_Staircase", "Escalator", "M_Escalator", "Travelator", "M_Travelator"],
+      "excluded_path_types": [
+        "Staircase",
+        "M_Staircase",
+        "Escalator",
+        "M_Escalator",
+        "Travelator",
+        "M_Travelator"
+      ],
       "excluded_access_equipment": [],
       "exclude_wheelchair_barrier": true,
-      "bus_operators": ["KMB", "CTB"],
+      "bus_operators": [
+        "KMB",
+        "CTB"
+      ],
       "mtr_candidate_source": "mobility_evidence_points"
     }
   },
@@ -59,14 +86,38 @@
     "no_preference_scope": "all_supplied_institutions"
   },
   "estate_subcosts": {
-    "components": ["mtr", "bus", "hospital"],
+    "components": [
+      "mtr",
+      "bus",
+      "hospital"
+    ],
     "target_reduction": "minimum_reachable_route_cost",
     "final_combination": null,
     "unreachable_final_score": null
   },
   "implementation_status": {
     "step_1": "source_preservation_physical_identity_and_candidate_preparation",
-    "routing_graph_and_costs": "not_implemented",
+    "routing_graph_and_costs": "step_2_implemented",
     "final_ranking": "not_implemented"
+  },
+  "topology": {
+    "horizontal_tolerance_metres": 0.1,
+    "height_tolerance_metres": 0.025,
+    "cluster_rule": "complete_pairwise_compatibility_ambiguous_components_disconnected",
+    "interior_crossings": "report_only_without_endpoint",
+    "enabled_false": "exclude_both_modes",
+    "unknown_required_codes": "diagnose_and_exclude",
+    "different_known_floors_same_building": "prevent_inferred_merge_unless_explicit_vertical_transition"
+  },
+  "source_review": {
+    "wheelchair_mtr_pool": 276,
+    "equipment_description_differences": "accepted_preserve_both_descriptions",
+    "canonical_site": {
+      "SiteID": 1503020249,
+      "LastAmendmentDate": "2026/07/13 00:00:00",
+      "rule": "latest_parsed_amendment_preserve_all_versions"
+    },
+    "missing_terminal_floor_building_references": "accepted_limitations_no_further_investigation",
+    "missing_site_distance_post_references": "preserve_assess_when_needed"
   }
 }

@@ -1,0 +1,35 @@
+{
+  "review_type": "automated_full_build_validation",
+  "status": "passed_with_retained_model_limitations",
+  "accepted_source_decisions": {
+    "wheelchair_mtr_pool": 276,
+    "equipment_description_differences": "accepted_preserve_both_descriptions",
+    "canonical_site": {
+      "SiteID": 1503020249,
+      "LastAmendmentDate": "2026/07/13 00:00:00",
+      "rule": "latest_parsed_amendment_preserve_all_versions"
+    },
+    "missing_terminal_floor_building_references": "accepted_limitations_no_further_investigation",
+    "missing_site_distance_post_references": "preserve_assess_when_needed"
+  },
+  "topology_review_counts": {
+    "ambiguous_cluster": 23,
+    "topology_summary": 1,
+    "floor_conflict_rejected": 972,
+    "middle_crossing_not_auto_joined": 11790,
+    "overlapping_xy_paths_preserved": 2
+  },
+  "all_sources_accounted_for": true,
+  "all_spatial_values_reopened": true,
+  "all_profiles_and_review_reopened": true,
+  "all_four_matrices_reopened": true,
+  "shortest_path_validation_passed": true,
+  "input_and_code_hashes_rechecked": true,
+  "limitations": [
+    "Ambiguous candidate junctions remain disconnected; review.jsonl preserves evidence.",
+    "Connection height tolerance is a modelling rule, not source elevation accuracy.",
+    "Wheelchair times use the agreed shared Tobler assumption, not measured wheelchair speeds.",
+    "No estate/destination snapping, journey subcosts or final ranking in Step 2.",
+    "Missing supporting references are preserved; site/distance-post lookups are not needed for graph topology."
+  ]
+}
