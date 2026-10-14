@@ -1,116 +1,133 @@
 # Step 2: build the pedestrian graph and assign route costs
 
-## 1. Purpose and deliverables
+## 1. Purpose and documentation
 
-Step 2 turns the prepared paths into a graph:
+Step 2 builds general and wheelchair pedestrian graphs with two metrics: **horizontal distance in metres** and **gradient-adjusted time in seconds**. Spatial outputs will be actual GeoDataFrames.
 
-- Nodes identify endpoints and junctions.
-- Edges describe permitted travel between nodes.
-- Costs measure horizontal distance or gradient-adjusted travel time.
+This replaces the previous plan for `work/instructions/step_2_plan.md`. **Saving the replacement is pending because planning mode prevents file edits.**
 
-We will build both general and wheelchair routing models. Spatial outputs will be actual GeoDataFrames, saved under work/precomputed/outputs/step_2/.
+Each implementation area will distinguish explanations from executable steps. `[X]` means a completed action or explicitly recorded decision; unfinished implementation and unresolved evidence remain `[ ]`.
 
-Step 3 will attach estates, hospitals and transport access points to this graph. Step 4 will calculate their journeys and three subcosts. The final combining method remains undecided.
+Step 3 attaches estates and destinations. Step 4 calculates journeys and subcosts. Final score combination remains undecided.
 
-The documentation deliverables will be two files under work/instructions/step_2/: a technical implementation plan and a human-readable plan. Each area in the latter will separate “Explanation for the team” from “Steps we will take.” Recorded decisions can have [X]; unfinished implementation and unresolved evidence remain [ ].
+## 2. Inputs and mature libraries
 
-## 2. Prepare one consistent input snapshot
+**Explanation for the team:** we will reuse established geometry and graph tools. Our custom code will implement the project’s rules about heights, eligibility, gradients and lift charges.
 
-Explanation for the team: the instructions contain decisions made after the last prepared output was generated. Before building connections, the program must use one consistent set of data and rules.
+**Steps we will take:**
 
-Steps we will take:
+1. Continue using the local `.venv`, GeoPandas, Shapely, NumPy and Pyogrio.
+2. Request installation approval for **SciPy 1.13.1** before installing it. This version supports the current Python 3.9/NumPy 2 environment and has an Apple Silicon Python 3.9 wheel. [Compatibility notes (https://docs.scipy.org/doc/scipy-1.13.1/release/1.13.0-notes.html)](https://docs.scipy.org/doc/scipy-1.13.1/release/1.13.0-notes.html), [available wheel (https://pypi.org/project/scipy/1.13.1/)](https://pypi.org/project/scipy/1.13.1/).
+3. Use SciPy’s sparse matrices and existing algorithms for connectivity analysis and shortest-path validation. This replaces the proposed custom adjacency/graph-algorithm implementation. [Connectivity API (https://docs.scipy.org/doc/scipy-1.13.1/reference/generated/scipy.sparse.csgraph.connected_components.html)](https://docs.scipy.org/doc/scipy-1.13.1/reference/generated/scipy.sparse.csgraph.connected_components.html), [Dijkstra API (https://docs.scipy.org/doc/scipy-1.13.1/reference/generated/scipy.sparse.csgraph.dijkstra.html)](https://docs.scipy.org/doc/scipy-1.13.1/reference/generated/scipy.sparse.csgraph.dijkstra.html).
+4. Use Shapely’s spatial index to find nearby geometry. Check heights separately because its spatial index operates in two dimensions. [Shapely STRtree documentation (https://shapely.readthedocs.io/en/2.0.7/strtree.html)](https://shapely.readthedocs.io/en/2.0.7/strtree.html).
+5. Plan no Homebrew or npm dependency for this stage. If installation or implementation reveals another necessary package, explain its purpose and request approval before installing it.
+6. Synchronise the executable policy and documentation with all agreed decisions:
+   - Both modes use the same Tobler speed assumption.
+   - All non-lift paths use Tobler.
+   - Exclude `Enabled=false` paths from both modes.
+   - Charge **30 seconds per lift**, using the original `PedestrianRouteID` as its model identity.
+   - Accept the existing 276 wheelchair MTR access points and the three equipment-description differences.
+   - Select Castle Peak Hospital’s site record amended 13 July 2026, preserving both original versions.
+   - Leave missing terminal/floor/building references without further investigation.
+7. Rebuild and validate Step 1 once, then freeze one successful input snapshot for Step 2. Record its run ID, hashes and policy.
 
-1. Update the executable policy and current documentation to incorporate the latest decisions:
-   - Wheelchair speed uses the same Tobler formula as ordinary walking, as an accepted modelling assumption.
-   - Every non-lift path uses Tobler for transport time.
-   - Paths marked Enabled=false are excluded from both routing modes.
-   - Consecutive lift sections count as one 30-second use.
-2. Apply the recorded Step 1 decisions:
-   - Accept the existing 276 mobility access points as the complete wheelchair MTR target pool.
-   - Accept the three equipment-description differences as mobility access.
-   - Select Castle Peak Hospital’s supporting site record amended 13 July 2026, preserving both original versions.
-   - Leave missing terminal, floor and building references without further investigation.
-3. Rebuild and validate Step 1 once using its existing pipeline. Preserve its historical runs and original source records.
-4. Resolve the resulting successful input directory once at Step 2 startup. Record its run ID, file hashes and policy snapshot so an input-link change cannot mix different runs.
+Access schedules remain excluded. The current source snapshot should yield **465,861 general-mode** and **430,496 wheelchair-mode eligible source paths** before splitting.
 
-Schedules remain outside the model. Excluding Enabled=false is the separate rule you selected.
+## 3. Build height-aware connections
 
-For the current source snapshot, filtering by mode and Enabled should leave 465,861 general-mode and 430,496 wheelchair-mode source paths, before topology splitting.
+**Explanation for the team:** nearby paths may connect, but overlapping map positions can represent different floors or a bridge above a road. We will accept only supported endpoint connections.
 
-## 3. Build connections without joining different levels
+**Steps we will take:**
 
-Explanation for the team: two paths crossing on a map do not necessarily meet. One may be a bridge above the other. We will use the preserved heights and existing endpoints to establish connections.
+1. Read the network in EPSG:2326, preserving its original XYZ geometry and HKPD height metadata.
+2. Create deterministic endpoint/node identities independent of row order.
+3. Join matching endpoints. For nearby connections, require both:
+   - Horizontal separation **≤ 0.10 m**.
+   - Height difference **≤ 0.025 m**.
+4. Apply those limits to endpoint-to-endpoint connections, endpoint-to-interior connections and all members of an accepted node cluster. Prevent chained merges from exceeding either limit.
+5. Leave ambiguous matches disconnected and report them. Several incident paths sharing one accepted junction are valid.
+6. Split a receiving path at an accepted interior connection, interpolating its position and height from the original vertices.
+7. Report middle-to-middle crossings without automatically joining them. An existing endpoint is required.
+8. For inferred connections, differing known floor IDs within the same building prevent a merge unless an explicit vertical-transition path provides the connection. Missing supporting references remain accepted limitations.
+9. Preserve original geometry separately from derived pieces. Record small alignment corrections without adding separate travel costs.
+10. Preserve parallel and closed paths with their identities.
+11. Apply provider direction: `0` permits both directions, `1` follows drawing order, and `-1` reverses it.
+12. Apply mode exclusions and `Enabled=false` filtering. Unsupported required routing codes produce explicit diagnostics rather than guessed meanings.
 
-Steps we will take:
+The **2.5 cm height tolerance is a connection rule**, not a claim that source elevations are accurate to 2.5 cm. Equal-height gradient sampling continues to use exact equality, as previously agreed.
 
-1. Read the prepared network as a GeoDataFrame in EPSG:2326, preserving XYZ geometry and HKPD height metadata.
-2. Identify each path’s endpoints and assign deterministic node identities independent of input row order.
-3. Join matching source endpoints. For nearby endpoints, allow at most 0.10 m horizontally and 0.10 m in height.
-4. Prevent a chain of nearby points from merging locations farther apart than the permitted limits. Every accepted cluster must satisfy the limits across all its members; otherwise retain separate nodes and report the ambiguity.
-5. Connect an endpoint to another path’s interior only when its projected position and interpolated height satisfy those same limits and the connection is unambiguous. Several paths meeting at the same accepted junction can share that junction.
-6. Split the receiving path at an accepted interior connection. Calculate the new position and height from its original vertices.
-7. Report middle-to-middle crossings without automatically creating junctions. An existing endpoint is required by the agreed rule.
-8. Use available floor information to identify conflicting levels. For inferred connections, differing known floor IDs within the same building prevent a merge unless an explicit vertical-transition path supplies the connection. Missing floor/building records remain accepted limitations.
-9. Preserve original path geometry separately from derived graph pieces. Record small coordinate adjustments used to associate endpoints with nodes; treat these as alignment corrections without adding separate travel costs.
-10. Preserve parallel paths and closed paths with their source identities. Do not collapse distinct paths merely because they connect the same nodes.
-11. Apply provider travel direction:
-    - 0: create both permitted directions.
-    - 1: follow the source drawing direction.
-    - -1: travel opposite to it.
-12. Apply mode rules and exclude Enabled=false edges. Unknown or unsupported routing codes produce explicit diagnostics rather than silently acquiring a guessed meaning.
+## 4. Assign distance, Tobler and lift costs
 
-Connection repairs must not invent missing lifts, entrances or other equipment.
+**Explanation for the team:** hospital routes minimise horizontal distance. Transport routes minimise time. Three different lifts cost **30 × 3 = 90 seconds**, even when used consecutively.
 
-## 4. Calculate distance and time costs
+**Steps we will take:**
 
-Explanation for the team: the same connection can have two costs. Hospital journeys minimise horizontal distance. Transport journeys minimise time, so uphill and downhill travel may choose different routes.
+1. Calculate each piece’s horizontal polyline length for distance routing in both modes.
 
-Steps we will take:
+2. Build the source path’s height/cost profile before topology splitting. Splitting must not restart sampling or alter classification.
 
-1. Calculate each graph piece’s horizontal polyline length in metres, preserving its relationship to the source path. This supplies hospital distance costs in both modes.
-2. Construct each source path’s height/cost profile before topology splitting, so splitting cannot restart random sampling or change its classification.
-3. Preserve the provider’s gradient magnitude n, in radians. Use height changes to assign +n uphill and -n downhill. Level intervals use derived zero slope.
-4. For equal endpoint heights with a nonzero source gradient:
+3. Preserve gradient magnitude `n` in radians. Assign `+n` uphill, `-n` downhill and derived zero slope to level intervals.
+
+4. For equal endpoint heights with a nonzero gradient:
+
    - Sample four distinct internal positions along the original XYZ path.
-   - Interpolate their heights from the existing vertices.
-   - If they remain level with both endpoints, sample four additional positions.
-   - Compare the ordered ten points. If all remain level, classify the source path as relatively flat.
+   - Interpolate heights from its vertices.
+   - If all remain level with the endpoints, sample four additional positions.
+   - If all ten points remain level, classify the path as relatively flat.
    - Stop after at most two rounds.
-5. Use seed 20261013, with a stable per-source-path derivation. Sampling positions follow the actual 3D polyline and remain identical when travel direction reverses.
-6. If the sampled path is not flat, preserve separately signed uphill/downhill portions using its original vertices and sampled positions. Sum their interval times; do not average away climbs and descents.
-7. Apply Tobler to every eligible non-lift interval:
 
+5. Use seed `20261013` with a stable per-source-path derivation. Reverse travel reuses the same samples in reverse order.
+
+6. For non-flat paths, preserve separately signed portions using original vertices and sampled positions. Sum their times rather than averaging climbs and descents.
+
+7. Apply Tobler to every eligible non-lift interval in both modes:
+
+   ```
    slope = tan(signed_gradient_radians)
-speed_kmh = 6 × exp(-3.5 × abs(slope + 0.05))
-time_seconds = horizontal_length_metres × 3.6 / speed_kmh
+   speed_kmh = 6 × exp(-3.5 × abs(slope + 0.05))
+   time_seconds = horizontal_length_metres × 3.6 / speed_kmh
+   ```
 
-   Both modes use this formula. Wheelchair results will identify that shared-speed assumption in their metadata.
-8. Charge 30 seconds when entering a continuous lift journey, with zero waiting time. Further consecutive lift sections add no additional lift charge. Travelling along a non-lift edge ends that lift journey.
-9. Represent time routing with two states at a junction: arriving through a lift and arriving otherwise. This allows the graph to charge lift entry once, including when one source lift record is split into several pieces.
-10. Keep hospital distance routing separate: it uses horizontal metres and receives no lift-time penalty.
-11. Evaluate Tobler time using numerically stable calculations. If a cost cannot be represented, preserve the edge for distance routing, flag its time cost, and omit that direction from time routing. Do not cap the cost or replace its gradient. A non-lift vertical segment with no usable horizontal run receives the same explicit “time unavailable” treatment.
-12. Preserve source gradients, classifications, sample evidence, exclusions and cost-status reasons for review.
+8. Treat each original lift path record as one lift identity. Graph pieces created from that record retain the same identity.
 
-There is no maximum ramp-slope cutoff.
+9. Charge 30 seconds when entering a lift. Continuing through pieces of that same lift adds no charge. Entering a different lift adds another 30 seconds, even without intervening walking.
 
-## 5. Outputs, validation and acceptance
+10. Track the current lift identity in time-routing states. A non-lift edge resets that state, so leaving and subsequently entering a lift starts another use. Waiting time remains zero.
 
-Implementation and interfaces
+11. Keep hospital distance costs separate: no lift seconds are added to metres.
 
-- Use the local .venv, existing GeoPandas, Shapely and NumPy, plus Python’s standard library. No additional dependency is required for Step 2.
-- Expose build_graph(...) and read_graph(..., wheelchair=False, metric="time"). Supported metrics are "time" and "distance"; the returned graph bundle contains node/edge GeoDataFrames and compact adjacency arrays.
-- Store physical nodes and directed edges with stable IDs, source references, XYZ geometry, mode eligibility, distance and time-status information.
-- Store time-routing states/transitions separately so a lift edge does not misleadingly advertise one fixed cost independent of entry state.
-- Publish checked snapshots through step_2/runs/ and step_2/current/, with manifests, policy, validation reports and connection/cost review records. Keep successful outputs trackable in Git.
+12. Use stable numeric calculations. Preserve paths with unrepresentable Tobler times for distance routing, flag the affected time directions and omit them from time routing. Do not cap costs or replace gradients. Non-lift vertical geometry without a usable horizontal run receives the same explicit time-unavailable treatment.
 
-Tests and checks
+13. Preserve gradients, sampling evidence, source lift identities, exclusions and cost-status reasons.
 
-Test exact and 10 cm connections, rejected wider gaps, prevention of chained merges, endpoint-to-interior splitting, different-height crossings, and middle-to-middle crossings remaining disconnected. Verify all three direction codes, parallel paths and closed paths.
+No maximum ramp-slope cutoff applies.
 
-Test uphill/downhill signs, reverse-travel consistency, bounded four-plus-four sampling, preservation of cost profiles after splitting, and shared Tobler behaviour across modes. Verify a continuous multi-section lift costs 30 seconds, while two lift journeys separated by walking cost 60 seconds.
+## 5. Outputs, tests and acceptance
 
-Test disabled-path exclusion, wheelchair equipment/barrier rules, extreme-slope time exclusions, source preservation, GeoDataFrame types and save/reopen equality. Use small shortest-path examples to check the resulting costs and lift states.
+**Interfaces and storage**
 
-Run a full-data build and report component sizes, disconnected regions, ambiguous connections, exclusions, unavailable time costs, runtime and memory use. Disconnected regions are reported without fabricating connections.
+- Expose `build_graph(...)` and `read_graph(..., wheelchair=False, metric="time")`, supporting `"time"` and `"distance"`.
+- Return node/edge GeoDataFrames with SciPy sparse routing matrices and mappings to their source edges.
+- Preserve physical parallel edges. When constructing a matrix, select the minimum eligible cost per state pair and retain its edge mapping; do not let sparse duplicate entries sum alternative route costs.
+- Preserve explicitly stored zero-cost transitions.
+- Store lift-identity states separately from physical geometry.
+- Publish validated runs under `work/precomputed/outputs/step_2/runs/`, selected through `step_2/current/`. Include policy, manifests, validation reports and review records. Successful outputs remain trackable in Git.
 
-Acceptance: required checks pass, every source path is accounted for, units and assumptions are explicit, geometry/heights survive saving, and failed builds leave the previous successful Step 2 output selected. Routing to real estates and destinations remains Step 3/4 work.
+**Tests**
+
+Test connections exactly at and immediately outside **0.10 m horizontally / 0.025 m vertically**, chained and ambiguous matches, interior splits, different levels, directions, parallel paths and closed paths.
+
+Test signed slopes, reverse travel, bounded sampling, unchanged costs after splitting, shared Tobler behaviour, disabled paths and wheelchair exclusions.
+
+Verify:
+
+- One lift split into several graph pieces costs **30 seconds**.
+- Three different consecutive lift records cost **90 seconds**.
+- Leaving and re-entering a lift incurs a new charge.
+- Distance routing receives no lift-time penalty.
+- Extreme-slope time exclusions preserve distance usability.
+- Sparse graph construction preserves minimum costs and zero-cost transitions.
+
+Run save/reopen checks and a full-data build. Report source accounting, components, disconnected regions, ambiguous connections, exclusions, unavailable costs, runtime and memory.
+
+**Acceptance:** required checks pass; every source path is accounted for; geometry, heights, units and identities survive storage; and failed builds preserve the previously selected successful output. Real estate-to-destination routing remains later work.
