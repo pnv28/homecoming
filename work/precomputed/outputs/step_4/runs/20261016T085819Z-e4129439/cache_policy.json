@@ -1,0 +1,10 @@
+{
+  "hospital_cache": "shared_general_distance",
+  "ties": "exact_unrounded_equality",
+  "paths": "one_optimal_path_per_destination",
+  "transport_units": "seconds",
+  "hospital_units": "metres",
+  "connector_policy": "consume_saved_scenario_attachments_including_expanded_search",
+  "transport_cost": "walking_and_connectors_only",
+  "scoring": "deferred"
+}

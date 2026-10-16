@@ -28,6 +28,7 @@ from estate_ranking.attachments import (AttachedPoints, attached_routing_graph,
 from estate_ranking.graph import PhysicalGraph
 from estate_ranking.ingest import read_json
 from estate_ranking.step_3 import validate_terminals, verify_hashes
+from estate_ranking.routes import path_transitions, ordered_sections, check_cost
 
 DEFAULT_GRAPH = WORK / 'precomputed/outputs/step_3/current'
 DEFAULT_OUTPUT = WORK / 'precomputed/demos/coordinate_route/route.png'
@@ -123,43 +124,9 @@ def find_route(physical, start, end, wheelchair=False, evidence_directory=None):
     if not np.isfinite(costs[end_state]):
         return {'status': 'unreachable', 'message': 'Both points attached, but no permitted walking route connects them.',
                 'distance_m': None, 'time_s': None, 'subdivision_validation': validation}, empty_route(), selected
-    legs, state = [], end_state
-    by_attachment = selected.set_index('attachment_id')
-    while state != start_state:
-        previous = int(predecessors[state])
-        if previous < 0 or len(legs) >= len(graph.states):
-            raise AssertionError('Invalid shortest-path predecessor chain')
-        lo, hi = graph.matrix.indptr[previous:previous + 2]
-        offset = int(lo + np.searchsorted(graph.matrix.indices[lo:hi], state))
-        transition = graph.transitions.iloc[offset]
-        if transition.edge_index < 0:
-            attachment = by_attachment.loc[transition.source_id]
-            point, network = points[attachment.entity_id], shapely.force_2d(attachment.geometry)
-            departure = attachment.role == 'departure'
-            geometry = connector_geometry(point, network) if departure else connector_geometry(network, point)
-            leg = dict(kind='start_connector' if departure else 'end_connector', source_id=None,
-                direction=1 if departure else -1, distance_m=float(attachment.distance_m),
-                time_s=float(transition.cost), lift_id=None, geometry=geometry,
-                time_model='flat_connector', time_model_warning='', fallback_review_ids='')
-        else:
-            edge = graph.edges.iloc[int(transition.edge_index)]
-            geometry = edge.geometry if transition.direction == 1 else shapely.reverse(edge.geometry)
-            leg = dict(kind='network', source_id=edge.source_id, direction=int(transition.direction),
-                distance_m=float(edge.distance_m), time_s=float(transition.cost),
-                lift_id=None if pd.isna(edge.lift_id) else str(edge.lift_id),
-                geometry=shapely.force_2d(geometry),
-                time_model=('lift_entry' if pd.notna(edge.lift_id) else
-                    'distance_height_estimate' if edge.get('uses_estimated_time', False) else 'tobler'),
-                time_model_warning=edge.get('time_model_warning', ''),
-                fallback_review_ids=edge.get('fallback_review_ids', ''))
-        legs.append(leg)
-        state = previous
-    legs.reverse()
-    for i, leg in enumerate(legs):
-        leg['sequence'] = i
-    route = gpd.GeoDataFrame(legs, columns=ROUTE_COLUMNS, crs=2326)
-    if not np.isclose(route.time_s.sum(), costs[end_state], rtol=2e-12, atol=1e-8):
-        raise AssertionError('Route legs do not conserve shortest-path cost')
+    indices = path_transitions(graph, predecessors, start_state, end_state)
+    route = ordered_sections(graph, indices, points)
+    check_cost(route.time_s, costs[end_state])
     return {'status': 'ok', 'message': 'Fastest route under the saved walking model.',
             'distance_m': float(route.distance_m.sum()), 'time_s': float(costs[end_state]),
             'estimated_network_sections': int(route.time_model.eq('distance_height_estimate').sum()),
