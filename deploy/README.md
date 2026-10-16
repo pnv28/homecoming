@@ -41,6 +41,14 @@ systemctl reload caddy
 systemctl enable caddy
 ```
 
+After the site's HTTPS certificate works, the DNS record can be switched to
+Cloudflare **Proxied**. Use **Full (strict)** under SSL/TLS so Cloudflare also
+verifies the VPS certificate. Caddy continues managing the origin certificate.
+Cloudflare then returns its own IP addresses in public DNS. This does not erase
+the server IP from previous DNS records or prevent direct access by someone who
+already knows it. See [proxy status](https://developers.cloudflare.com/dns/proxy-status/)
+and [Full (strict)](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/).
+
 Operational commands (run over SSH as root):
 
 ```sh
