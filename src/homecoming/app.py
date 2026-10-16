@@ -258,7 +258,7 @@ def overview_svg():
     xmin,ymax=cx-500/scale,cy+325/scale
     def project(coords):
         return ' '.join('{:.2f},{:.2f}'.format((x-xmin)*scale,(ymax-y)*scale) for x,y in coords)
-    out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" data-xmin="{}" data-ymax="{}" data-scale="{}" aria-label="Hong Kong start and destination selection map">'.format(xmin,ymax,scale),
+    out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" data-context-bounds="0 0 1000 650" data-xmin="{}" data-ymax="{}" data-scale="{}" aria-label="Hong Kong start and destination selection map">'.format(xmin,ymax,scale),
          '<rect width="1000" height="650" fill="#e9f0ed"/>']
     for polygon in shapely.get_parts(land.simplify(25)):
         if polygon.geom_type=='Polygon':

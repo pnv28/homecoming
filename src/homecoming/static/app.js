@@ -262,6 +262,9 @@ function installZoom(svg,viewer,initial=[0,0,1000,700]) {
     }
     svg.setAttribute('viewBox',view.join(' '));
     const markerScale=view[2]/initial[2];
+    for(const marker of svg.querySelectorAll('.endpoint-marker')){
+      marker.setAttribute('transform',`translate(${marker.dataset.x} ${marker.dataset.y}) scale(${markerScale})`);
+    }
     for(const marker of markers){
       marker.setAttribute('r',11*markerScale);marker.setAttribute('stroke-width',3*markerScale);
       const label=marker.nextElementSibling;
@@ -330,7 +333,10 @@ async function updateMarkers() {
     let grid;if(named)grid={x:named.x,y:named.y};else grid=await api('/api/grid?'+new URLSearchParams({latitude:lat,longitude:lon})).catch(()=>null);
     if(!grid)continue;
     const x=(grid.x-Number(svg.dataset.xmin))*Number(svg.dataset.scale),y=(Number(svg.dataset.ymax)-grid.y)*Number(svg.dataset.scale);
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','endpoint-marker');g.innerHTML=`<circle cx="${x}" cy="${y}" r="10" fill="${which==='start'?'#176957':'#b98548'}" stroke="white" stroke-width="3"/><text x="${x}" y="${y+4}" text-anchor="middle" font-family="sans-serif" font-size="11" fill="white">${which==='start'?'S':'E'}</text>`;svg.append(g);
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','endpoint-marker');g.dataset.x=x;g.dataset.y=y;
+    const markerScale=Number(svg.getAttribute('viewBox').split(' ')[2])/1000;
+    g.setAttribute('transform',`translate(${x} ${y}) scale(${markerScale})`);
+    g.innerHTML=`<circle r="10" fill="${which==='start'?'#176957':'#b98548'}" stroke="white" stroke-width="3"/><text y="4" text-anchor="middle" font-family="sans-serif" font-size="11" fill="white">${which==='start'?'S':'E'}</text>`;svg.append(g);
   }
 }
 for(const which of ['start','end']) {

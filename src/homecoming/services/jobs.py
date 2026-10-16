@@ -1,5 +1,6 @@
 """Bounded local work queue; job results and credentials stay in session memory."""
 from concurrent.futures import ThreadPoolExecutor
+import logging
 import secrets
 import threading
 import time
@@ -37,6 +38,10 @@ def submit(owner, operation, function):
             # Public messages are deliberately sanitised. Never return a raw HTTP
             # request/error representation: it could contain a key or PDF text.
             from homecoming.services.deepseek import ProviderError
+            if operation == 'walk':
+                # Walking jobs contain geographic inputs, never provider keys
+                # or uploaded forms. Keep their diagnostic traceback server-side.
+                logging.getLogger(__name__).exception('Walking calculation failed')
             message = str(exc) if isinstance(exc,(ProviderError,ValueError)) else 'The operation could not be completed. Please retry or use manual input.'
             with LOCK:
                 if key in JOBS:
