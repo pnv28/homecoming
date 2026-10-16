@@ -1,3 +1,0 @@
-numpy==2.0.2
-pyogrio==0.11.1
-pypdf==6.20.0

@@ -1,5 +1,0 @@
-from_point,to_point,pedestrian_route_id,height_change_m,classification,supplied_gradient_rad,signed_gradient_rad,horizontal_length_m,feature_type,wheelchair_barrier,street_name,alias
-P1,P2,290046439,0.0,level,0.0053575,,1.8557926882994573,1,1,Pok Fu Lam Road,Pok Fu Lam Road
-P2,P3,250002557,-0.0512,downhill,0.0053575,-0.0053575,7.700817787664058,1,1,Pok Fu Lam Road,Pok Fu Lam Road
-P3,P4,290046441,0.0,level,0.0003263,,0.05345745991177833,1,2,,  Footway
-P4,P5,250002559,-0.0012,downhill,0.0003263,-0.0003263,3.6241465561073225,1,2,,  Footway

@@ -1,9 +1,10 @@
 .venv/
+runtime/
+cache/
 __pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.env
 .DS_Store
 codex-session-*
-work/precomputed/docs/westwood_paths/westwood_paths.gpkg
-work/precomputed/docs/westwood_paths/westwood_paths.csv
-work/precomputed/docs/westwood_paths/supporting_records.json
-work/precomputed/docs/westwood_paths/README.md
-step3_chat.md
