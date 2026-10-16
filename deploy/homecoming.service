@@ -1,0 +1,27 @@
+[Unit]
+Description=Homecoming estate accessibility app
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=homecoming
+Group=homecoming
+WorkingDirectory=/opt/homecoming
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=MPLCONFIGDIR=/opt/homecoming/runtime/matplotlib
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=1
+ExecStart=/opt/homecoming/.venv/bin/python -m uvicorn homecoming.app:app --app-dir /opt/homecoming/src --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/homecoming/runtime /opt/homecoming/precomputed/maps/basemap
+
+[Install]
+WantedBy=multi-user.target

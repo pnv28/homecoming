@@ -25,6 +25,18 @@ class ApplicationTests(unittest.TestCase):
     def tearDown(self):
         self.client.close()
 
+    def test_https_session_and_same_origin_requests(self):
+        with TestClient(app,base_url='https://homecoming.pidge.dev') as public:
+            response=public.get('/api/health')
+            self.assertIn('Secure',response.headers['set-cookie'])
+            self.assertIn('HttpOnly',response.headers['set-cookie'])
+            token=public.cookies.get('homecoming_session')
+            response=public.post('/api/reset',headers={'Origin':'https://homecoming.pidge.dev'})
+            self.assertEqual(response.status_code,200)
+            self.assertEqual(public.cookies.get('homecoming_session'),token)
+            self.assertEqual(public.post('/api/reset',headers={'Origin':'https://other.example'}).status_code,403)
+        self.assertNotIn('Secure',self.client.get('/api/health').headers['set-cookie'])
+
     def test_explicit_review_gate_and_hospital_selection(self):
         profile=dict(applicant_name='Synthetic Applicant',housing_district='Urban',wheelchair=True)
         with patch('homecoming.services.data.ranking') as rank,patch('homecoming.services.deepseek.overview') as overview:

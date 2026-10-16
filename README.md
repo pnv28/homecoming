@@ -14,6 +14,8 @@ python3 -m venv .venv
 
 Open **http://127.0.0.1:8000**. Keep that terminal running. Stop with Ctrl+C.
 
+For the temporary HTTPS server at **homecoming.pidge.dev**, see [VPS deployment](deploy/README.md).
+
 On the development computer, the existing environment can run it directly:
 
 ```sh
@@ -85,7 +87,7 @@ The adapter uses the documented vision-capable `deepseek-flash` model at `https:
 
 API keys, confirmed applicant profiles, extraction outputs, and overview results are kept in server memory for the local session. Uploaded PDFs are rendered in memory; browser previews use a local object URL. Recognised HD300E templates send the name/disability and allocation-choice regions of pages 1–2; other layouts send rendered page regions up to the 12-page/15 MB limit. Relevant images leave the computer for DeepSeek when extraction is requested. Overview requests omit applicant identity and finances.
 
-**Clear session** removes the session's key, results, and jobs. Restarting the server clears in-memory sessions. Geographic map assets and arbitrary-route caches are reusable, non-applicant data and remain on disk. Bind only to localhost for the intended hackathon use.
+**Clear session** removes the session's key, results, and jobs. Restarting the server clears in-memory sessions. Geographic map assets and arbitrary-route caches are reusable, non-applicant data and remain on disk. The app binds to localhost; the VPS deployment serves it through an HTTPS reverse proxy. Session cookies are Secure when served over HTTPS.
 
 ## Checks and project layout
 
@@ -97,7 +99,7 @@ PYTHONPATH=src .venv/bin/python scripts/verify_bundle.py --maps
 PYTHONPATH=src .venv/bin/python scripts/verify_routes.py
 ```
 
-`tests/browser_check.py` exercises the actual UI, operator gate, exports, SVG controls, and mobile layout using Playwright and an isolated browser profile. It currently uses the development computer's Helium browser executable; change that path or use an installed Playwright Chromium for another computer. Browser dependencies are listed separately in `requirements-dev.txt`. QA reports/screenshots are generated in ignored `runtime/qa/`.
+`tests/browser_check.py` exercises the actual UI, operator gate, exports, SVG controls, and mobile layout using Playwright and an isolated browser profile. It defaults to the development computer's Helium browser executable; set `HOMECOMING_BROWSER_PATH` to another Chromium executable, or to an empty string for Playwright's installed Chromium. Set `HOMECOMING_BASE_URL` to test the public deployment. Browser dependencies are listed separately in `requirements-dev.txt`. QA reports/screenshots are generated in ignored `runtime/qa/`.
 
 ```text
 src/homecoming/       Web app, browser interface, document/AI/map/route services

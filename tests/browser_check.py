@@ -1,5 +1,6 @@
 """Exercise the actual local interface with an isolated headless browser profile."""
 import json
+import os
 from pathlib import Path
 import re
 from playwright.sync_api import sync_playwright
@@ -7,16 +8,18 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'runtime/qa'
 OUT.mkdir(parents=True,exist_ok=True)
+BASE_URL=os.environ.get('HOMECOMING_BASE_URL','http://127.0.0.1:8000')
+BROWSER_PATH=os.environ.get('HOMECOMING_BROWSER_PATH','/Applications/Helium.app/Contents/MacOS/Helium')
 
 
 def run():
     with sync_playwright() as p:
-        browser=p.chromium.launch(headless=True,executable_path='/Applications/Helium.app/Contents/MacOS/Helium')
+        browser=p.chromium.launch(headless=True,executable_path=BROWSER_PATH or None)
         context=browser.new_context(viewport={'width':1440,'height':1100},device_scale_factor=1)
         page=context.new_page();errors=[];searches=[]
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.on('request',lambda request:searches.append(request.post_data_json) if request.url.endswith('/api/search') else None)
-        page.goto('http://127.0.0.1:8000',wait_until='networkidle')
+        page.goto(BASE_URL,wait_until='networkidle')
         page.locator('#connection-dialog').wait_for(state='visible')
         page.screenshot(path=str(OUT/'connection.png'),full_page=True)
         page.locator('#skip-connection').click()
@@ -98,7 +101,7 @@ def run():
                      evidence=[dict(page=1,text='Synthetic operator-review test')])
         page.route('**/api/jobs/mock-extract',lambda route:route.fulfill(json={'status':'done','result':fixture}))
         page.route('**/api/overview/**',lambda route:route.fulfill(status=409,json={'detail':'Synthetic API-offline check.'}))
-        page.goto('http://127.0.0.1:8000',wait_until='networkidle')
+        page.goto(BASE_URL,wait_until='networkidle')
         page.locator('#api-key').fill('synthetic-test-key')
         page.locator('#connect-submit').click();page.locator('#connection-dialog').wait_for(state='hidden')
         page.locator('#pdf-input').set_input_files(str(ROOT/'assets/samples/application-form.pdf'))
@@ -116,7 +119,7 @@ def run():
         context.close()
 
         context=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
-        page=context.new_page();page.goto('http://127.0.0.1:8000',wait_until='networkidle')
+        page=context.new_page();page.goto(BASE_URL,wait_until='networkidle')
         page.locator('#skip-connection').click()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),'Horizontal overflow on mobile'
         page.screenshot(path=str(OUT/'mobile.png'),full_page=True)

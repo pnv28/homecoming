@@ -49,7 +49,8 @@ async def session_middleware(request,call_next):
         request.state.owner=token
         request.state.session=SESSIONS[token]
     response=await call_next(request)
-    response.set_cookie('homecoming_session',token,httponly=True,samesite='strict',max_age=8*3600)
+    response.set_cookie('homecoming_session',token,httponly=True,samesite='strict',
+                        secure=request.url.scheme=='https',max_age=8*3600)
     if not request.url.path.startswith(('/static/','/prepared-maps/','/runtime-maps/')):
         response.headers['Cache-Control']='no-store'
     response.headers['X-Content-Type-Options']='nosniff'
