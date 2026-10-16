@@ -74,6 +74,20 @@ deploy key. Never put a token in the remote URL. Pull as root, refresh the locke
 dependencies if changed, and restart the service. Restarting clears sessions and
 jobs, so do it between demonstrations:
 
+The VPS has a ready-to-run updater in root's home directory:
+
+```sh
+~/update-homecoming.sh
+```
+
+It refuses to overwrite local server changes, prevents overlapping updates,
+installs locked dependencies, restores cache ownership, restarts the app, and
+checks its local health endpoint. `~/update-homecoming.sh --check` runs only the
+preflight checks. Its source is `deploy/update-homecoming.sh`; to install it on
+another identical VPS, use `install -m 700 deploy/update-homecoming.sh /root/update-homecoming.sh`.
+
+The equivalent manual commands are:
+
 ```sh
 cd /opt/homecoming
 git pull --ff-only origin main
