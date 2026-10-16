@@ -1,4 +1,4 @@
-# Estate-ranking preparation and pedestrian graphs
+# Estate-ranking pipeline
 
 > **Latest decisions:** Read [the project context and agent handoff](instructions/project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
 
@@ -11,7 +11,7 @@ PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild
 
 The public readers select the verified pair through `precomputed/outputs/rebuild/current.json` when present. Each Step 3 run pins its own Step 2 dependency. Use an explicit run directory to inspect historical data. Individual stage builders are for explicit candidate work; a coordinated pair is the default published result.
 
-Step 3 is implemented and fully verified in **`20261016T080509Z-4c604c82`**, pinned to Step 2 **`20261016T075559Z-119a5636`**. It preserves **10,163 facility points**, records **20,814 primary + 20,238 baseline selections**, and publishes six augmented routing graphs. All eligible points attach, with **36 general / 34 wheelchair bus records per scenario beyond 50 m**, including approximate straight connectors up to **5.2 km**. These are flagged; attachment is not proof of a usable journey. Read [the Step 3 guide](instructions/step_3/step_3_implementation.md) and [full-data validation report](precomputed/outputs/step_3/current/validation_report.md). Step 4 now saves journey subcosts; Step 5 ranking implementation remains pending.
+Step 3 is implemented and fully verified in **`20261016T080509Z-4c604c82`**, pinned to Step 2 **`20261016T075559Z-119a5636`**. It preserves **10,163 facility points**, records **20,814 primary + 20,238 baseline selections**, and publishes six augmented routing graphs. All eligible points attach, with **36 general / 34 wheelchair bus records per scenario beyond 50 m**, including approximate straight connectors up to **5.2 km**. These are flagged; attachment is not proof of a usable journey. Read [the Step 3 guide](instructions/step_3/step_3_implementation.md) and [full-data validation report](precomputed/outputs/step_3/current/validation_report.md). Step 4 now saves journey subcosts; Step 5 now implements and publishes estate rankings.
 
 ```sh
 PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_3
@@ -123,4 +123,16 @@ iGeoCom's original `EASTING` and `NORTHING` attributes are saved as `source_grid
 Reference tables retain native geodatabase FIDs as `source_fid` and a separate `record_id`. Source entity IDs in these tables can have multiple versions: this snapshot has two Castle Peak Hospital site-reference records with the same `SiteID` and different source dates/name capitalisation. Both are preserved and flagged; the pipeline does not silently choose one version. The unique source-record identity is separate from the shared entity reference.
 
 
-Step 4 is implemented: the [selected journey cache](precomputed/outputs/step_4/current/) saves all shared hospital pairs, both transport modes/scenarios, tied winners, comparisons and paths. Use `estate_ranking.step_4.read_subcosts`, `read_hospital_costs`, `read_transport_comparisons` and `read_route`; all return GeoDataFrames and use cached results without new shortest-path searches. See [the reader/build guide](instructions/step_4/step_4_implementation.md). The hospital-only amendment corrects Kwai Luen and Chun Shek while leaving graph/transport outputs unchanged and Kam Peng unavailable. The [Step 5 plan](instructions/step_5/step_5_plan.md) records bounded scaling, equal-thirds default weights and incomplete ordering; ranking code remains pending.
+Step 4 is implemented: the [selected journey cache](precomputed/outputs/step_4/current/) saves all shared hospital pairs, both transport modes/scenarios, tied winners, comparisons and paths. Use `estate_ranking.step_4.read_subcosts`, `read_hospital_costs`, `read_transport_comparisons` and `read_route`; all return GeoDataFrames and use cached results without new shortest-path searches. See [the reader/build guide](instructions/step_4/step_4_implementation.md). The hospital-only amendment corrects Kwai Luen and Chun Shek while leaving graph/transport outputs unchanged and Kam Peng unavailable. Step 5 now implements bounded scaling, equal-thirds configurable weights and incomplete ordering; see [the guide](instructions/step_5/step_5_implementation.md).
+
+
+Step 5 publishes [four ranking views](precomputed/outputs/step_5/current/), each with 244 estates. General mode has 239 complete and 5 incomplete estates; wheelchair mode has 225 complete and 19 incomplete, in both primary/baseline scenarios. All 162 tests pass. Read results as actual GeoDataFrames:
+
+```python
+from estate_ranking.step_5 import read_rankings, rank_estates
+
+all_estates = read_rankings()
+urban_wheelchair = rank_estates("Urban", wheelchair=True)
+```
+
+From the repository root, build default outputs with `PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_5`. See [the Step 5 implementation/API guide](instructions/step_5/step_5_implementation.md) for custom weights/hospital selection, provenance and saved files.

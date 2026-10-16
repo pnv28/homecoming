@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "run_id": "20261016T122956Z-21343da6",
+  "completed_utc": "2026-10-16T12:31:13.874665+00:00",
+  "dijkstra_disabled": true,
+  "views": {
+    "primary_general": {
+      "rows": 244,
+      "complete": 239,
+      "incomplete": 5
+    },
+    "primary_wheelchair": {
+      "rows": 244,
+      "complete": 225,
+      "incomplete": 19
+    },
+    "baseline_general": {
+      "rows": 244,
+      "complete": 239,
+      "incomplete": 5
+    },
+    "baseline_wheelchair": {
+      "rows": 244,
+      "complete": 225,
+      "incomplete": 19
+    }
+  },
+  "category_counts": {
+    "primary_general": {
+      "Urban": 109,
+      "Extended Urban": 70,
+      "New Territories": 60,
+      "Islands": 5
+    },
+    "primary_wheelchair": {
+      "Urban": 109,
+      "Extended Urban": 70,
+      "New Territories": 60,
+      "Islands": 5
+    },
+    "baseline_general": {
+      "Urban": 109,
+      "Extended Urban": 70,
+      "New Territories": 60,
+      "Islands": 5
+    },
+    "baseline_wheelchair": {
+      "Urban": 109,
+      "Extended Urban": 70,
+      "New Territories": 60,
+      "Islands": 5
+    }
+  },
+  "selected_hospitals_checked": 44,
+  "additional_weight_profiles": 4,
+  "raw_subcosts_and_geometry_exact": true,
+  "step_4_and_graph_artifacts_unchanged": true,
+  "kam_peng_incomplete": true,
+  "amended_hospital_distances_preserved": true,
+  "gpkg_integrity": "ok",
+  "runtime_seconds": 6.570303084
+}

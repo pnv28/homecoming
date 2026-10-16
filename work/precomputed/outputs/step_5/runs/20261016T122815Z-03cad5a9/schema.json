@@ -1,0 +1,1317 @@
+{
+  "schema_version": 1,
+  "layers": {
+    "primary_general": {
+      "rows": 244,
+      "columns": [
+        "latitude",
+        "longitude",
+        "id",
+        "source_id",
+        "name",
+        "name_en",
+        "name_zh_hant",
+        "name_zh_hans",
+        "entity_type",
+        "location_role",
+        "entrance_evidence",
+        "source_identity_name",
+        "source_administrative_district",
+        "source_region",
+        "block_count_raw",
+        "block_names_json",
+        "raw_json",
+        "source_record",
+        "provenance",
+        "easting",
+        "northing",
+        "housing_district",
+        "crosswalk_residual_m",
+        "housing_district_provenance",
+        "geometry",
+        "hospital_distance_m",
+        "hospital_target_ids",
+        "hospital_status",
+        "hospital_unit",
+        "hospital_reason",
+        "hospital_warnings",
+        "bus_time_s",
+        "bus_target_ids",
+        "bus_status",
+        "bus_reason",
+        "bus_warnings",
+        "bus_unit",
+        "mtr_time_s",
+        "mtr_target_ids",
+        "mtr_status",
+        "mtr_reason",
+        "mtr_warnings",
+        "mtr_unit",
+        "requested_hospital_id",
+        "bus_scaled_cost",
+        "mtr_scaled_cost",
+        "hospital_scaled_cost",
+        "required_component_count",
+        "available_required_component_count",
+        "missing_components",
+        "ranking_status",
+        "final_cost",
+        "rank"
+      ],
+      "fields": {
+        "latitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "longitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_en": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hant": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hans": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entity_type": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "location_role": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entrance_evidence": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_identity_name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_administrative_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_region": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_count_raw": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_names_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "raw_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_record": {
+          "dtype": "int64",
+          "json_encoded": false
+        },
+        "provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "easting": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "northing": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "crosswalk_residual_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district_provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_distance_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "hospital_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "hospital_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "bus_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "mtr_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "requested_hospital_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "mtr_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "hospital_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "available_required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "missing_components": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "ranking_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "final_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "rank": {
+          "dtype": "Int64",
+          "json_encoded": false
+        }
+      },
+      "crs": "EPSG:2326",
+      "metadata": {
+        "hospital_cache": "shared_general_distance",
+        "mode": "general",
+        "scenario": "primary",
+        "requested_hospital_id": null,
+        "frozen_pair": {
+          "status": "passed",
+          "pair_id": "20261016T080509Z-4c604c82",
+          "step_2": {
+            "directory": "precomputed/outputs/step_2/runs/20261016T075559Z-119a5636",
+            "run_id": "20261016T075559Z-119a5636",
+            "manifest_sha256": "969aefdf31859c78649775495ee2a698c47180e9361b29f0c75aa8f95483c00d"
+          },
+          "step_3": {
+            "directory": "precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82",
+            "run_id": "20261016T080509Z-4c604c82",
+            "manifest_sha256": "52f8a85271a4b5adf651475dd2bb3d63685e405ff63f0a7ec7292f3c677dc463"
+          }
+        },
+        "scoring_policy": {
+          "schema_version": 1,
+          "formula": "100 * (x / (x + k))",
+          "lower_is_better": true,
+          "references": {
+            "bus": 600.0,
+            "mtr": 900.0,
+            "hospital": 5000.0
+          },
+          "units": {
+            "bus": "seconds",
+            "mtr": "seconds",
+            "hospital": "metres"
+          },
+          "supplied_weights": {
+            "bus": 1.0,
+            "mtr": 1.0,
+            "hospital": 1.0
+          },
+          "normalised_weights": {
+            "bus": 0.3333333333333333,
+            "mtr": 0.3333333333333333,
+            "hospital": 0.3333333333333333
+          },
+          "active_components": [
+            "bus",
+            "mtr",
+            "hospital"
+          ],
+          "ties": "exact_unrounded_competition",
+          "incomplete_order": "available_required_count_desc_then_name_casefold_then_id",
+          "missing_total_and_rank": true
+        },
+        "housing_district_filter": null,
+        "step_4": {
+          "run_id": "20261016T102523Z-8e69faad",
+          "directory": "precomputed/outputs/step_4/runs/20261016T102523Z-8e69faad",
+          "manifest_sha256": "b3fb2cbda60fc8e8e7485f9e622990cc905bab7bbb829abb525797ef3e1cc146"
+        }
+      }
+    },
+    "primary_wheelchair": {
+      "rows": 244,
+      "columns": [
+        "latitude",
+        "longitude",
+        "id",
+        "source_id",
+        "name",
+        "name_en",
+        "name_zh_hant",
+        "name_zh_hans",
+        "entity_type",
+        "location_role",
+        "entrance_evidence",
+        "source_identity_name",
+        "source_administrative_district",
+        "source_region",
+        "block_count_raw",
+        "block_names_json",
+        "raw_json",
+        "source_record",
+        "provenance",
+        "easting",
+        "northing",
+        "housing_district",
+        "crosswalk_residual_m",
+        "housing_district_provenance",
+        "geometry",
+        "hospital_distance_m",
+        "hospital_target_ids",
+        "hospital_status",
+        "hospital_unit",
+        "hospital_reason",
+        "hospital_warnings",
+        "bus_time_s",
+        "bus_target_ids",
+        "bus_status",
+        "bus_reason",
+        "bus_warnings",
+        "bus_unit",
+        "mtr_time_s",
+        "mtr_target_ids",
+        "mtr_status",
+        "mtr_reason",
+        "mtr_warnings",
+        "mtr_unit",
+        "requested_hospital_id",
+        "bus_scaled_cost",
+        "mtr_scaled_cost",
+        "hospital_scaled_cost",
+        "required_component_count",
+        "available_required_component_count",
+        "missing_components",
+        "ranking_status",
+        "final_cost",
+        "rank"
+      ],
+      "fields": {
+        "latitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "longitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_en": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hant": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hans": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entity_type": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "location_role": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entrance_evidence": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_identity_name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_administrative_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_region": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_count_raw": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_names_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "raw_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_record": {
+          "dtype": "int64",
+          "json_encoded": false
+        },
+        "provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "easting": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "northing": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "crosswalk_residual_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district_provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_distance_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "hospital_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "hospital_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "bus_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "mtr_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "requested_hospital_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "mtr_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "hospital_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "available_required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "missing_components": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "ranking_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "final_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "rank": {
+          "dtype": "Int64",
+          "json_encoded": false
+        }
+      },
+      "crs": "EPSG:2326",
+      "metadata": {
+        "hospital_cache": "shared_general_distance",
+        "mode": "wheelchair",
+        "scenario": "primary",
+        "requested_hospital_id": null,
+        "frozen_pair": {
+          "status": "passed",
+          "pair_id": "20261016T080509Z-4c604c82",
+          "step_2": {
+            "directory": "precomputed/outputs/step_2/runs/20261016T075559Z-119a5636",
+            "run_id": "20261016T075559Z-119a5636",
+            "manifest_sha256": "969aefdf31859c78649775495ee2a698c47180e9361b29f0c75aa8f95483c00d"
+          },
+          "step_3": {
+            "directory": "precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82",
+            "run_id": "20261016T080509Z-4c604c82",
+            "manifest_sha256": "52f8a85271a4b5adf651475dd2bb3d63685e405ff63f0a7ec7292f3c677dc463"
+          }
+        },
+        "scoring_policy": {
+          "schema_version": 1,
+          "formula": "100 * (x / (x + k))",
+          "lower_is_better": true,
+          "references": {
+            "bus": 600.0,
+            "mtr": 900.0,
+            "hospital": 5000.0
+          },
+          "units": {
+            "bus": "seconds",
+            "mtr": "seconds",
+            "hospital": "metres"
+          },
+          "supplied_weights": {
+            "bus": 1.0,
+            "mtr": 1.0,
+            "hospital": 1.0
+          },
+          "normalised_weights": {
+            "bus": 0.3333333333333333,
+            "mtr": 0.3333333333333333,
+            "hospital": 0.3333333333333333
+          },
+          "active_components": [
+            "bus",
+            "mtr",
+            "hospital"
+          ],
+          "ties": "exact_unrounded_competition",
+          "incomplete_order": "available_required_count_desc_then_name_casefold_then_id",
+          "missing_total_and_rank": true
+        },
+        "housing_district_filter": null,
+        "step_4": {
+          "run_id": "20261016T102523Z-8e69faad",
+          "directory": "precomputed/outputs/step_4/runs/20261016T102523Z-8e69faad",
+          "manifest_sha256": "b3fb2cbda60fc8e8e7485f9e622990cc905bab7bbb829abb525797ef3e1cc146"
+        }
+      }
+    },
+    "baseline_general": {
+      "rows": 244,
+      "columns": [
+        "latitude",
+        "longitude",
+        "id",
+        "source_id",
+        "name",
+        "name_en",
+        "name_zh_hant",
+        "name_zh_hans",
+        "entity_type",
+        "location_role",
+        "entrance_evidence",
+        "source_identity_name",
+        "source_administrative_district",
+        "source_region",
+        "block_count_raw",
+        "block_names_json",
+        "raw_json",
+        "source_record",
+        "provenance",
+        "easting",
+        "northing",
+        "housing_district",
+        "crosswalk_residual_m",
+        "housing_district_provenance",
+        "geometry",
+        "hospital_distance_m",
+        "hospital_target_ids",
+        "hospital_status",
+        "hospital_unit",
+        "hospital_reason",
+        "hospital_warnings",
+        "bus_time_s",
+        "bus_target_ids",
+        "bus_status",
+        "bus_reason",
+        "bus_warnings",
+        "bus_unit",
+        "mtr_time_s",
+        "mtr_target_ids",
+        "mtr_status",
+        "mtr_reason",
+        "mtr_warnings",
+        "mtr_unit",
+        "requested_hospital_id",
+        "bus_scaled_cost",
+        "mtr_scaled_cost",
+        "hospital_scaled_cost",
+        "required_component_count",
+        "available_required_component_count",
+        "missing_components",
+        "ranking_status",
+        "final_cost",
+        "rank"
+      ],
+      "fields": {
+        "latitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "longitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_en": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hant": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hans": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entity_type": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "location_role": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entrance_evidence": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_identity_name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_administrative_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_region": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_count_raw": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_names_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "raw_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_record": {
+          "dtype": "int64",
+          "json_encoded": false
+        },
+        "provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "easting": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "northing": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "crosswalk_residual_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district_provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_distance_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "hospital_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "hospital_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "bus_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "mtr_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "requested_hospital_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "mtr_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "hospital_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "available_required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "missing_components": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "ranking_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "final_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "rank": {
+          "dtype": "Int64",
+          "json_encoded": false
+        }
+      },
+      "crs": "EPSG:2326",
+      "metadata": {
+        "hospital_cache": "shared_general_distance",
+        "mode": "general",
+        "scenario": "baseline",
+        "requested_hospital_id": null,
+        "frozen_pair": {
+          "status": "passed",
+          "pair_id": "20261016T080509Z-4c604c82",
+          "step_2": {
+            "directory": "precomputed/outputs/step_2/runs/20261016T075559Z-119a5636",
+            "run_id": "20261016T075559Z-119a5636",
+            "manifest_sha256": "969aefdf31859c78649775495ee2a698c47180e9361b29f0c75aa8f95483c00d"
+          },
+          "step_3": {
+            "directory": "precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82",
+            "run_id": "20261016T080509Z-4c604c82",
+            "manifest_sha256": "52f8a85271a4b5adf651475dd2bb3d63685e405ff63f0a7ec7292f3c677dc463"
+          }
+        },
+        "scoring_policy": {
+          "schema_version": 1,
+          "formula": "100 * (x / (x + k))",
+          "lower_is_better": true,
+          "references": {
+            "bus": 600.0,
+            "mtr": 900.0,
+            "hospital": 5000.0
+          },
+          "units": {
+            "bus": "seconds",
+            "mtr": "seconds",
+            "hospital": "metres"
+          },
+          "supplied_weights": {
+            "bus": 1.0,
+            "mtr": 1.0,
+            "hospital": 1.0
+          },
+          "normalised_weights": {
+            "bus": 0.3333333333333333,
+            "mtr": 0.3333333333333333,
+            "hospital": 0.3333333333333333
+          },
+          "active_components": [
+            "bus",
+            "mtr",
+            "hospital"
+          ],
+          "ties": "exact_unrounded_competition",
+          "incomplete_order": "available_required_count_desc_then_name_casefold_then_id",
+          "missing_total_and_rank": true
+        },
+        "housing_district_filter": null,
+        "step_4": {
+          "run_id": "20261016T102523Z-8e69faad",
+          "directory": "precomputed/outputs/step_4/runs/20261016T102523Z-8e69faad",
+          "manifest_sha256": "b3fb2cbda60fc8e8e7485f9e622990cc905bab7bbb829abb525797ef3e1cc146"
+        }
+      }
+    },
+    "baseline_wheelchair": {
+      "rows": 244,
+      "columns": [
+        "latitude",
+        "longitude",
+        "id",
+        "source_id",
+        "name",
+        "name_en",
+        "name_zh_hant",
+        "name_zh_hans",
+        "entity_type",
+        "location_role",
+        "entrance_evidence",
+        "source_identity_name",
+        "source_administrative_district",
+        "source_region",
+        "block_count_raw",
+        "block_names_json",
+        "raw_json",
+        "source_record",
+        "provenance",
+        "easting",
+        "northing",
+        "housing_district",
+        "crosswalk_residual_m",
+        "housing_district_provenance",
+        "geometry",
+        "hospital_distance_m",
+        "hospital_target_ids",
+        "hospital_status",
+        "hospital_unit",
+        "hospital_reason",
+        "hospital_warnings",
+        "bus_time_s",
+        "bus_target_ids",
+        "bus_status",
+        "bus_reason",
+        "bus_warnings",
+        "bus_unit",
+        "mtr_time_s",
+        "mtr_target_ids",
+        "mtr_status",
+        "mtr_reason",
+        "mtr_warnings",
+        "mtr_unit",
+        "requested_hospital_id",
+        "bus_scaled_cost",
+        "mtr_scaled_cost",
+        "hospital_scaled_cost",
+        "required_component_count",
+        "available_required_component_count",
+        "missing_components",
+        "ranking_status",
+        "final_cost",
+        "rank"
+      ],
+      "fields": {
+        "latitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "longitude": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_en": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hant": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "name_zh_hans": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entity_type": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "location_role": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "entrance_evidence": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_identity_name": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_administrative_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_region": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_count_raw": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "block_names_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "raw_json": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "source_record": {
+          "dtype": "int64",
+          "json_encoded": false
+        },
+        "provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "easting": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "northing": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "crosswalk_residual_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "housing_district_provenance": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_distance_m": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "hospital_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "hospital_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "hospital_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "bus_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "bus_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_time_s": {
+          "dtype": "float64",
+          "json_encoded": false
+        },
+        "mtr_target_ids": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_reason": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "mtr_warnings": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "mtr_unit": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "requested_hospital_id": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "bus_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "mtr_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "hospital_scaled_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "available_required_component_count": {
+          "dtype": "Int64",
+          "json_encoded": false
+        },
+        "missing_components": {
+          "dtype": "object",
+          "json_encoded": true
+        },
+        "ranking_status": {
+          "dtype": "object",
+          "json_encoded": false
+        },
+        "final_cost": {
+          "dtype": "Float64",
+          "json_encoded": false
+        },
+        "rank": {
+          "dtype": "Int64",
+          "json_encoded": false
+        }
+      },
+      "crs": "EPSG:2326",
+      "metadata": {
+        "hospital_cache": "shared_general_distance",
+        "mode": "wheelchair",
+        "scenario": "baseline",
+        "requested_hospital_id": null,
+        "frozen_pair": {
+          "status": "passed",
+          "pair_id": "20261016T080509Z-4c604c82",
+          "step_2": {
+            "directory": "precomputed/outputs/step_2/runs/20261016T075559Z-119a5636",
+            "run_id": "20261016T075559Z-119a5636",
+            "manifest_sha256": "969aefdf31859c78649775495ee2a698c47180e9361b29f0c75aa8f95483c00d"
+          },
+          "step_3": {
+            "directory": "precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82",
+            "run_id": "20261016T080509Z-4c604c82",
+            "manifest_sha256": "52f8a85271a4b5adf651475dd2bb3d63685e405ff63f0a7ec7292f3c677dc463"
+          }
+        },
+        "scoring_policy": {
+          "schema_version": 1,
+          "formula": "100 * (x / (x + k))",
+          "lower_is_better": true,
+          "references": {
+            "bus": 600.0,
+            "mtr": 900.0,
+            "hospital": 5000.0
+          },
+          "units": {
+            "bus": "seconds",
+            "mtr": "seconds",
+            "hospital": "metres"
+          },
+          "supplied_weights": {
+            "bus": 1.0,
+            "mtr": 1.0,
+            "hospital": 1.0
+          },
+          "normalised_weights": {
+            "bus": 0.3333333333333333,
+            "mtr": 0.3333333333333333,
+            "hospital": 0.3333333333333333
+          },
+          "active_components": [
+            "bus",
+            "mtr",
+            "hospital"
+          ],
+          "ties": "exact_unrounded_competition",
+          "incomplete_order": "available_required_count_desc_then_name_casefold_then_id",
+          "missing_total_and_rank": true
+        },
+        "housing_district_filter": null,
+        "step_4": {
+          "run_id": "20261016T102523Z-8e69faad",
+          "directory": "precomputed/outputs/step_4/runs/20261016T102523Z-8e69faad",
+          "manifest_sha256": "b3fb2cbda60fc8e8e7485f9e622990cc905bab7bbb829abb525797ef3e1cc146"
+        }
+      }
+    }
+  }
+}

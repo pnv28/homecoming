@@ -1,6 +1,6 @@
 # Step 4 cache and reader guide
 
-Updated 2026-10-16 18:30:12 HKT (UTC+08:00). Selected run: `20261016T102523Z-8e69faad`.
+Updated 2026-10-16 20:32:37 HKT (UTC+08:00). Selected run: `20261016T102523Z-8e69faad`.
 
 Step 4 consumes one verified record from `precomputed/outputs/rebuild/current.json`. It pins the retained Step 2 and Step 3 run directories and their manifest hashes. It uses the five saved Step 3 graphs and scenario-specific terminal mappings, plus the two explicit hospital-only origin overrides documented below. It does not rebuild graph topology or remove estimated edges from the primary attached graph to construct a baseline.
 
@@ -101,7 +101,7 @@ Saved transition indices refer to the frozen scenario graph, preserving allowed 
 
 Each selected primary path records whether it actually traverses estimated time, its estimated seconds, review IDs, original failure reasons and model warnings. Baseline and distance paths do not acquire estimated-time labels from physical source evidence. Reaching a destination with an estimate-enabled graph does not itself mean the chosen route uses estimates.
 
-Straight connectors, uncertain entrance levels and expanded searches remain accepted approximations. These results describe walking and connector costs only; they include no vehicle journey, waiting or fares. Step 5 now has an agreed [scoring/ranking plan](../step_5/step_5_plan.md), including bounded scaling, equal-thirds weights and incomplete ordering; ranking implementation remains pending.
+Straight connectors, uncertain entrance levels and expanded searches remain accepted approximations. These results describe walking and connector costs only; they include no vehicle journey, waiting or fares. Step 5 now implements the agreed bounded scaling, equal-thirds weights and incomplete ordering; see [the completed plan](../step_5/step_5_plan.md) and [implementation/API guide](../step_5/step_5_implementation.md).
 
 ## Selected full-data results
 
@@ -129,7 +129,7 @@ The original full calculation took **139.70 seconds** before final publication c
 
 `connector_warnings` counts occurrences at cached route endpoints, including repeated endpoints across pairs/scenarios: `alternative_level`=772, `connector_above_threshold`=4, `distance_tie_lower_height_assumption`=588, `entrance_and_level_unverified`=88, `level_uncertain`=25,110, `long_connector`=1,622, `map_point_approximation`=88, `point_height_unknown`=88, `reviewed_hospital_origin_override`=88. These are endpoint occurrences, not counts of distinct estates or source defects. The four override labels each occur 88 times because two hospital origins appear in 44 pairs each, including unavailable pairs. `upstream_attachment_warnings` separately counts the unchanged original Step 3 attachment records, including 140 beyond-threshold occurrences and 20 indoor fallbacks. Nonwinning destinations and their original evidence remain in Step 3.
 
-The repository suite passes **151 tests**, including 13 original Step 4 tests, four hospital-amendment tests and the existing coordinate-route and graph regressions. See [the test output](../../precomputed/docs/step_4_tests.txt). The [independent amendment review](../../precomputed/docs/step_4_amendment_review.json) checks preservation against the original full cache, unchanged transport link files, Kam Peng and GeoPackage override metadata. The additional published-cache check is reproducible with:
+The Step 4 amendment suite passed **151 tests**, including 13 original Step 4 tests, four hospital-amendment tests and the existing coordinate-route and graph regressions. See [the test output](../../precomputed/docs/step_4_tests.txt). The [independent amendment review](../../precomputed/docs/step_4_amendment_review.json) checks preservation against the original full cache, unchanged transport link files, Kam Peng and GeoPackage override metadata. The additional published-cache check is reproducible with:
 
 ```sh
 PYTHONPATH=work/src .venv/bin/python work/tests/check_step_4_cache.py

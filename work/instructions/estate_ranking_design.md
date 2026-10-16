@@ -3,9 +3,9 @@
 **16 October rebuild completed:** selected Step 2 `20261016T075559Z-119a5636` and Step 3 `20261016T080509Z-4c604c82` passed the full coordinated build, all saved-output checks and **134 tests**. Primary time graphs use reviewed distance-and-height estimates; separate baseline time graphs exclude them. Original geometry/gradient defects remain visible. Selection is recorded in `work/precomputed/outputs/rebuild/current.json`. Run the complete coordinated build with `PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild`.
 
 
-Updated 2026-10-16 18:28:20 HKT (UTC+08:00). Read [project_context_and_decisions.md](project_context_and_decisions.md) for complete decisions and [the Step 3 implementation](step_3/step_3_implementation.md) for current coverage/warnings. Frozen Step 1 remains `20261014T090829Z-20d0139c`; Step 4 is implemented and verified; Step 5 has an agreed plan; ranking implementation remains pending.
+Updated 2026-10-16 20:32:37 HKT (UTC+08:00). Read [project_context_and_decisions.md](project_context_and_decisions.md) for complete decisions and [the Step 3 implementation](step_3/step_3_implementation.md) for current coverage/warnings. Frozen Step 1 remains `20261014T090829Z-20d0139c`; Step 4 is implemented and verified; Step 5 is implemented, published and verified.
 
-**Step 4 amended and verified:** selected cache `20261016T102523Z-8e69faad` contains all 10,736 shared hospital pairs (6,323 reachable), both sets of 976 transport groups and 931 same-target comparisons. Only the two reviewed hospital origins were recalculated; all graph/transport outputs are unchanged and Kam Peng remains unavailable. All 8,186 reachable cached routes passed directed transition/cost checks; 151 repository tests pass. See [the implementation/API guide](step_4/step_4_implementation.md).
+**Step 4 amended and verified:** selected cache `20261016T102523Z-8e69faad` contains all 10,736 shared hospital pairs (6,323 reachable), both sets of 976 transport groups and 931 same-target comparisons. Only the two reviewed hospital origins were recalculated; all graph/transport outputs are unchanged and Kam Peng remains unavailable. All 8,186 reachable cached routes passed directed transition/cost checks; 162 repository tests pass. See [the implementation/API guide](step_4/step_4_implementation.md).
 
 ## Purpose and final output
 
@@ -21,7 +21,7 @@ Each candidate estate has three separate subcosts:
 
 Use network journeys rather than straight-line distances. Filter the candidate estates by allocation category without cutting the pedestrian network or destinations at category boundaries.
 
-**Step 5 scoring decisions are agreed; implementation is pending.** Scale each available cost as `100*x/(x+k)`, with bus `k=600 seconds`, MTR `k=900 seconds` and hospital `k=5000 metres`. Combine with equal thirds by default and configurable normalised nonnegative weights. Preserve all raw costs, targets, units, reachability and warnings. Complete estates rank first; incomplete estates follow by most available required components, then estate name/ID, without a total cost or numerical rank. Do not add raw metres and seconds or take one minimum across the three categories.
+**Step 5 scoring and ranking are implemented and verified.** Scale each available cost as `100*x/(x+k)`, with bus `k=600 seconds`, MTR `k=900 seconds` and hospital `k=5000 metres`. Combine with equal thirds by default and configurable normalised nonnegative weights. Preserve all raw costs, targets, units, reachability and warnings. Complete estates rank first; incomplete estates follow by most available required components, then estate name/ID, without a total cost or numerical rank. Do not add raw metres and seconds or take one minimum across the three categories.
 
 ## Shared assumptions and mode rules
 
@@ -68,7 +68,7 @@ Original inputs are in `work/original_data/`; selected older supplementary files
 
 Step 1 selects the Castle Peak Hospital supporting site record with the latest `LastAmendmentDate`: SiteID 1503020249, amended **13 July 2026**. Preserve both original site records, but use only the selected version where one canonical site description is needed. This does not create a second hospital target. Missing terminal, floor and building references are non-blocking Step 1 warnings; ignore them as investigation tasks and do not discard their paths. Preserve the original IDs and diagnostics. This decision does not waive ordinary geometry, height or connectivity checks. Missing site references and distance-post/path references are separate findings whose status is unchanged.
 
-The Step 1 rerun passed with **476,153 spatial records, zero blocking errors and 14 warning groups**. Its historical stage-specific suite passed **31 tests**; the complete repository suite now passes **151 tests**. Warnings document actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
+The Step 1 rerun passed with **476,153 spatial records, zero blocking errors and 14 warning groups**. Its historical stage-specific suite passed **31 tests**; the complete repository suite now passes **162 tests**. Warnings document actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
 
 Finished results are under `work/precomputed/outputs/current/`, selected from successful snapshots in `outputs/runs/`. This folder includes `harmonised.gpkg`, `reference_tables.sqlite`, `schema.json`, `source_manifest.json`, `model_policy.json`, validation/rejection reports, IDs and `mtr_master/`. Failed candidates remain in `work/cache` without replacing the prior successful data/IDs. Successful precomputed outputs remain trackable in Git.
 
@@ -136,7 +136,7 @@ Connections preserve each supplied 2D map point and place an attachment on an el
 5. [X] Compile four primary augmented graphs and two baseline time graphs with outgoing estate terminals and incoming destination terminals accepting lift states. Preserve distinct coincident identities and prevent shortcuts through facility terminals.
 6. [X] Validate all point records, spatial/null/cost roundtrips, terminals, shortest paths, components and frozen hashes before selecting the successful Step 2/Step 3 pair through `outputs/rebuild/current.json` (stage `current` links remain for compatibility).
 
-Read [the completed Step 3 plan](step_3/step_3_plan.md), [implementation/API guide](step_3/step_3_implementation.md) and [full-data validation](../precomputed/outputs/step_3/current/validation_report.md). Step 4 now caches estate subcosts and comparisons; final ranking remains deferred.
+Read [the completed Step 3 plan](step_3/step_3_plan.md), [implementation/API guide](step_3/step_3_implementation.md) and [full-data validation](../precomputed/outputs/step_3/current/validation_report.md). Step 4 now caches estate subcosts and comparisons; Step 5 now implements final scoring and ranking.
 
 ## 4. Compute and cache the three subcosts — implemented and verified
 
@@ -151,18 +151,18 @@ Read [the completed Step 3 plan](step_3/step_3_plan.md), [implementation/API gui
 
 Read [the completed Step 4 plan](step_4/step_4_plan.md), [reader and artifact guide](step_4/step_4_implementation.md), [full-data report](../precomputed/outputs/step_4/current/validation_report.json) and [repository test results](../precomputed/docs/step_4_tests.txt). Unreachable costs remain missing with explicit reasons; their agreed Step 5 treatment is documented below.
 
-## 5. Combine and rank — plan agreed, implementation pending
+## 5. Combine and rank — implemented and verified
 
 Explanation for the team: each midpoint gives 50 points; it is not a journey limit. A hospital 10 km away receives about 66.67 points and remains eligible. The bounded function compresses differences between very large costs, so retain original times/distances. Smaller final costs mean better access. Step 5 reads saved Step 4 measurements without new routing. Kam Peng remains visible with unavailable hospital access; boat links are outside this pedestrian-only model.
 
 1. [X] Agree `scaled_cost = 100*x/(x+k)`, using bus/MTR/hospital midpoints 600 seconds / 900 seconds / 5,000 metres, fixed across modes, scenarios, filters and hospital selections.
 2. [X] Agree equal-thirds default weights. Configurable nonnegative finite weights are normalised to sum to one; at least one must be positive. Only positive-weight components are required for a total.
 3. [X] Agree complete-first ordering; incomplete estates follow by descending available-required count, then name/ID. Their total cost and numerical rank stay missing.
-4. [ ] Implement full-precision scaling and weighted costs in GeoDataFrames, preserving raw measurements, destination ties, reasons, warnings and selected hospital identity. Keep valid zeros and explicit missing routes separate.
-5. [ ] Filter estates by allocation category and rank within the result using exact unrounded total-cost competition ties (`1,2,2,4`). Keep scaling independent of filtering.
-6. [ ] Save and verify versioned spatial ranking outputs with frozen Step 4 provenance, scoring policy and readers; use existing NumPy/pandas/GeoPandas/Pyogrio. No additional package is needed.
+4. [X] Implement full-precision scaling and weighted costs in GeoDataFrames, preserving raw measurements, destination ties, reasons, warnings and selected hospital identity. Keep valid zeros and explicit missing routes separate.
+5. [X] Filter estates by allocation category and rank within the result using exact unrounded total-cost competition ties (`1,2,2,4`). Keep scaling independent of filtering.
+6. [X] Save and verify versioned spatial ranking outputs with frozen Step 4 provenance, scoring policy and readers; use existing NumPy/pandas/GeoPandas/Pyogrio. No additional package is needed.
 
-See [the Step 5 plan](step_5/step_5_plan.md) for explanations, interfaces, defaults and tests. The plan is written; ranking code and outputs remain unimplemented.
+Selected Step 5 run **`20261016T122956Z-21343da6`** publishes four 244-estate GeoDataFrames: **239 complete / 5 incomplete general**, **225 complete / 19 incomplete wheelchair**, in both scenarios. All **162 tests**, exact spatial/metadata roundtrips and independent no-Dijkstra acceptance pass, including all 44 hospital selections and four additional weight profiles. Step 4/graph artifacts remain unchanged. See [the completed plan](step_5/step_5_plan.md), [implementation/API guide](step_5/step_5_implementation.md), [outputs](../precomputed/outputs/step_5/current/) and [validation](../precomputed/outputs/step_5/current/validation_report.json).
 
 ## Remaining evidence and implementation boundaries
 

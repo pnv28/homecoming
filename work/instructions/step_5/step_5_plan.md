@@ -1,8 +1,8 @@
 # Step 5: scale the three subcosts and rank estates
 
-Last updated: 2026-10-16 18:28:20 HKT (UTC+08:00)
+Last updated: 2026-10-16 20:32:37 HKT (UTC+08:00)
 
-Status: **plan and decisions recorded; Step 5 code and ranking outputs are not implemented yet**. The requested Step 4 hospital amendment is separate implementation work. Read the project context and current Step 4 implementation guide before implementing this plan.
+Status: **implemented and verified** in `20261016T122956Z-21343da6`, pinned to amended Step 4 `20261016T102523Z-8e69faad`. All 162 tests and the independent full-data acceptance pass. Read [the implementation and reader guide](step_5_implementation.md) for APIs, saved artifacts and results. The checklists below record completed work; source/model limitations remain explicitly preserved.
 
 ## 1. What Step 5 receives and what it produces
 
@@ -17,11 +17,11 @@ The result must be an actual GeoDataFrame: an estate table that keeps its map ge
 ### Steps we will take
 
 - [X] Agree that Step 5 consumes Step 4 results without new routing.
-- [ ] Implement in `work/src/estate_ranking/step_5.py`, using the amended successful Step 4 cache through its public readers.
-- [ ] Resolve the selected Step 4 run once per calculation. Pass that explicit saved directory to every reader so concurrent selection changes cannot mix snapshots.
-- [ ] Validate mode, scenario, hospital identity and allocation category. Supported categories are Urban, Extended Urban, New Territories and Islands; `None` means all estates.
-- [ ] Preserve `requested_hospital_id` even if that hospital is unreachable. An empty winning-target list must not erase the user's selection.
-- [ ] Do not modify Step 4 records or add a new route/connection approximation.
+- [X] Implement in `work/src/estate_ranking/step_5.py`, using the amended successful Step 4 cache through its public readers.
+- [X] Resolve the selected Step 4 run once per calculation. Pass that explicit saved directory to every reader so concurrent selection changes cannot mix snapshots.
+- [X] Validate mode, scenario, hospital identity and allocation category. Supported categories are Urban, Extended Urban, New Territories and Islands; `None` means all estates.
+- [X] Preserve `requested_hospital_id` even if that hospital is unreachable. An empty winning-target list must not erase the user's selection.
+- [X] Do not modify Step 4 records or add a new route/connection approximation.
 
 ## 2. Convert each measurement to a bounded cost
 
@@ -48,11 +48,11 @@ The formula deliberately compresses large differences. Going from 5 km to 10 km 
 ### Steps we will take
 
 - [X] Adopt `100 * (x / (x + k))` with bus/MTR/hospital references 600/900/5,000 in seconds/seconds/metres.
-- [ ] Apply the fixed references identically across modes, scenarios, category filters and hospital selections. Do not fit them to the currently displayed estates.
-- [ ] Keep valid zero costs. Preserve missing routes as missing values using the saved status/reason.
-- [ ] Reject inconsistent inputs: an `ok` route with missing, negative or non-finite cost, or an unavailable route with a numeric cost. Do not disguise these as ordinary unreachability.
-- [ ] Keep full precision for calculations and sorting. Round only in presentation; floating-point saturation near 100 must not be used to manufacture missing-route penalties or a new raw-cost tiebreaker.
-- [ ] Add `bus_scaled_cost`, `mtr_scaled_cost` and `hospital_scaled_cost` columns alongside the original measurements and units.
+- [X] Apply the fixed references identically across modes, scenarios, category filters and hospital selections. Do not fit them to the currently displayed estates.
+- [X] Keep valid zero costs. Preserve missing routes as missing values using the saved status/reason.
+- [X] Reject inconsistent inputs: an `ok` route with missing, negative or non-finite cost, or an unavailable route with a numeric cost. Do not disguise these as ordinary unreachability.
+- [X] Keep full precision for calculations and sorting. Round only in presentation; floating-point saturation near 100 must not be used to manufacture missing-route penalties or a new raw-cost tiebreaker.
+- [X] Add `bus_scaled_cost`, `mtr_scaled_cost` and `hospital_scaled_cost` columns alongside the original measurements and units.
 
 ## 3. Combine the converted costs
 
@@ -73,11 +73,11 @@ A zero weight means a component is displayed but not required for that particula
 ### Steps we will take
 
 - [X] Set default raw weights to `bus=1, mtr=1, hospital=1`; normalise to equal thirds.
-- [ ] Accept a complete dictionary with exactly the keys `bus`, `mtr`, `hospital`. Reject missing/unknown keys, booleans, negative/non-finite values and an all-zero selection.
-- [ ] Normalise safely by first dividing by the maximum weight, then by the resulting sum, avoiding overflow for large finite weights.
-- [ ] Compute the weighted mean only when all positive-weight components are available. Select active components explicitly so `0 * missing` cannot contaminate a valid total.
-- [ ] Record supplied weights, normalised weights, fixed references and active components in result metadata and saved scoring policy.
-- [ ] Preserve connector, unknown-level and estimated-time warnings. Do not invent an additional quality penalty.
+- [X] Accept a complete dictionary with exactly the keys `bus`, `mtr`, `hospital`. Reject missing/unknown keys, booleans, negative/non-finite values and an all-zero selection.
+- [X] Normalise safely by first dividing by the maximum weight, then by the resulting sum, avoiding overflow for large finite weights.
+- [X] Compute the weighted mean only when all positive-weight components are available. Select active components explicitly so `0 * missing` cannot contaminate a valid total.
+- [X] Record supplied weights, normalised weights, fixed references and active components in result metadata and saved scoring policy.
+- [X] Preserve connector, unknown-level and estimated-time warnings. Do not invent an additional quality penalty.
 
 ## 4. Put complete and incomplete estates in order
 
@@ -95,11 +95,11 @@ Kam Peng remains in the data. Its unavailable hospital connection is accepted fo
 
 - [X] Agree complete-first ordering and incomplete ordering by most available required components, then name/ID.
 - [X] Keep Kam Peng's hospital result unavailable without additional repair work.
-- [ ] Add `required_component_count`, `available_required_component_count`, `missing_components` and `ranking_status` (`complete` or `incomplete`).
-- [ ] Add nullable `final_cost` and nullable integer `rank`; incomplete rows have neither.
-- [ ] Filter by `housing_district`, then calculate ranks within the returned candidate set. Sorting uses full precision, followed by `name_en.casefold()` and estate ID; use the preserved estate `name` if English name is missing.
-- [ ] Return an empty GeoDataFrame with the same schema for a valid category with no records. Unknown category names are errors.
-- [ ] Preserve all tied Step 4 winning destination IDs independently of estate-ranking ties.
+- [X] Add `required_component_count`, `available_required_component_count`, `missing_components` and `ranking_status` (`complete` or `incomplete`).
+- [X] Add nullable `final_cost` and nullable integer `rank`; incomplete rows have neither.
+- [X] Filter by `housing_district`, then calculate ranks within the returned candidate set. Sorting uses full precision, followed by `name_en.casefold()` and estate ID; use the preserved estate `name` if English name is missing.
+- [X] Return an empty GeoDataFrame with the same schema for a valid category with no records. Unknown category names are errors.
+- [X] Preserve all tied Step 4 winning destination IDs independently of estate-ranking ties.
 
 ## 5. Python interface, saved outputs and existing packages
 
@@ -113,15 +113,15 @@ Existing NumPy and pandas already provide vectorised arithmetic, missing-value h
 
 ### Steps we will take
 
-- [ ] Provide `rank_estates(housing_district=None, wheelchair=False, hospital_id=None, scenario="primary", weights=None, step_4_directory=None) -> GeoDataFrame`.
-- [ ] Preserve all source estate and Step 4 columns, then add the scoring/ranking columns above. Metadata identifies the exact Step 4 run/manifest, mode, scenario, category, requested hospital and scoring policy.
-- [ ] Provide a CLI using the project's `.venv`: `PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_5`. Optional `--hospital-id`, `--bus-weight`, `--mtr-weight`, `--hospital-weight` and `--step-4-directory` select one recorded policy for the saved views.
-- [ ] Save under `work/precomputed/outputs/step_5/runs/<run_id>/`, with a successful atomic `current` selection. The four GeoPackage layers are `primary_general`, `primary_wheelchair`, `baseline_general`, `baseline_wheelchair`.
-- [ ] Save `scoring_policy.json`, exact Step 4 references, validation report, implementation/artifact hashes and SUCCESS metadata. Preserve the referenced upstream run and earlier successful Step 5 runs.
-- [ ] Provide `read_rankings(wheelchair=False, scenario="primary", directory=None)` for these saved whole-candidate views. It restores list/nullable types and GeoDataFrame metadata. Use `rank_estates` for category filtering, custom weights or a different hospital; do not filter a saved view and leave its old ranks unchanged.
-- [ ] Serialize nested lists/dictionaries as JSON text in GeoPackage and restore them on reading. Keep unknown costs/ranks nullable. Successful spatial outputs stay tracked with the existing Git LFS GeoPackage rule.
-- [ ] Default readers reject a Step 5 selection whose pinned Step 4 cache no longer matches the current selection. Explicit saved directories reopen their frozen history.
-- [ ] Stage and validate before selection; a failed run leaves previous successful outputs selected. Do not commit, push or delete historical outputs automatically.
+- [X] Provide `rank_estates(housing_district=None, wheelchair=False, hospital_id=None, scenario="primary", weights=None, step_4_directory=None) -> GeoDataFrame`.
+- [X] Preserve all source estate and Step 4 columns, then add the scoring/ranking columns above. Metadata identifies the exact Step 4 run/manifest, mode, scenario, category, requested hospital and scoring policy.
+- [X] Provide a CLI using the project's `.venv`: `PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_5`. Optional `--hospital-id`, `--bus-weight`, `--mtr-weight`, `--hospital-weight` and `--step-4-directory` select one recorded policy for the saved views.
+- [X] Save under `work/precomputed/outputs/step_5/runs/<run_id>/`, with a successful atomic `current` selection. The four GeoPackage layers are `primary_general`, `primary_wheelchair`, `baseline_general`, `baseline_wheelchair`.
+- [X] Save `scoring_policy.json`, exact Step 4 references, validation report, implementation/artifact hashes and SUCCESS metadata. Preserve the referenced upstream run and earlier successful Step 5 runs.
+- [X] Provide `read_rankings(wheelchair=False, scenario="primary", directory=None)` for these saved whole-candidate views. It restores list/nullable types and GeoDataFrame metadata. Use `rank_estates` for category filtering, custom weights or a different hospital; do not filter a saved view and leave its old ranks unchanged.
+- [X] Serialize nested lists/dictionaries as JSON text in GeoPackage and restore them on reading. Keep unknown costs/ranks nullable. Successful spatial outputs stay tracked with the existing Git LFS GeoPackage rule.
+- [X] Default readers reject a Step 5 selection whose pinned Step 4 cache no longer matches the current selection. Explicit saved directories reopen their frozen history.
+- [X] Stage and validate before selection; a failed run leaves previous successful outputs selected. Do not commit, push or delete historical outputs automatically.
 
 ## 6. Tests and completion criteria
 
@@ -131,14 +131,14 @@ Tests must check the scoring choices, not repeat routing work. The amended Step 
 
 ### Steps we will take
 
-- [ ] Verify scaling at 0, k/2, k and 2k: expected scores are 0, approximately 33.3333, 50 and approximately 66.6667. Check increasing nonnegative costs never improve scores and test very large finite inputs.
-- [ ] Verify equal weights, proportional weights, a zero-weight missing component, rejection of invalid weights and safe normalisation of large weights.
-- [ ] Verify complete-first ordering, descending available-required count, missing total/rank, name/ID stability and exact competition ties. Test costs that display identically after rounding but differ at full precision.
-- [ ] Verify category filtering does not change component scaling or surviving estates' total costs; ranks are recomputed within the category.
-- [ ] Verify no hospital selection uses Step 4's nearest reachable institution; an explicit hospital uses its pair and retains its ID when unreachable. Verify all exact destination ties survive.
-- [ ] Verify hospital costs and scaled hospital scores match across both modes/scenarios, while transport values follow the selected view.
-- [ ] Verify Kam Peng remains visible and incomplete under the default positive hospital weight; Kwai Luen and Chun Shek use amended hospital costs.
-- [ ] Disable Dijkstra while exercising all scoring/saved-result readers. Confirm no graph or Step 4 artifact is modified.
-- [ ] Verify default four-view accounting (244 rows each), EPSG:2326 estate geometries, raw/converted costs, nullable/list metadata and save/reopen preservation.
-- [ ] Test incompatible references, unknown IDs/categories, corrupt artifacts and failure preserving the previous selection. Run the repository suite once implementation is complete.
-- [ ] Update the context, design and this checklist with actual results and HKT date/time. Do not mark implementation complete merely because the decisions or plan are recorded.
+- [X] Verify scaling at 0, k/2, k and 2k: expected scores are 0, approximately 33.3333, 50 and approximately 66.6667. Check increasing nonnegative costs never improve scores and test very large finite inputs.
+- [X] Verify equal weights, proportional weights, a zero-weight missing component, rejection of invalid weights and safe normalisation of large weights.
+- [X] Verify complete-first ordering, descending available-required count, missing total/rank, name/ID stability and exact competition ties. Test costs that display identically after rounding but differ at full precision.
+- [X] Verify category filtering does not change component scaling or surviving estates' total costs; ranks are recomputed within the category.
+- [X] Verify no hospital selection uses Step 4's nearest reachable institution; an explicit hospital uses its pair and retains its ID when unreachable. Verify all exact destination ties survive.
+- [X] Verify hospital costs and scaled hospital scores match across both modes/scenarios, while transport values follow the selected view.
+- [X] Verify Kam Peng remains visible and incomplete under the default positive hospital weight; Kwai Luen and Chun Shek use amended hospital costs.
+- [X] Disable Dijkstra while exercising all scoring/saved-result readers. Confirm no graph or Step 4 artifact is modified.
+- [X] Verify default four-view accounting (244 rows each), EPSG:2326 estate geometries, raw/converted costs, nullable/list metadata and save/reopen preservation.
+- [X] Test incompatible references, unknown IDs/categories, corrupt artifacts and failure preserving the previous selection. Run the repository suite once implementation is complete.
+- [X] Update the context, design and this checklist with actual results and HKT date/time. Do not mark implementation complete merely because the decisions or plan are recorded.

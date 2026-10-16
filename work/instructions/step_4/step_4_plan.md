@@ -2,7 +2,7 @@
 
 Implemented against the selected 16 October Step 2/3 pair. See [the implementation and reader guide](step_4_implementation.md) and [the selected validation report](../../precomputed/outputs/step_4/current/validation_report.json).
 
-Updated 2026-10-16 18:28:20 HKT (UTC+08:00).
+Updated 2026-10-16 20:32:37 HKT (UTC+08:00).
 
 ## 1. Purpose and settled rules
 
@@ -137,7 +137,7 @@ Full-data acceptance must account for 10,736 hospital pairs, 976 primary transpo
 Step 5 decisions are now recorded: bounded component costs `100*x/(x+k)` with bus/MTR/hospital midpoints 600 seconds / 900 seconds / 5,000 metres, equal-thirds configurable weights, and incomplete estates after complete estates, ordered by most available required components then name/ID. Incomplete totals and numerical ranks stay missing. Step 4 does not implement these scores.
 
 - [X] Step 5: agree final scoring, scaling, default weights and missing-route ordering; write the [Step 5 plan](../step_5/step_5_plan.md).
-- [ ] Step 5: implement and validate the planned ranking outputs.
+- [X] Step 5: implement and validate the ranking outputs; see [the implementation guide](../step_5/step_5_implementation.md).
 
 ## 6. Reviewed hospital-only amendment
 
@@ -154,4 +154,4 @@ Steps we will take
 - [X] Save a new versioned Step 4 cache with parent provenance, checksums and explicit override warnings; retain previous runs.
 - [X] Ensure future full Step 4 builds apply these same reviewed overrides against the pinned snapshot; a changed snapshot requires explicit review rather than reusing node indices silently.
 - [X] Verify amended route totals and independent forward distances; test stale overrides, forbidden departures, preservation, missing selected-hospital identity and publication failure.
-- [ ] Step 5 scoring implementation remains separate from this completed amendment.
+- [X] Step 5 scoring was implemented and verified separately from this completed amendment; source/model limitations remain preserved.
