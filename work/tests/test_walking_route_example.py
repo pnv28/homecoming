@@ -19,6 +19,17 @@ def physical(paths):
 
 
 class WalkingRouteTests(unittest.TestCase):
+    def test_estimated_network_time_is_visible_in_route_and_summary(self):
+        from test_time_fallback import reviewed
+        graph,_=reviewed([[(-1,0,0),(0,0,0)],[(0,0,0),(0,0,2)],[(0,0,2),(1,0,2)]])
+        result,route,_=find_route(graph,Point(-.8,0),Point(.8,0))
+        self.assertEqual(result['status'],'ok')
+        self.assertEqual(result['estimated_network_sections'],1)
+        section=route.loc[route.time_model=='distance_height_estimate'].iloc[0]
+        self.assertAlmostEqual(section.time_s,12)
+        self.assertTrue(section.fallback_review_ids)
+        self.assertIn('original_geometry_uncertain',section.time_model_warning)
+
     def test_two_interior_positions_same_edge_are_directly_connected(self):
         graph = physical([[(0, 0, 0), (10, 0, 0)]])
         result, legs, attachments = find_route(graph, Point(2, 1), Point(8, 2))
@@ -79,10 +90,10 @@ class WalkingRouteTests(unittest.TestCase):
 
     def test_unattached_point_and_identical_points(self):
         graph = physical([[(0, 0, 0), (10, 0, 0)]])
-        result, route, _ = find_route(graph, Point(2, 0), Point(500, 500))
-        self.assertEqual(result['status'], 'unattached')
-        self.assertIn('destination', result['message'])
-        self.assertTrue(route.empty)
+        result, route, attachments = find_route(graph, Point(2, 0), Point(500, 500))
+        self.assertEqual(result['status'], 'ok')
+        self.assertTrue(attachments.warnings.str.contains('connector_above_threshold').any())
+        self.assertFalse(route.empty)
         result, route, _ = find_route(graph, Point(2, 1), Point(2, 1))
         self.assertEqual(result['distance_m'], 0.)
         self.assertEqual(result['time_s'], 0.)

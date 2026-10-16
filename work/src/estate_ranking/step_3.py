@@ -27,6 +27,7 @@ from .graph_regressions import check_lift_connections
 from .graph_cluster_audit import check_repaired_endpoint_cluster
 from .ingest import read_json, sha256
 from .step_2 import publish_run, verify_routing
+from .time_fallback import derived_policy, routing_prefix
 
 
 STEP_2_RUN = '20261014T105436Z-8fe534aa'
@@ -48,8 +49,8 @@ def freeze_inputs(step_2_directory):
     step_2 = Path(step_2_directory).resolve(strict=True)
     success = read_json(step_2 / 'SUCCESS.json')
     manifest = read_json(step_2 / 'manifest.json')
-    if success['run_id'] != STEP_2_RUN or manifest['run_id'] != STEP_2_RUN:
-        raise ValueError('Step 3 requires the agreed frozen Step 2 snapshot')
+    if success['run_id'] != manifest['run_id'] or step_2.name != success['run_id']:
+        raise ValueError('Step 2 success/manifest/directory identity mismatch')
     if success['validation'] != 'passed' or read_json(step_2 / 'validation_report.json')['status'] != 'passed':
         raise ValueError('Step 2 did not pass validation')
     verify_hashes(step_2, manifest['artifacts'])
@@ -60,12 +61,16 @@ def freeze_inputs(step_2_directory):
     if read_json(step_1 / 'validation_report.json')['errors'] != 0:
         raise ValueError('Step 1 did not pass validation')
     verify_hashes(step_1, frozen['files'])
-    if read_json(step_2 / 'model_policy.json') != frozen['policy'] or read_json(step_1 / 'model_policy.json') != frozen['policy']:
-        raise ValueError('Frozen model policies differ')
-    result = {'step_2': {'run_id': STEP_2_RUN, 'directory': str(step_2.relative_to(WORK)),
+    selected_policy = read_json(step_2 / 'model_policy.json')
+    if read_json(step_1 / 'model_policy.json') != frozen['policy']:
+        raise ValueError('Frozen source preparation policies differ')
+    if derived_policy(frozen['policy'], selected_policy) != selected_policy:
+        raise ValueError('Unrecorded derived routing policy')
+    result = {'step_2': {'run_id': success['run_id'], 'directory': str(step_2.relative_to(WORK)),
         'files': {**manifest['artifacts'], 'manifest.json': sha256(step_2 / 'manifest.json')}},
         'step_1': {'run_id': STEP_1_RUN, 'directory': str(step_1.relative_to(WORK)),
-                   'files': frozen['files']}, 'network_policy': frozen['policy']}
+                   'files': frozen['files']}, 'network_policy': selected_policy,
+                   'source_preparation_policy': frozen['policy']}
     return step_2, step_1, result
 
 
@@ -74,14 +79,20 @@ def validate_attachments(attached, full=False):
     if attachments.attachment_id.duplicated().any():
         raise AssertionError('Duplicate attachment identity')
     expected = sum(len(f) * (4 if kind == 'estate' else 2) for kind, f in attached.entities.items())
-    if len(attachments) != expected:
+    primary = attachments.loc[attachments.scenario == 'primary'] if 'scenario' in attachments else attachments
+    if len(primary) != expected:
         raise AssertionError('Missing entity/mode/metric records')
     counts = {kind: len(f) for kind, f in attached.entities.items()}
     if full and counts != {'estate': 244, 'hospital': 44, 'mtr_access': 611, 'bus_stop': 9264}:
         raise AssertionError('Frozen entity counts changed')
     selected = attachments.loc[attachments.status == 'attached']
-    if ((selected.distance_m < 0) | (selected.distance_m > selected.maximum_distance_m)).any():
-        raise AssertionError('Connector outside inclusive limit')
+    if ((selected.distance_m < 0) | ~np.isfinite(selected.distance_m)).any():
+        raise AssertionError('Connector distance must be finite and nonnegative')
+    above = selected.distance_m > selected.maximum_distance_m
+    if not np.array_equal(above, selected.connector_above_threshold):
+        raise AssertionError('Beyond-threshold connector flag mismatch')
+    if not selected.loc[above, 'warnings'].str.contains('connector_above_threshold').all():
+        raise AssertionError('Beyond-threshold connection lacks its warning')
     if not np.allclose(selected.time_s, selected.distance_m * .6 * np.exp(.175), rtol=2e-12, atol=1e-9):
         raise AssertionError('Flat connector cost mismatch')
     if not shapely.has_z(selected.geometry).all() or attachments.loc[attachments.status != 'attached'].geometry.notna().any():
@@ -98,9 +109,9 @@ def validate_attachments(attached, full=False):
         if shapely.has_z(frame.geometry).any():
             raise AssertionError('Entity height was invented')
     coverage = {}
-    for (kind, mode, metric), rows in attachments.groupby(['entity_type', 'mode', 'metric']):
+    for (scenario, kind, mode, metric), rows in attachments.groupby(['scenario', 'entity_type', 'mode', 'metric']):
         distances = rows.loc[rows.status == 'attached', 'distance_m']
-        coverage['/'.join((kind, mode, metric))] = {
+        coverage[('baseline/' if scenario == 'baseline' else '') + '/'.join((kind, mode, metric))] = {
             'records': len(rows), 'statuses': dict(Counter(rows.status)),
             'eligible': int((rows.status != 'excluded').sum()),
             'distance_m': {str(p): float(distances.quantile(p)) for p in (0., .5, .9, .95, 1.)}
@@ -112,7 +123,8 @@ def validate_attachments(attached, full=False):
             if coverage[kind + '/' + mode + '/time']['eligible'] != count:
                 raise AssertionError('Frozen destination eligibility changed')
     return {'source_points': sum(counts.values()), 'counts_by_type': counts,
-            'attachment_records': len(attachments), 'all_source_points_accounted_for': True,
+            'attachment_records': len(primary), 'baseline_attachment_records': len(attachments)-len(primary),
+            'all_source_points_accounted_for': True,
             'coverage': coverage, 'zero_distance_attachments': int(selected.zero_distance.sum()),
             'candidate_review_rows': len(attached.candidates), 'unknown_entity_heights_preserved': True,
             **attached.validation}
@@ -172,19 +184,19 @@ def verify_frames(expected, actual):
     return {name: len(a) for name, a, _ in frames}
 
 
-def run(input_directory=None, output_root=None):
+def run(input_directory=None, output_root=None, select=True):
     start = time.perf_counter()
     output_root = Path(output_root or WORK / 'precomputed/outputs/step_3')
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid.uuid4().hex[:8]
     directory = WORK / 'cache/step_3_staging' / run_id
     directory.mkdir(parents=True)
     code_paths = [Path(__file__).with_name(n) for n in
-                  ('step_3.py', 'attachments.py', 'graph.py', 'graph_costs.py', 'graph_topology.py')]
+                  ('step_3.py', 'attachments.py', 'graph.py', 'graph_costs.py', 'graph_topology.py', 'time_fallback.py', 'run_registry.py', 'rebuild.py')]
     code_hashes = {p.name: sha256(p) for p in code_paths}
     try:
         progress('1/5 Verify and freeze Step 2 and its referenced Step 1')
-        step_2, step_1, frozen = freeze_inputs(input_directory or
-            WORK / 'precomputed/outputs/step_2/runs' / STEP_2_RUN)
+        from .run_registry import selected_run
+        step_2, step_1, frozen = freeze_inputs(input_directory or selected_run('step_2', WORK))
         write_json(directory / 'frozen_inputs.json', frozen)
         write_json(directory / 'attachment_policy.json', ATTACHMENT_POLICY)
         write_json(directory / 'model_policy.json', frozen['network_policy'])
@@ -201,16 +213,16 @@ def run(input_directory=None, output_root=None):
         report['spatial_roundtrip'] = verify_frames(attached, reopened)
         report['routing'] = {}
         for wheelchair in (False, True):
-            for metric in ('time', 'distance'):
-                key = ('wheelchair' if wheelchair else 'general') + '_' + metric
+            for metric, scenario in [('time', 'primary'), ('distance', 'primary'), ('time', 'baseline')]:
+                key = routing_prefix(wheelchair, metric, scenario)
                 progress('4/5 Compile and verify ' + key)
-                graph = attached_routing_graph(attached, wheelchair, metric)
+                graph = attached_routing_graph(attached, wheelchair, metric, scenario)
                 for connection in ('weak', 'strong'):
                     _, labels = connected_components(graph.matrix, directed=True, connection=connection)
                     graph.states[connection + '_component'] = labels
                 summary = {**connectivity(graph), **validate_terminals(graph)}
                 save_attached_routing(directory, graph)
-                loaded = read_attached_graph(directory, wheelchair, metric, reopened)
+                loaded = read_attached_graph(directory, wheelchair, metric, reopened, scenario)
                 summary['roundtrip'] = verify_routing(graph, loaded)
                 assert_frame_equal(graph.terminals, loaded.terminals, check_dtype=False, check_exact=True)
                 validate_terminals(loaded)
@@ -246,7 +258,8 @@ def run(input_directory=None, output_root=None):
         target = output_root / 'runs' / run_id
         target.parent.mkdir(parents=True, exist_ok=True)
         directory.rename(target)
-        publish_run(target, output_root / 'current')
+        if select:
+            publish_run(target, output_root / 'current')
         progress('Published Step 3: ' + str(target))
         return target
     except BaseException:

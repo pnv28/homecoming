@@ -7,7 +7,7 @@ from .ingest import read_json
 
 def load_policy(path):
     policy = read_json(path)
-    if policy["policy_version"] != 1 or policy["always_open"] is not True:
+    if policy["policy_version"] not in (1, 2) or policy["always_open"] is not True:
         raise ValueError("Unsupported policy version or access-schedule policy")
     if policy["boarding"]["unknown_derived_code"] != 99:
         raise ValueError("Unknown boarding codes must use the agreed derived code 99")

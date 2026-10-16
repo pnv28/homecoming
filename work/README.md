@@ -3,7 +3,15 @@
 > **Latest decisions:** Read [the project context and agent handoff](instructions/project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
 
 
-Step 3 is implemented and fully verified in **`20261014T145819Z-4d15d1a3`**. It accounts for all **10,163 facility points** and publishes four augmented routing graphs. Read [the Step 3 guide](instructions/step_3/step_3_implementation.md) and [full-data validation report](precomputed/outputs/step_3/current/validation_report.md). Estate subcosts and ranking remain later work.
+**16 October rebuild:** the complete coordinated rebuild with reviewed fallback times and primary/baseline comparisons passed, including **134 tests**. The fallback is flat walking time plus 6 s/m ascent and 2 s/m descent, shared with wheelchair mode as an explicit approximation. Original geometry and failure evidence remain unchanged; separate baseline time graphs retain original exclusions. To rebuild both stages together, use:
+
+```sh
+PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild
+```
+
+The public readers select the verified pair through `precomputed/outputs/rebuild/current.json` when present. Each Step 3 run pins its own Step 2 dependency. Use an explicit run directory to inspect historical data. Individual stage builders are for explicit candidate work; a coordinated pair is the default published result.
+
+Step 3 is implemented and fully verified in **`20261016T080509Z-4c604c82`**, pinned to Step 2 **`20261016T075559Z-119a5636`**. It preserves **10,163 facility points**, records **20,814 primary + 20,238 baseline selections**, and publishes six augmented routing graphs. All eligible points attach, with **36 general / 34 wheelchair bus records per scenario beyond 50 m**, including approximate straight connectors up to **5.2 km**. These are flagged; attachment is not proof of a usable journey. Read [the Step 3 guide](instructions/step_3/step_3_implementation.md) and [full-data validation report](precomputed/outputs/step_3/current/validation_report.md). Estate subcosts and ranking remain later work.
 
 ```sh
 PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_3
@@ -15,11 +23,11 @@ graph = read_attached_graph(wheelchair=False, metric="time")
 # graph.entities / attachments / connectors / terminals preserve source identities and statuses.
 ```
 
-The audited Step 2 passed a full-data build: **397,225 nodes and 466,406 pieces**, with **465,861 general / 430,496 wheelchair eligible source paths** before splitting. All four mode/metric matrices passed persistence and shortest-path checks. The validated run is `20261014T105436Z-8fe534aa`. Its [source/routing audit](precomputed/outputs/step_2/current/source_routing_audit.md) records the repaired endpoint connection, 29 recovered healthy pieces and retained original-source limitations.
+The audited Step 2 passed a full-data build: **397,225 nodes and 466,406 pieces**, with **465,861 general / 430,496 wheelchair eligible source paths** before splitting. All six primary/baseline matrices passed persistence and shortest-path checks. The validated run is `20261016T075559Z-119a5636`. Its [source/routing audit](precomputed/outputs/step_2/current/source_routing_audit.md) records the repaired endpoint connection, 29 recovered healthy pieces and retained original-source limitations.
 
 Step 2 implementation and review: [instructions/step_2/step_2_implementation.md](instructions/step_2/step_2_implementation.md). The latest plan adopts shared Tobler costs for both modes, excludes disabled paths, and charges 30 seconds per original lift identity on entry. Older deferred-speed notes below describe historical snapshots.
 
-Build all four directed graphs from the successful Step 1 snapshot, from the repository root:
+For explicit stage-only candidate work, build all six graphs from the successful Step 1 snapshot, from the repository root (use the coordinated command above for a new selected pair):
 
 ```sh
 PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_2
@@ -36,9 +44,9 @@ graph = read_graph(wheelchair=False, metric="time")  # or metric="distance"
 costs_seconds = graph.costs_from(node_index=0)
 ```
 
-A time journey starts in the physical node's state with no current lift. Destination costs take the minimum across that node's states; `costs_from` handles both rules. Lift state identities are separate from physical geometry. Preserved source rows, eligibility reasons and source-level cost status are in `graph.physical.sources`. Full sampling evidence remains in the run's `profiles.jsonl`. `source_routing_audit.json` retains exact source provenance, rejected-cluster routes and unavailable-piece endpoint reachability. Invalid cost intervals are isolated after junction decisions so healthy adjacent geometry remains usable.
+A time journey starts in the physical node's state with no current lift. Destination costs take the minimum across that node's states; `costs_from` handles both rules. Lift state identities are separate from physical geometry. Preserved source rows, eligibility reasons and source-level cost status are in `graph.physical.sources`. Original sampling evidence remains in `profiles.jsonl`; separate reviewed estimates are in `derived_profiles.jsonl`. Use `read_graph(..., scenario="baseline")` or `read_attached_graph(..., scenario="baseline")` to exclude estimates for time comparisons. `source_routing_audit.json` retains exact source provenance, rejected-cluster routes and unavailable-piece endpoint reachability. Invalid cost intervals are isolated after junction decisions so healthy adjacent geometry remains usable.
 
-Validated Step 2 runs live under `precomputed/outputs/step_2/runs/`; `step_2/current/` selects a successful run. The manifest freezes one resolved Step 1 run and policy. GeoPackage, sparse matrices, mappings, evidence and review reports remain trackable in Git (large artifacts use the repository's Git LFS conventions). Failed candidates stay in cache and preserve the previous selection. Superseded build artifacts were removed at the user's request; compact historical reports are in [precomputed/history](precomputed/history/README.md). The current Step 2 build and its frozen Step 1 dependency remain complete.
+Validated Step 2 runs live under `precomputed/outputs/step_2/runs/`; the pair registry selects the compatible runs, with `step_2/current/` retained as a compatibility link. The manifest freezes one resolved Step 1 run and policy. GeoPackage, sparse matrices, mappings, evidence and review reports remain trackable in Git (large artifacts use the repository's Git LFS conventions). Failed candidates stay in cache and preserve the previous selection. Superseded build artifacts were removed at the user's request; compact historical reports are in [precomputed/history](precomputed/history/README.md). The current Step 2 build and its frozen Step 1 dependency remain complete.
 
 Original inputs are stored in `original_data/`, renamed from `data/` at the user's request. Active configuration, code and documentation use the new folder. Historical saved-run manifests retain their paths at the time of that run; resolve an old `work/data/` path through `work/original_data/` when checking those records. The separate repository-root `data/` directory retains its name.
 
@@ -46,7 +54,7 @@ This Python pipeline reads the selected local sources, aligns horizontal locatio
 
 **All routes are assumed always open.** `AccessTime` and `AccessTimeDetails` are not loaded, checked, or exported. Any original `AccessTimeID` is an inert attribute. The pipeline retains all source records and prepares mode-candidate flags from the agreed rules: general paths retain stairs; wheelchair paths exclude ordinary stairs/escalators/travelators and WheelchairBarrier=1; general equipment excludes stair lifts/wheelchair aids. These are candidates, not connected routes or computed costs.
 
-The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite now passes **112 tests**. All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
+The latest Step 1 rerun (`20261014T090829Z-20d0139c`) passed with **476,153 spatial records, zero errors and 14 retained warning groups**. The complete repository suite passes **134 tests** after full-data acceptance. See [the recorded test result](precomputed/docs/rebuild_test_report.json), [saved artifact/source preservation audit](precomputed/docs/rebuild_source_preservation.json) and [public-reader checks](precomputed/docs/rebuild_reader_verification.json). All six saved layers were reopened as actual **GeoPandas GeoDataFrames** and every geometry, attribute and null was checked.
 
 From the repository root:
 

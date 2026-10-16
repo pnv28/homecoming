@@ -1,0 +1,618 @@
+{
+  "review_version": 1,
+  "source_step_1_run": "20261014T090829Z-20d0139c",
+  "verified_against_step_2": "20261014T105436Z-8fe534aa",
+  "decision_basis": "Accepted modelling assumption: the original provider path is a continuous connection; use its finite original XYZ for an estimated traversal, without creating cross-path links or certifying physical accessibility. Original failure and uncertain elevations remain visible.",
+  "sources": {
+    "120003135": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "0003e487c95b098dd69a2d6b2118743806f1987bfb96f0a4a0008e1518ec646b",
+      "intervals": [
+        {
+          "review_id": "120003135:3",
+          "interval_index": 3,
+          "start_position": 3.0,
+          "end_position": 4.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.21430000000691507,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "120010565": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "53fc3928148bb58570a426a69e841a693b5d445e3252120dbf2c5485f454e337",
+      "intervals": [
+        {
+          "review_id": "120010565:4",
+          "interval_index": 4,
+          "start_position": 4.0,
+          "end_position": 5.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.003599999996367842,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "120010729": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "e967e09897c0e973d39213e80b1f9f898f132ced0ad4555bf9b51eaf5327674a",
+      "intervals": [
+        {
+          "review_id": "120010729:0",
+          "interval_index": 0,
+          "start_position": 0.0,
+          "end_position": 1.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.00840000000607688,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "120016922": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "292eecb53024330dfe3c685d39a0d57d3b5cd208fa55dbafb148c123fb93d513",
+      "intervals": [
+        {
+          "review_id": "120016922:2",
+          "interval_index": 2,
+          "start_position": 2.0,
+          "end_position": 3.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.006699999998090789,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "130014548": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "b6de1e87f483978cf2da7dcd79ef18690de9642a7f0cf104813d8190534f38a1",
+      "intervals": [
+        {
+          "review_id": "130014548:5",
+          "interval_index": 5,
+          "start_position": 5.0,
+          "end_position": 6.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.00879999999597203,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "150021694": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "341b7164c4e23498b246fe2a77c83de85fda8262331be93154e44cb2472994a0",
+      "intervals": [
+        {
+          "review_id": "150021694:13",
+          "interval_index": 13,
+          "start_position": 13.0,
+          "end_position": 14.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.7688999999954831,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "150021876": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "2e1f1b22945734607ce68a8236349c150eca07c3e5a903546905d1c96718799c",
+      "intervals": [
+        {
+          "review_id": "150021876:0",
+          "interval_index": 0,
+          "start_position": 0.0,
+          "end_position": 1.0,
+          "horizontal_m": 0.007810250359888187,
+          "height_change_m": -2.0883000000030734,
+          "original_reason": "unrepresentable_tobler_time",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "150022299": {
+      "feature_type": "Staircase",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": true,
+      "allow_general": true,
+      "allow_wheelchair": false,
+      "original_profile_sha256": "26805ce4e1fafcd53b4ff24924b03c81cc8b7fe0afba32f6672d9f988700723a",
+      "intervals": [
+        {
+          "review_id": "150022299:7",
+          "interval_index": 7,
+          "start_position": 7.0,
+          "end_position": 8.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 19.199299999992945,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain;zero_height_vertices"
+        }
+      ]
+    },
+    "150030379": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "27e15a55b8bcc33b87f6547347ccfde4db09d2b5692ac9913b93709e4b8d4dd0",
+      "intervals": [
+        {
+          "review_id": "150030379:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 1.510099999999511,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "150036491": {
+      "feature_type": "Crossing - Cautionary",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "184a01765110fb49ebd3301722cdb811648a2433a4374a004e8c627feb4e1f1a",
+      "intervals": [
+        {
+          "review_id": "150036491:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.2534999999916181,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "150041519": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "5c668a980f97f335f23b596c149c554a91f8c1d2f6282e30e39ca052b89224df",
+      "intervals": [
+        {
+          "review_id": "150041519:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -2.4262999999918975,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "160025365": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "27d1e0875eae7c81f7eb55c1424fd40b4e9985a644f9d81ecc8a069fa674a412",
+      "intervals": [
+        {
+          "review_id": "160025365:0",
+          "interval_index": 0,
+          "start_position": 0.0,
+          "end_position": 1.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.017300000006798655,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "180000839": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "212f0dca4af13fde390323233a75e0ef16efefcc8f1fe8ffd3ce85c6b5f98567",
+      "intervals": [
+        {
+          "review_id": "180000839:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.0415999999968335,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "180003454": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "cbc24800ecffe23ada3f5abf471e410b03f9d288a3a931e8672aa4643f58971d",
+      "intervals": [
+        {
+          "review_id": "180003454:2",
+          "interval_index": 2,
+          "start_position": 2.0,
+          "end_position": 3.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.09649999999965075,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "180015363": {
+      "feature_type": "Staircase",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": true,
+      "allow_general": true,
+      "allow_wheelchair": false,
+      "original_profile_sha256": "127792ba94eec31f2f2635b74dcf3fa41616249f2bc65a4ebb8f0dc6c7594006",
+      "intervals": [
+        {
+          "review_id": "180015363:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -17.15799999999581,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain;zero_height_vertices"
+        }
+      ]
+    },
+    "180024407": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "b890c5725b3d8a70130b920bb00e4ab27d79311faed1ed970d70319210fc2404",
+      "intervals": [
+        {
+          "review_id": "180024407:2",
+          "interval_index": 2,
+          "start_position": 2.0,
+          "end_position": 3.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.8272999999899184,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "180028779": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "482f451ccd8c64877e78419d453b5fbd102c0fedeed45f51aacfb8a21c214f94",
+      "intervals": [
+        {
+          "review_id": "180028779:0",
+          "interval_index": 0,
+          "start_position": 0.0,
+          "end_position": 1.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.552800000004936,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "180028781": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "691a48b16075e5425670e5d4650cc0a71e7f1a1c1b15436b243a9d0830fc8091",
+      "intervals": [
+        {
+          "review_id": "180028781:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.2566999999980908,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "220017797": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "824e1c339d82ee75779368c77deeb5fe91cbf8b933bcf9281e7c0c2b9b042ec9",
+      "intervals": [
+        {
+          "review_id": "220017797:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 1.0080999999918276,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "240023179": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "e0dc72fe58af780da33d01c70b3eb88c079d1e6d1bc0b875f3a1bd6a27582a61",
+      "intervals": [
+        {
+          "review_id": "240023179:1",
+          "interval_index": 1,
+          "start_position": 1.0,
+          "end_position": 2.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.02569999999832362,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "280013841": {
+      "feature_type": "Footpath",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": true,
+      "allow_general": true,
+      "allow_wheelchair": false,
+      "original_profile_sha256": "1fa32575ef20875fc845d452f4a1e3902d18abc90a8b5312c171e1af00fded72",
+      "intervals": [
+        {
+          "review_id": "280013841:184",
+          "interval_index": 184,
+          "start_position": 184.0,
+          "end_position": 185.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.0970999999990454,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        },
+        {
+          "review_id": "280013841:185",
+          "interval_index": 185,
+          "start_position": 185.0,
+          "end_position": 186.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.01690000000235159,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "290004597": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "7a7b6237f706e41b77d7d4ae716ec47705b9ad68a3671ded4f22cdffadb6118f",
+      "intervals": [
+        {
+          "review_id": "290004597:4",
+          "interval_index": 4,
+          "start_position": 4.0,
+          "end_position": 5.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.016499999997904524,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "290017543": {
+      "feature_type": "Staircase",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": true,
+      "allow_general": true,
+      "allow_wheelchair": false,
+      "original_profile_sha256": "6e410e2b225a15f51f4d2e5ce34b509a35464c7d58eb048c95fc2a4a920eaef0",
+      "intervals": [
+        {
+          "review_id": "290017543:22",
+          "interval_index": 22,
+          "start_position": 22.0,
+          "end_position": 23.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -0.010800000003655441,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "290020278": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "2c43e8cacddd745cc49f786fead86024b344ecb1b91ec543825d6c65ca5ccf17",
+      "intervals": [
+        {
+          "review_id": "290020278:5",
+          "interval_index": 5,
+          "start_position": 5.0,
+          "end_position": 6.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.003599999996367842,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "290036414": {
+      "feature_type": "Footway",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": false,
+      "allow_general": true,
+      "allow_wheelchair": true,
+      "original_profile_sha256": "3afff509bb2dd1069579dd239737291fe148dd6ee2625140529147bfe542d993",
+      "intervals": [
+        {
+          "review_id": "290036414:0",
+          "interval_index": 0,
+          "start_position": 0.0,
+          "end_position": 1.0,
+          "horizontal_m": 0.0,
+          "height_change_m": 0.001799999998183921,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain"
+        }
+      ]
+    },
+    "290038266": {
+      "feature_type": "Staircase",
+      "direction": 0,
+      "enabled": true,
+      "wheelchair_barrier": true,
+      "allow_general": true,
+      "allow_wheelchair": false,
+      "original_profile_sha256": "63ba782bc7fc442dcfa7e58d767a0a09963ebfbef1e98635d6880ffecb7ccd22",
+      "intervals": [
+        {
+          "review_id": "290038266:4",
+          "interval_index": 4,
+          "start_position": 4.0,
+          "end_position": 5.0,
+          "horizontal_m": 0.0,
+          "height_change_m": -65.9771999999939,
+          "original_reason": "non_lift_vertical_without_horizontal_run",
+          "decision": "allow_estimated_time",
+          "assumption": "Existing same-source traversal and original height change accepted for approximate cost; physical equipment and replacement geometry are not inferred.",
+          "warning": "original_geometry_uncertain;zero_height_vertices"
+        }
+      ]
+    }
+  }
+}

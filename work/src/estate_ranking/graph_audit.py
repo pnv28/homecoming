@@ -75,14 +75,16 @@ def audit_routing(graph, audit):
                     continue
                 if piece['time_'+name+'_status']=='available':
                     counts['healthy_piece_directions'] += 1
+                elif piece['time_'+name+'_status']=='estimated_distance_height':
+                    counts['estimated_piece_directions'] += 1
                 else:
                     status = 'reachable' if piece[name]['reachable'] else 'unreachable'
                     counts['unavailable_piece_directions_'+status] += 1
     return {'clusters':cluster,'unavailable_sources':sources,
             'summary':dict(sorted(counts.items())),
-            'interpretation':'Per-piece endpoint routes in this mode and metric. An unavailable '
-                             'time interval has no hypothetical replacement cost. Reachability '
-                             'does not establish a physical source correction.'}
+            'interpretation':'Per-piece endpoint routes in this mode, metric and scenario. '
+                             'Primary routing can use reviewed distance-height estimates; baseline '
+                             'retains original time exclusions. Reachability does not establish a source correction.'}
 
 
 def audit_summary(audit):

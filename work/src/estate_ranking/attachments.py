@@ -21,6 +21,8 @@ from .graph import (WORK, PhysicalGraph, RoutingGraph, minimum_matrix, read_phys
                     routing_graph, save_routing)
 from .graph_costs import build_profile, interpolate_xyz, tobler_seconds
 from .graph_topology import height_ok, stable_id
+from .time_fallback import apply_review, edge_cost_fields, routing_prefix
+from .run_registry import selected_run
 
 
 ORDINARY_TYPES = {'Footway', 'M_Footway', 'Ramp', 'M_Ramp', 'Service Lane',
@@ -28,7 +30,7 @@ ORDINARY_TYPES = {'Footway', 'M_Footway', 'Ramp', 'M_Ramp', 'Service Lane',
     'Village', 'Track', 'Crossing - Signalized', 'Crossing - Zebra',
     'Crossing - Cautionary', 'Crossing - Others'}
 ATTACHMENT_POLICY = {
-    'version': 1, 'maximum_connector_m': {'estate': 200., 'hospital': 200.,
+    'version': 2, 'maximum_connector_m': {'estate': 200., 'hospital': 200.,
                                          'mtr_access': 200., 'bus_stop': 50.},
     'ordinary_feature_types': sorted(ORDINARY_TYPES),
     'location_preference': ['Outdoor', 'Indoor'],
@@ -41,6 +43,7 @@ ATTACHMENT_POLICY = {
     'estate_terminal': 'outgoing_only_no_current_lift',
     'destination_terminal': 'incoming_only_all_attachment_lift_states',
     'zero_distance': 'explicit_zero_cost_transition_no_line_geometry'}
+ATTACHMENT_POLICY['distance_threshold_policy'] = 'warn_and_expand_search_not_reject'
 LAYERS = {'estate': 'estates', 'hospital': 'hospitals',
           'mtr_access': 'mtr_exits', 'bus_stop': 'bus_stops'}
 
@@ -95,13 +98,13 @@ def _eligible(entity, kind, wheelchair):
     return bool(value) if pd.notna(value) else False
 
 
-def _can_use(edge, position, role, metric):
+def _can_use(edge, position, role, metric, scenario='primary'):
     """At a one-way endpoint the selected piece must allow the terminal's role."""
     for direction in (1, -1):
         if edge.direction not in (0, direction):
             continue
-        cost = edge.distance_m if metric == 'distance' else getattr(
-            edge, 'time_forward_s' if direction == 1 else 'time_reverse_s')
+        name = ('original_' if scenario == 'baseline' else '') + ('time_forward_s' if direction == 1 else 'time_reverse_s')
+        cost = edge.distance_m if metric == 'distance' else getattr(edge, name, getattr(edge, name.replace('original_', '')))
         if pd.isna(cost) or not np.isfinite(cost):
             continue
         departure_end = edge.end_position if direction == 1 else edge.start_position
@@ -116,7 +119,7 @@ def _can_use(edge, position, role, metric):
 
 class SegmentIndex:
     """Index original segments of eligible pieces; never collapse repeated visits."""
-    def __init__(self, physical, wheelchair, metric):
+    def __init__(self, physical, wheelchair, metric, scenario='primary'):
         self.edges = {int(r.edge_index): r for r in physical.edges.itertuples()}
         sources = physical.sources.set_index(physical.sources.PedestrianRouteID.astype(str))
         ordinary = sources.loc[sources.FeatureType_label.isin(ORDINARY_TYPES)]
@@ -152,6 +155,7 @@ class SegmentIndex:
         self.records = records
         self.tree = shapely.STRtree(self.geometry)
         self.metric = metric
+        self.scenario = scenario
 
     def candidates(self, point, limit, role):
         indices = self.tree.query(point, predicate='dwithin', distance=limit)
@@ -168,18 +172,41 @@ class SegmentIndex:
             edge_index, start, end, a, b = self.records[int(idx)]
             edge = self.edges[edge_index]
             position = float(start + f * (end - start))
-            if not _can_use(edge, position, role, self.metric):
+            if not _can_use(edge, position, role, self.metric, self.scenario):
                 continue
             xyz = a + f * (b - a)
             context = self.context[edge.source_id]
             item = dict(source_id=edge.source_id, parent_edge_index=edge_index,
                 parent_edge_id=edge.edge_id, source_position=position, distance_m=float(distance),
                 x=float(xyz[0]), y=float(xyz[1]), height_m=float(xyz[2]), **context)
+            item['uses_estimated_time'] = bool(getattr(edge, 'uses_estimated_time', False)) and self.scenario == 'primary' and self.metric == 'time'
             # Shared vertices of adjacent segments/pieces are one source position.
             key = (edge.source_id, position)
             if key not in result or edge.edge_id < result[key]['parent_edge_id']:
                 result[key] = item
         return list(result.values())
+
+    def expanded_candidates(self, point, threshold, role):
+        """Progressive exact radius queries; inspect the whole finite dataset if needed."""
+        if not len(self.geometry):
+            return []
+        bounds = shapely.bounds(self.geometry)
+        extent = max(abs(float(np.nanmin(bounds[:, 0]))-point.x),
+                     abs(float(np.nanmax(bounds[:, 2]))-point.x),
+                     abs(float(np.nanmin(bounds[:, 1]))-point.y),
+                     abs(float(np.nanmax(bounds[:, 3]))-point.y)) * math.sqrt(2) + 1.
+        radius = threshold
+        indoor = []
+        while True:
+            radius = min(max(radius * 2, threshold + 1.), max(extent, threshold + 1.))
+            found = self.candidates(point, radius, role)
+            outdoor = [c for c in found if c['location'] == 'Outdoor']
+            if outdoor:
+                nearest = min(c['distance_m'] for c in outdoor)
+                return self.candidates(point, nearest + 1., role)
+            indoor = found
+            if radius >= extent:
+                return indoor
 
 
 def _different_floor(a, b):
@@ -187,7 +214,7 @@ def _different_floor(a, b):
             and bool(set(a['buildings']) & set(b['buildings'])))
 
 
-def select_attachments(physical, entities, progress=lambda message: None):
+def select_attachments(physical, entities, progress=lambda message: None, scenario='primary'):
     rows, reviews = [], []
     for wheelchair in (False, True):
         mode = 'wheelchair' if wheelchair else 'general'
@@ -195,10 +222,12 @@ def select_attachments(physical, entities, progress=lambda message: None):
         # Distance eligibility includes time-unavailable pieces. The per-query
         # role/cost filter removes those from time searches, allowing one spatial
         # index to serve both metrics without changing candidate selection.
-        index = SegmentIndex(physical, wheelchair, 'distance')
+        index = SegmentIndex(physical, wheelchair, 'distance', scenario)
         for metric in ('time', 'distance'):
             progress('Select attachments: ' + mode + '_' + metric)
             index.metric = metric
+            if scenario == 'baseline' and metric == 'distance':
+                continue
             for kind, frame in entities.items():
                 if kind != 'estate' and metric != ('distance' if kind == 'hospital' else 'time'):
                     continue
@@ -207,23 +236,28 @@ def select_attachments(physical, entities, progress=lambda message: None):
                 for entity_number, entity in enumerate(frame.to_dict('records')):
                     if entity_number and entity_number % 2000 == 0:
                         progress('{} {} {}: {}/{}'.format(mode, metric, kind, entity_number, len(frame)))
-                    aid = '{}:{}:{}'.format(entity['id'], mode, metric)
+                    aid = '{}:{}:{}{}'.format(entity['id'], mode, metric, ':baseline' if scenario == 'baseline' else '')
                     row = dict(attachment_id=aid, entity_id=entity['id'], entity_type=kind,
                         mode=mode, metric=metric, role=role, maximum_distance_m=limit,
                         status='excluded', reason='mode_excluded', warnings='', geometry=None,
                         source_id=None, parent_edge_id=None, parent_edge_index=None,
                         source_position=None, distance_m=None, time_s=None, height_m=None,
                         node_index=None, reused_node=False, zero_distance=False,
-                        candidate_count=0, tied_count=0, alternative_level=False)
+                        candidate_count=0, tied_count=0, alternative_level=False,
+                        scenario=scenario, connector_above_threshold=False,
+                        uses_estimated_time=False)
                     if not _eligible(entity, kind, wheelchair):
                         rows.append(row)
                         continue
                     candidates = index.candidates(entity['geometry'], limit, role)
+                    if not candidates:
+                        candidates = index.expanded_candidates(entity['geometry'], limit, role)
                     outdoor = [c for c in candidates if c['location'] == 'Outdoor']
                     pool = outdoor or [c for c in candidates if c['location'] == 'Indoor']
                     row['candidate_count'] = len(candidates)
                     if not pool:
                         row.update(status='unattached', reason='no_suitable_path_within_limit')
+                        row['reason'] = 'no_suitable_path_in_dataset'
                         rows.append(row)
                         continue
                     pool.sort(key=lambda c: (c['distance_m'], c['height_m'],
@@ -236,6 +270,10 @@ def select_attachments(physical, entities, progress=lambda message: None):
                     levels = [c for c in nearby if abs(c['height_m'] - chosen['height_m']) > 2.
                               or _different_floor(c, chosen)]
                     warnings = ['level_uncertain']
+                    if chosen['distance_m'] > limit:
+                        warnings.append('connector_above_threshold')
+                    if chosen['uses_estimated_time']:
+                        warnings.append('attachment_uses_estimated_time')
                     if not outdoor:
                         warnings.append('indoor_fallback')
                     if len(tied) > 1:
@@ -250,6 +288,8 @@ def select_attachments(physical, entities, progress=lambda message: None):
                         tied_count=len(tied), alternative_level=bool(levels),
                         time_s=tobler_seconds(chosen['distance_m'], 0.),
                         zero_distance=chosen['distance_m'] == 0.,
+                        connector_above_threshold=chosen['distance_m'] > limit,
+                        uses_estimated_time=chosen['uses_estimated_time'],
                         geometry=Point(chosen['x'], chosen['y'], chosen['height_m']))
                     rows.append(row)
                     for c in nearby:
@@ -284,6 +324,7 @@ def recover_profiles(physical, source_ids, evidence_directory=None):
         geometry = row.geometry.geoms[0] if row.geometry.geom_type == 'MultiLineString' else row.geometry
         profiles[sid] = build_profile(sid, np.asarray(geometry.coords), float(row.Gradient),
                                       row.FeatureType_label in {'Lift', 'M_Lift'})
+        apply_review(profiles[sid], row, physical.policy)
         profile = profiles[sid]
         if (profile.classification != row.cost_classification or profile.rounds != row.sample_rounds
                 or profile.forward_status != row.time_forward_status
@@ -302,6 +343,16 @@ def recover_profiles(physical, source_ids, evidence_directory=None):
                 checked.add(sid)
     if checked != set(source_ids):
         raise AssertionError('Missing original source evidence')
+    if (Path(evidence_directory) / 'derived_profiles.jsonl').exists():
+        wanted = {sid: p.derived_evidence() for sid, p in profiles.items() if p.fallback}
+        found = {}
+        with (Path(evidence_directory) / 'derived_profiles.jsonl').open() as stream:
+            for line in stream:
+                item = json.loads(line)
+                if item['source_id'] in wanted:
+                    found[item['source_id']] = item
+        if wanted != found:
+            raise AssertionError('Derived profile evidence changed')
     return profiles
 
 
@@ -329,7 +380,7 @@ def split_attachments(physical, attachments, evidence_directory=None):
         for member in memberships[row.source_id].itertuples():
             if not edge.start_position <= member.position <= edge.end_position:
                 continue
-            if not _can_use(edge, member.position, row.role, row.metric):
+            if not _can_use(edge, member.position, row.role, row.metric, getattr(row, 'scenario', 'primary')):
                 continue
             original = interpolate_xyz(profile.coords, member.position)
             canonical = np.array(nodes.iloc[int(member.node_index)].geometry.coords[0])
@@ -375,15 +426,19 @@ def split_attachments(physical, attachments, evidence_directory=None):
             item.update(edge_id=stable_id('A-E-', [(edge.source_id, start), (edge.source_id, end)]),
                 parent_edge_id=edge.edge_id, start_position=start, end_position=end,
                 from_node=positions[start], to_node=positions[end], distance_m=cost.distance_m,
-                time_forward_s=cost.forward_seconds, time_reverse_s=cost.reverse_seconds,
-                time_forward_status=cost.forward_status, time_reverse_status=cost.reverse_status,
-                geometry=profile.geometry(start, end))
+                geometry=profile.geometry(start, end),
+                **edge_cost_fields(profile, start, end, cost))
             pieces.append(item)
             values.append(cost)
         for column, attr in [('distance_m', 'distance_m'),
-                ('time_forward_s', 'forward_seconds'), ('time_reverse_s', 'reverse_seconds')]:
+                ('time_forward_s', 'forward_seconds'), ('time_reverse_s', 'reverse_seconds'),
+                ('original_time_forward_s', 'forward_seconds'), ('original_time_reverse_s', 'reverse_seconds')]:
+            if not hasattr(edge, column):
+                continue
             original = getattr(edge, column)
-            parts = [getattr(v, attr) for v in values]
+            parts = ([getattr(profile.piece_costs(start, end, 'baseline'), attr)
+                      for start, end in zip(ordered, ordered[1:])]
+                     if column.startswith('original_') else [getattr(v, attr) for v in values])
             if pd.notna(original):
                 if any(v is None for v in parts) or not np.isclose(math.fsum(parts), original,
                         rtol=2e-12, atol=1e-8):
@@ -431,6 +486,11 @@ def attach_points(physical, entities, evidence_directory=None, progress=lambda m
     if len(ids) != len(set(ids)):
         raise ValueError('Entity IDs must be distinct across layers')
     attachments, candidates = select_attachments(physical, entities, progress)
+    if physical.policy['transport_time'].get('fallback', {}).get('enabled'):
+        baseline, reviews = select_attachments(physical, entities, progress, 'baseline')
+        attachments = gpd.GeoDataFrame(pd.concat([attachments, baseline], ignore_index=True), crs=2326)
+        attachments.attrs['vertical_crs'] = 'EPSG:5738'
+        candidates = pd.concat([candidates, reviews], ignore_index=True)
     progress('Recover original profiles and subdivide attachment pieces')
     augmented, validation = split_attachments(physical, attachments, evidence_directory)
     original = {r.id: r.geometry for f in entities.values() for r in f.itertuples()}
@@ -446,14 +506,16 @@ def attach_points(physical, entities, evidence_directory=None, progress=lambda m
     return AttachedPoints(augmented, entities, attachments, connectors, candidates, validation)
 
 
-def attached_routing_graph(attached, wheelchair=False, metric='time'):
-    graph = routing_graph(attached.physical, wheelchair, metric)
+def attached_routing_graph(attached, wheelchair=False, metric='time', scenario='primary'):
+    graph = routing_graph(attached.physical, wheelchair, metric, scenario)
     states = graph.states.copy()
     states['state_kind'] = 'physical'
     states['entity_id'] = None
     mode = 'wheelchair' if wheelchair else 'general'
     selected = attached.attachments.loc[(attached.attachments['mode'] == mode) &
                                        (attached.attachments.metric == metric)]
+    if 'scenario' in selected:
+        selected = selected.loc[selected.scenario == scenario]
     selected = selected.sort_values('attachment_id').reset_index(drop=True)
     network_states = defaultdict(list)
     for row in states.itertuples():
@@ -480,9 +542,11 @@ def attached_routing_graph(attached, wheelchair=False, metric='time'):
     terminals = pd.DataFrame(terminal_rows, columns=['entity_id', 'entity_type', 'attachment_id', 'role',
         'state_index', 'node_index', 'status', 'reason'])
     terminals['node_index'] = terminals.node_index.astype('Int64')
-    return AttachedGraph(graph.nodes, graph.edges, matrix, states, mappings, wheelchair, metric,
+    result = AttachedGraph(graph.nodes, graph.edges, matrix, states, mappings, wheelchair, metric,
         attached.physical, attached.entities, attached.attachments, attached.connectors,
         terminals)
+    result.scenario = scenario
+    return result
 
 
 def save_attached(directory, attached, upstream):
@@ -515,6 +579,8 @@ def read_attached_points(directory):
         frame = gpd.read_file(directory / 'attachments.gpkg', layer=name,
                              engine='pyogrio', datetime_as_string=True)
         for col, dtype in dtypes.items():
+            if col in ('fallback_review_ids', 'time_model_warning', 'reason', 'warnings'):
+                frame[col] = frame[col].fillna('')
             frame[col] = frame[col].astype(dtype)
         if name in ('nodes', 'edges', 'attachments'):
             frame.attrs['vertical_crs'] = 'EPSG:5738'
@@ -546,17 +612,17 @@ def read_attached_points(directory):
 
 def save_attached_routing(directory, graph):
     save_routing(directory, graph)
-    prefix = ('wheelchair' if graph.wheelchair else 'general') + '_' + graph.metric
+    prefix = routing_prefix(graph.wheelchair, graph.metric, getattr(graph, 'scenario', 'primary'))
     graph.terminals.to_csv(Path(directory) / (prefix + '_terminals.csv'), index=False)
 
 
-def read_attached_graph(directory=None, wheelchair=False, metric='time', attached=None):
+def read_attached_graph(directory=None, wheelchair=False, metric='time', attached=None, scenario='primary'):
     """Reopen GeoDataFrames, terminal mappings and a directed SciPy CSR matrix."""
     if metric not in ('time', 'distance'):
         raise ValueError('metric must be time or distance')
-    directory = Path(directory or WORK / 'precomputed/outputs/step_3/current').resolve()
+    directory = Path(directory or selected_run('step_3', WORK)).resolve()
     attached = attached or read_attached_points(directory)
-    prefix = ('wheelchair' if wheelchair else 'general') + '_' + metric
+    prefix = routing_prefix(wheelchair, metric, scenario)
     states = pd.read_csv(directory / (prefix + '_states.csv'), dtype={'lift_id': str, 'entity_id': str},
                          float_precision='round_trip')
     transitions = pd.read_csv(directory / (prefix + '_transitions.csv'), dtype={'source_id': str},
@@ -571,6 +637,8 @@ def read_attached_graph(directory=None, wheelchair=False, metric='time', attache
             not np.array_equal(matrix.indices, transitions.to_state) or
             not np.array_equal(matrix.data, transitions.cost)):
         raise ValueError('Saved terminal matrix/mapping mismatch')
-    return AttachedGraph(attached.physical.nodes, attached.physical.edges, matrix, states,
+    result = AttachedGraph(attached.physical.nodes, attached.physical.edges, matrix, states,
         transitions, wheelchair, metric, attached.physical, attached.entities,
         attached.attachments, attached.connectors, terminals)
+    result.scenario = scenario
+    return result

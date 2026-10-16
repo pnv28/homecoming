@@ -15,6 +15,8 @@ from .export import read_geodataframe, write_json
 from .graph_costs import build_profile, total_or_none
 from .graph_topology import build_topology, report_crossings, stable_id
 from .policy import load_policy
+from .time_fallback import derived_policy, apply_review, edge_cost_fields, routing_prefix
+from .run_registry import selected_run
 
 
 WORK = Path(__file__).resolve().parents[2]
@@ -85,6 +87,7 @@ def _source_reasons(row, policy, wheelchair):
 
 def build_physical_graph(network, policy=None, progress=lambda message: None, audit_crossings=True):
     policy = policy or load_policy(WORK / 'config/routing_policy.json')
+    policy = derived_policy(policy, policy)
     # Do not silently accept a policy different from the tested executable rules.
     if policy.get('always_open') is not True:
         raise ValueError('Step 2 requires the agreed always-open policy')
@@ -146,6 +149,7 @@ def build_physical_graph(network, policy=None, progress=lambda message: None, au
             raise ValueError('Missing or nonfinite Gradient: ' + str(row.PedestrianRouteID))
         profile = build_profile(str(row.PedestrianRouteID),coords,float(row.Gradient),
                                 row.FeatureType_label in {'Lift','M_Lift'})
+        apply_review(profile, row, policy)
         source_profiles.append(profile)
         if union.iloc[i]:
             eligible_profiles.append(profile)
@@ -170,10 +174,13 @@ def build_physical_graph(network, policy=None, progress=lambda message: None, au
                 'lift_id':str(row.PedestrianRouteID) if profile.lift else None,
                 'distance_m':cost.distance_m,'time_forward_s':cost.forward_seconds,'time_reverse_s':cost.reverse_seconds,
                 'time_forward_status':cost.forward_status,'time_reverse_status':cost.reverse_status,
-                'gradient_radians':profile.gradient,'geometry':profile.geometry(start,end)})
+                'gradient_radians':profile.gradient,'geometry':profile.geometry(start,end),
+                **edge_cost_fields(profile, start, end, cost)})
     columns = ['edge_id','source_id','start_position','end_position','from_node','to_node','direction',
                'allow_general','allow_wheelchair','lift_id','distance_m','time_forward_s','time_reverse_s',
-               'time_forward_status','time_reverse_status','gradient_radians','geometry']
+               'time_forward_status','time_reverse_status','gradient_radians','geometry',
+               'original_time_forward_s','original_time_reverse_s','original_time_forward_status',
+               'original_time_reverse_status','fallback_review_ids','uses_estimated_time', 'time_model_warning']
     edges = gpd.GeoDataFrame(rows,columns=columns,crs=2326).sort_values('edge_id').reset_index(drop=True)
     edges['edge_index'] = np.arange(len(edges))
     for frame in (nodes,edges,sources):
@@ -186,9 +193,9 @@ def build_physical_graph(network, policy=None, progress=lambda message: None, au
     return physical
 
 
-def build_graph(network, wheelchair=False, metric='time', policy=None):
+def build_graph(network, wheelchair=False, metric='time', policy=None, scenario='primary'):
     """Build from an EPSG:2326 XYZ GeoDataFrame or a frozen Step 1 directory."""
-    return routing_graph(build_physical_graph(network,policy),wheelchair,metric)
+    return routing_graph(build_physical_graph(network,policy),wheelchair,metric,scenario)
 
 
 def minimum_matrix(transitions, state_count):
@@ -209,7 +216,8 @@ def minimum_matrix(transitions, state_count):
     return matrix,table
 
 
-def routing_graph(physical, wheelchair=False, metric='time'):
+def routing_graph(physical, wheelchair=False, metric='time', scenario='primary'):
+    routing_prefix(wheelchair, metric, scenario)
     if metric not in {'time','distance'}:
         raise ValueError('metric must be time or distance')
     edges = physical.edges
@@ -233,7 +241,8 @@ def routing_graph(physical, wheelchair=False, metric='time'):
             if edge.direction not in (0,direction):
                 continue
             a,b = (edge.from_node,edge.to_node) if direction==1 else (edge.to_node,edge.from_node)
-            cost = edge.distance_m if metric=='distance' else (edge.time_forward_s if direction==1 else edge.time_reverse_s)
+            name = ('original_' if scenario == 'baseline' else '') + ('time_forward_s' if direction==1 else 'time_reverse_s')
+            cost = edge.distance_m if metric=='distance' else getattr(edge, name, getattr(edge, name.replace('original_', '')))
             if pd.isna(cost) or not np.isfinite(cost):
                 continue
             lift = str(edge.lift_id) if pd.notna(edge.lift_id) and metric=='time' else None
@@ -242,7 +251,9 @@ def routing_graph(physical, wheelchair=False, metric='time'):
                 weight = (0. if last_lift==lift else 30.) if lift else float(cost)
                 transitions.append((current,target,weight,int(edge.edge_index),direction,str(edge.source_id)))
     matrix,mapping = minimum_matrix(transitions,len(states))
-    return RoutingGraph(physical.nodes,physical.edges,matrix,states,mapping,bool(wheelchair),metric,physical)
+    graph = RoutingGraph(physical.nodes,physical.edges,matrix,states,mapping,bool(wheelchair),metric,physical)
+    graph.scenario = scenario
+    return graph
 
 
 def validate_physical(physical):
@@ -274,6 +285,18 @@ def validate_physical(physical):
     if not np.allclose(sums.to_numpy(dtype=float),wanted.to_numpy(dtype=float),
                        rtol=2e-12,atol=1e-8,equal_nan=True):
         raise AssertionError('Splitting changed source distance/time')
+    if 'original_time_forward_s' in edges:
+        cols = ['original_time_forward_s', 'original_time_reverse_s']
+        original_sums = grouped[cols].sum(min_count=1).astype(float)
+        for col in cols:
+            original_sums.loc[(grouped[col].count() != grouped.size()) | ~np.isfinite(original_sums[col]), col] = np.nan
+        original_wanted = pd.DataFrame(
+            [(p.piece_costs(0, len(p.coords)-1, 'baseline').forward_seconds,
+              p.piece_costs(0, len(p.coords)-1, 'baseline').reverse_seconds) for p in profiles],
+            index=[p.source_id for p in profiles], columns=cols).reindex(original_sums.index)
+        if not np.allclose(original_sums.to_numpy(), original_wanted.to_numpy(dtype=float),
+                           rtol=2e-12, atol=1e-8, equal_nan=True):
+            raise AssertionError('Splitting changed original baseline evidence')
     by_source = {p.source_id:p for p in profiles}
     # Check each stored piece against its overlapping original intervals,
     # including healthy pieces from sources whose overall time is unavailable.
@@ -348,10 +371,14 @@ def save_physical(directory,physical):
         with (directory/(name+'.jsonl')).open('w') as f:
             for value in values:
                 f.write(json.dumps(value,ensure_ascii=False,allow_nan=False)+'\n')
+    with (directory/'derived_profiles.jsonl').open('w') as stream:
+        for p in physical.profiles:
+            if p.fallback:
+                stream.write(json.dumps(p.derived_evidence(), allow_nan=False) + '\n')
 
 
 def save_routing(directory,graph):
-    prefix = ('wheelchair' if graph.wheelchair else 'general')+'_'+graph.metric
+    prefix = routing_prefix(graph.wheelchair, graph.metric, getattr(graph, 'scenario', 'primary'))
     save_npz(Path(directory)/(prefix+'.npz'),graph.matrix)
     graph.states.to_csv(Path(directory)/(prefix+'_states.csv'),index=False)
     graph.transitions.to_csv(Path(directory)/(prefix+'_transitions.csv'),index=False)
@@ -365,7 +392,7 @@ def read_physical(directory):
         frame = gpd.read_file(directory/'graph.gpkg',layer=name,engine='pyogrio',datetime_as_string=True)
         for col,dtype in dtypes.items():
             # Empty exclusion text must not become a null on GeoPackage reopen.
-            if dtype == 'object' and col.endswith('_exclusion'):
+            if dtype == 'object' and (col.endswith('_exclusion') or col in ('fallback_review_ids', 'time_model_warning')):
                 frame[col] = frame[col].fillna('')
             frame[col] = frame[col].astype(dtype)
         frame.attrs.update(vertical_crs=schema['vertical_crs'],height_datum='Hong Kong Principal Datum')
@@ -375,7 +402,7 @@ def read_physical(directory):
                          json.loads((directory/'model_policy.json').read_text()))
 
 
-def read_graph(directory=None, wheelchair=False, metric='time'):
+def read_graph(directory=None, wheelchair=False, metric='time', scenario='primary'):
     """Reopen physical GeoDataFrames and persisted CSR with source-edge mapping.
 
     Start at the node's lift_id=None state. A destination accepts the minimum
@@ -383,13 +410,13 @@ def read_graph(directory=None, wheelchair=False, metric='time'):
     """
     if metric not in {'time','distance'}:
         raise ValueError('metric must be time or distance')
-    directory = Path(directory or WORK/'precomputed/outputs/step_2/current').resolve()
-    return _read_routing(directory, read_physical(directory), wheelchair, metric)
+    directory = Path(directory or selected_run('step_2', WORK)).resolve()
+    return _read_routing(directory, read_physical(directory), wheelchair, metric, scenario)
 
 
-def _read_routing(directory, physical, wheelchair, metric):
+def _read_routing(directory, physical, wheelchair, metric, scenario='primary'):
     directory = Path(directory)
-    prefix = ('wheelchair' if wheelchair else 'general')+'_'+metric
+    prefix = routing_prefix(wheelchair, metric, scenario)
     states = pd.read_csv(directory/(prefix+'_states.csv'),dtype={'lift_id':str})
     transitions = pd.read_csv(directory/(prefix+'_transitions.csv'),dtype={'source_id':str},float_precision='round_trip')
     matrix = load_npz(directory/(prefix+'.npz'))
@@ -400,4 +427,6 @@ def _read_routing(directory, physical, wheelchair, metric):
         not np.array_equal(matrix.indices,transitions.to_state) or
         not np.array_equal(matrix.data,transitions.cost)):
         raise ValueError('Saved matrix/source mapping changed')
-    return RoutingGraph(physical.nodes,physical.edges,matrix,states,transitions,bool(wheelchair),metric,physical)
+    graph = RoutingGraph(physical.nodes,physical.edges,matrix,states,transitions,bool(wheelchair),metric,physical)
+    graph.scenario = scenario
+    return graph

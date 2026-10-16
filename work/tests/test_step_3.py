@@ -61,9 +61,12 @@ class AttachmentTests(unittest.TestCase):
         a = attach_points(graph, {'estate': points('estate', [(5, 200), (5, 200.000001)]),
             'bus_stop': points('bus_stop', [(5, 50), (5, 50.000001)])})
         self.assertEqual(row(a).status, 'attached')
-        self.assertEqual(row(a, i=1).status, 'unattached')
+        self.assertEqual(row(a, i=1).status, 'attached')
+        self.assertTrue(row(a, i=1).connector_above_threshold)
+        self.assertIn('connector_above_threshold', row(a, i=1).warnings)
         self.assertEqual(row(a, 'bus_stop').status, 'attached')
-        self.assertEqual(row(a, 'bus_stop', i=1).status, 'unattached')
+        self.assertEqual(row(a, 'bus_stop', i=1).status, 'attached')
+        self.assertTrue(row(a, 'bus_stop', i=1).connector_above_threshold)
 
     def test_flat_cost_zero_connector_and_height_interpolation(self):
         graph = physical([[(0, 0, 10), (10, 0, 20)]])
@@ -74,7 +77,8 @@ class AttachmentTests(unittest.TestCase):
         self.assertAlmostEqual(r.time_s, 3 * 3.6 / (6 * math.exp(-.175)))
         self.assertEqual(row(a, i=1).time_s, 0.)
         self.assertTrue(row(a, i=1).zero_distance)
-        self.assertEqual(len(a.connectors), 4)
+        self.assertEqual(len(a.connectors.loc[a.connectors.attachment_id.isin(
+            a.attachments.loc[a.attachments.scenario == 'primary', 'attachment_id'])]), 4)
         self.assertEqual(a.physical.nodes.geometry.has_z.all(), True)
         self.assertFalse(a.entities['estate'].geometry.has_z.any())
         validate_attachments(a)
@@ -87,7 +91,7 @@ class AttachmentTests(unittest.TestCase):
         self.assertEqual(r.tied_count, 2)
         self.assertTrue(r.alternative_level)
         self.assertIn('distance_tie_lower_height_assumption', r.warnings)
-        self.assertEqual(int(a.candidates.selected.sum()), 4)
+        self.assertEqual(int(a.candidates.loc[~a.candidates.attachment_id.str.endswith(':baseline'), 'selected'].sum()), 4)
 
     def test_repeated_path_visits_keep_original_segment_height(self):
         graph = physical([[(-10, 0, 10), (10, 0, 10), (10, 10, 10),
@@ -285,7 +289,7 @@ class TerminalTests(unittest.TestCase):
             self.assertEqual(len(list((root / 'cache/step_3_staging').glob('*/FAILURE.json'))), 1)
 
     def test_unattached_and_excluded_roundtrip_empty_reviews(self):
-        graph = physical([[(0, 0, 0), (10, 0, 0)]])
+        graph = physical([([(0, 0, 0), (10, 0, 0)], {'kind': 'Footbridge'})])
         a = attach_points(graph, {'mtr_access': points('mtr_access', [(5, 300), (5, 300)],
                                                               [(True, True), (False, False)])})
         with tempfile.TemporaryDirectory() as temporary:

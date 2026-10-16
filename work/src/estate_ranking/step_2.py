@@ -29,6 +29,8 @@ from .ingest import read_json, sha256
 from .graph_regressions import check_lift_connections
 from .graph_audit import prepare_audit, audit_routing, audit_summary, audit_markdown
 from .graph_cluster_audit import check_repaired_endpoint_cluster
+from .policy import load_policy
+from .time_fallback import derived_policy, routing_prefix
 
 
 def progress(message):
@@ -111,7 +113,7 @@ def annotate_components(graph, directory):
         _,labels = connected_components(graph.matrix,directed=True,connection=connection)
         graph.states[connection+'_component'] = labels
     graph.states['active'] = active
-    prefix = ('wheelchair' if graph.wheelchair else 'general')+'_'+graph.metric
+    prefix = routing_prefix(graph.wheelchair, graph.metric, getattr(graph, 'scenario', 'primary'))
     # Full region accounting, with EPSG:2326 bounding boxes. Physical geometry
     # is referenced through states.node_index rather than duplicated here.
     positions = shapely.get_coordinates(graph.nodes.geometry)
@@ -177,11 +179,12 @@ def write_report(directory,report):
     (Path(directory)/'validation_report.md').write_text('\n'.join(lines)+'\n')
 
 
-def run(input_directory=None, output_root=None):
+def run(input_directory=None, output_root=None, select=True):
     start = time.perf_counter()
     code_paths = [Path(__file__).with_name(name) for name in
                   ['step_2.py','graph.py','graph_costs.py','graph_topology.py','graph_regressions.py','policy.py',
-                   'graph_audit.py','graph_cluster_audit.py','graph_vertical_audit.py','graph_gradient_audit.py']]
+                   'graph_audit.py','graph_cluster_audit.py','graph_vertical_audit.py','graph_gradient_audit.py',
+                   'time_fallback.py', 'run_registry.py', 'rebuild.py']]
     code_hashes = {p.name:sha256(p) for p in code_paths}
     output_root = Path(output_root or WORK/'precomputed/outputs/step_2')
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-'+uuid.uuid4().hex[:8]
@@ -193,9 +196,10 @@ def run(input_directory=None, output_root=None):
     try:
         progress('1/6 Freeze the successful Step 1 run and policy')
         source,frozen = freeze_input(input_directory or WORK/'precomputed/outputs/current')
+        policy = derived_policy(frozen['policy'], load_policy(WORK/'config/routing_policy.json'))
         write_json(directory/'frozen_input.json',frozen)
         progress('2/6 Build source costs and height-aware physical topology')
-        physical = build_physical_graph(source,policy=frozen['policy'],progress=progress)
+        physical = build_physical_graph(source,policy=policy,progress=progress)
         report = {'status':'passed','frozen_step_1_run':frozen['run_id'],
                   'physical':validate_physical(physical)}
         if len(physical.sources)==465892:
@@ -210,15 +214,21 @@ def run(input_directory=None, output_root=None):
         # Reopen profiles/review as streamed JSON, comparing every evidence row.
         for name,expected in [('profiles',(p.evidence() for p in physical.profiles)),('review',iter(physical.review))]:
             report[name+'_roundtrip_rows'] = verify_evidence(directory,name,expected)
+        report['derived_profiles_roundtrip_rows'] = verify_evidence(directory, 'derived_profiles',
+            (p.derived_evidence() for p in physical.profiles if p.fallback))
+        report['fallback'] = {'reviewed_sources': len(policy['transport_time'].get('fallback', {}).get('review', {}).get('sources', {})),
+            'estimated_intervals': sum(len(p.fallback or {}) for p in physical.profiles),
+            'estimated_physical_pieces': int(physical.edges.uses_estimated_time.sum()),
+            'original_evidence_preserved': True, 'source_geometry_corrected': False}
         report['routing'] = {}
         for wheelchair in (False,True):
-            for metric in ('distance','time'):
-                key = ('wheelchair' if wheelchair else 'general')+'_'+metric
+            for metric, scenario in [('distance','primary'), ('time','primary'), ('time','baseline')]:
+                key = routing_prefix(wheelchair, metric, scenario)
                 progress('4/6 Build, save and validate '+key)
-                graph = routing_graph(physical,wheelchair,metric)
+                graph = routing_graph(physical,wheelchair,metric,scenario)
                 summary = annotate_components(graph,directory)
                 save_routing(directory,graph)
-                loaded = _read_routing(directory,reopened,wheelchair,metric)
+                loaded = _read_routing(directory,reopened,wheelchair,metric,scenario)
                 summary['validation'] = verify_routing(graph,loaded)
                 if metric=='time' and len(physical.sources)==465892:
                     summary['real_lift_regressions'] = check_lift_connections(loaded)
@@ -242,8 +252,8 @@ def run(input_directory=None, output_root=None):
         for name, item in audit['inputs'].items():
             if sha256(WORK/item['path']) != item['sha256']:
                 raise ValueError('Original audit input changed during build: '+name)
-        if read_json(directory/'model_policy.json') != frozen['policy']:
-            raise AssertionError('Graph policy differs from frozen input policy')
+        if read_json(directory/'model_policy.json') != policy:
+            raise AssertionError('Graph policy differs from recorded derived policy')
         if any(sha256(p) != code_hashes[p.name] for p in code_paths):
             raise ValueError('Implementation changed during build')
         if previous_report:
@@ -255,6 +265,8 @@ def run(input_directory=None, output_root=None):
                                          'delta':report['physical'][k]-previous_report['physical'][k]} for k in keys},
                           'routing':{}}
             for key,value in report['routing'].items():
+                if key not in previous_report['routing']:
+                    continue
                 comparison['routing'][key] = {k:{'before':previous_report['routing'][key][k],
                                                  'after':value[k],
                                                  'delta':value[k]-previous_report['routing'][key][k]}
@@ -269,7 +281,7 @@ def run(input_directory=None, output_root=None):
         peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         report['peak_process_memory_mib'] = round(peak/(1024**2 if sys.platform=='darwin' else 1024),3)
         report['limitations'] = ['Ambiguous inferred merges remain declined; source_routing_audit.json distinguishes existing paths from missing routes.',
-            'Original non-lift vertical intervals and unrepresentable Tobler times remain unavailable; healthy adjacent pieces remain usable.',
+            'Reviewed original failures use flagged distance-height estimates in primary time graphs; baseline retains original exclusions. Geometry is not corrected.',
             'Connection height tolerance is a modelling rule, not source elevation accuracy.',
             'Wheelchair times use the agreed shared Tobler assumption, not measured wheelchair speeds.',
             'No estate/destination snapping, journey subcosts or final ranking in Step 2.',
@@ -300,11 +312,12 @@ def run(input_directory=None, output_root=None):
         destination.parent.mkdir(parents=True,exist_ok=True)
         os.replace(directory,destination)
         directory = destination
-        publish_run(directory,output_root/'current')
+        if select:
+            publish_run(directory,output_root/'current')
         progress('Complete: '+str(output_root/'current'))
         progress(json.dumps({'physical':report['physical'],'runtime_seconds':report['runtime_seconds'],
                              'peak_process_memory_mib':report['peak_process_memory_mib']}))
-        return 0
+        return 0 if select else destination
     except Exception as exc:
         write_json(directory/'failure.json',{'run_id':run_id,'exception':type(exc).__name__,'message':str(exc)})
         (directory/'failure_traceback.txt').write_text(traceback.format_exc())

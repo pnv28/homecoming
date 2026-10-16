@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "tests": 134,
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/src .venv/bin/python -m unittest discover -s work/tests -q",
+  "recorded_utc": "2026-10-16T08:18:52.733776+00:00",
+  "log_sha256": "efefab81cabcc79571efe088b30802163881e29cb49a40f94b986f7343714d81",
+  "note": "Rollback fixtures intentionally log injected failures; final suite passed. Existing matplotlib/pyparsing and pandas deprecation warnings are separate from routing data warnings.",
+  "new_contracts": [
+    "reviewed distance-height time and original evidence",
+    "primary/baseline attachment and matrix scenarios",
+    "soft connector thresholds",
+    "atomic paired selection and rollback"
+  ],
+  "pair_id": "20261016T080509Z-4c604c82"
+}

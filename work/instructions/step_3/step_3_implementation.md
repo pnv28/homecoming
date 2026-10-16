@@ -1,67 +1,69 @@
 # Step 3: facility connections and augmented graphs
 
+Last updated: 2026-10-16 16:21:12 HKT (UTC+08:00)
+
 ## Explanation for the team
 
-Step 3 preserves all supplied estate, hospital, MTR access and bus-stop map points and selects one connection for each applicable mode and metric. Estates depart through outgoing terminal connectors. Destinations receive incoming terminal connectors. Terminal states have no physical XYZ node, so source-point heights remain unknown and terminals cannot connect unrelated paths.
+Selected Step 3 **`20261016T080509Z-4c604c82`** was rebuilt completely from the new verified Step 2 **`20261016T075559Z-119a5636`** and unchanged frozen Step 1. All **10,163** supplied estate, hospital, MTR access and bus-stop map points are preserved. Estates depart through outgoing terminal connectors; destinations receive incoming connectors. Terminals have unknown height and cannot connect unrelated paths.
 
-Connections prefer ordinary outdoor paths, using the source `Location_label` field. Ordinary indoor paths are a flagged fallback within the same distance limit. Feature types outside the explicit ordinary-path allowlist and unknown locations are unsuitable for automatic attachment. Bridges, tunnels and equipment remain available for subsequent network travel under Step 2's mode rules.
+Primary time graphs allow the reviewed distance-and-height estimates. Baseline time graphs exclude those estimates. Their attachment selections are calculated separately under identical connector rules, then all source positions are collected before shared physical subdivision. This preserves fair comparisons even when an estimate changes which path can accept an attachment. In this particular full dataset no attachment selects an estimated piece directly; estimated sections remain available during network travel.
 
-Connectors are straight horizontal map-point approximations. Their distance counts toward the journey; time uses flat Tobler, `length * 0.6 * exp(0.175)` seconds. This does not establish a surveyed entrance, actual slope, or unobstructed passage. Every selected path level is marked uncertain. Near alternatives, distance ties, indoor fallback and connectors longer than 50 m are retained as review evidence. Bus connectors have a 50 m limit; other points have a 200 m limit, inclusive.
+Connections prefer ordinary outdoor paths inside **200 m** for estates/hospitals/MTR or **50 m** for buses, then ordinary indoor paths inside the same threshold. If neither qualifies, the indexed search expands to the closest suitable outdoor path, or indoor path if no suitable outdoor candidate exists anywhere in the dataset. These distances are search/warning thresholds, not rejection limits. Eligibility, direction, enabled-path and scenario availability checks continue to apply. Automatic attachment excludes bridges, tunnels, stairs and equipment interiors, including vertical zero-horizontal-run segments. Eligible equipment remains usable during network travel.
 
-Shapely indexes original horizontal segments of mode- and cost-eligible physical pieces. Segment identity distinguishes repeated visits at the same XY position. Projection and interpolation recover the original vertex-index-plus-fraction position and HKPD height. Exact ties choose lower height, then source identity and source position. Alternative-level diagnostics use an absolute 1 m connector-distance window and a height difference greater than 2 m, or distinct known floors in a shared building. They do not alter junction tolerances.
+Connectors are straight horizontal map-point approximations. Their length counts toward the journey; flat Tobler time is `length * 0.6 * exp(0.175)` seconds. They do not establish surveyed entrances, actual slope or unobstructed passage. Source heights remain unknown; interpolated network attachment heights retain HKPD metadata. Unknown levels, near alternative levels, distance ties, indoor fallback, non-bus connectors over 50 m and all above-threshold connections are flagged.
 
-All selections are collected before subdivision. Reused nodes must belong to the selected source/piece, satisfy the 0.10 m / 0.025 m tolerances and a short intervening source traversal, and permit the terminal's departure or arrival direction. New nodes subdivide one source only. The original cost profiles are reconstructed from complete original XYZ geometry and compared against saved evidence, including sampling and classifications. Pieces apportion overlapping original intervals without fragment resampling. Direction, availability, lift identity and directional costs are conserved.
+Shapely indexes original horizontal segments. Segment identity distinguishes repeated visits at the same XY. Exact ties choose lower height, then stable source identity and position. Near-level diagnostics retain the 1 m distance window and greater-than-2 m height difference, or distinct known floors in one building. Junction tolerances stay **0.10 m horizontal / 0.025 m height**.
+
+Selections are collected before subdivision. Node reuse requires the selected source/piece, tolerances, a short source traversal and suitable direction; otherwise a new source-only node is created. Every piece recovers original profile evidence and the separately reviewed derived profile. Distance and both time scenarios conserve parent/source costs; fragments do not restart sampling. Original direction, mode flags and lift identities remain. Lift entry costs 30 seconds per original lift identity, with free continuation and zero waiting.
 
 ## Implementation and use
 
-The public functions are in `estate_ranking.attachments`:
-
 ```python
-from estate_ranking.attachments import attach_points, read_attached_graph
+from estate_ranking.attachments import read_attached_graph
 
-# Reopen the selected successful Step 3 output.
 graph = read_attached_graph(wheelchair=False, metric="time")
+# For comparison, use scenario="baseline" with metric="time".
 graph.nodes          # physical Point Z GeoDataFrame
-graph.edges          # physical LineString Z GeoDataFrame
+graph.edges          # physical LineString Z GeoDataFrame, original and selected cost evidence
 graph.entities       # original GeoDataFrames by entity type
-graph.attachments    # statuses and selected Point Z geometry; null if not attached
-graph.connectors     # positive-length 2D lines; zero-distance mappings in attachments
-graph.terminals      # entity/attachment -> terminal state mapping, including exclusions
-graph.states         # physical/lift states and separate terminal states
-graph.matrix         # directed SciPy CSR, with deliberate stored zero-cost entries
-graph.edge_mapping   # one mapping row per CSR entry; negative edge_index = connector
+graph.attachments    # primary/baseline statuses and selected Point Z geometry
+graph.connectors     # positive-length 2D lines; zero-distance cases use explicit mappings
+graph.terminals      # selected mode/metric/scenario entity-to-terminal mapping
+graph.states         # physical/lift states plus separate terminal states
+graph.matrix         # directed SciPy CSR, including deliberate stored zero-cost entries
+graph.edge_mapping   # one mapping row per CSR entry; negative edge_index means connector
 
-# Costs to all routing states, with infinity for unreachable states.
 costs = graph.costs_from_entity(graph.entities["estate"].id.iloc[0])
 ```
 
-`attach_points(physical, entities, evidence_directory=None)` takes a Step 2 physical graph and a dictionary of original point GeoDataFrames keyed by `estate`, `hospital`, `mtr_access` and `bus_stop`. A reopened physical graph requires its frozen Step 2 directory as `evidence_directory`. The returned `AttachedPoints` contains the augmented physical graph, entities, attachment/connector GeoDataFrames, candidate reviews and subdivision validation. `attached_routing_graph(...)` compiles a selected mode/metric and adds terminal states. `costs_from(node_index)` reduces costs to physical nodes only; `costs_from_entity(...)` retains the terminal states for future target reduction.
+`attach_points(physical, entities, evidence_directory=None)` returns augmented physical and original entity GeoDataFrames, attachments, connectors, candidate reviews and validation. A reopened physical graph requires its explicit frozen Step 2 directory as evidence. `attached_routing_graph(...)` compiles the chosen mode/metric/scenario and terminals. `costs_from_entity(...)` retains destination terminal costs; `costs_from(node_index)` reduces to physical nodes.
 
-From the repository root:
+Default readers use [the verified pair registry](../../precomputed/outputs/rebuild/current.json). Explicit directories inspect historical runs; Step 3 pins its own upstream run, not a changing `current` link. Rebuild the complete pair from the repository root:
 
 ```sh
-PYTHONPATH=work/src .venv/bin/python -m estate_ranking.step_3
-PYTHONPATH=work/src .venv/bin/python -m unittest discover -s work/tests -v
+PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild
 ```
 
-The production builder freezes Step 2 `20261014T105436Z-8fe534aa` and Step 1 `20261014T090829Z-20d0139c`. It verifies success identities, policies, all Step 2 manifest artifact hashes and seven Step 1 frozen hashes, then rechecks them before publication. Implementation hashes and installed package versions are recorded. No additional dependency is required.
+No additional dependency is needed. Fresh candidates validate before atomic paired selection; publication rollback is tested. No commit or push was performed.
 
 ## Outputs and acceptance
 
-Successful runs live under `work/precomputed/outputs/step_3/runs/`, selected through `current`. `attachments.gpkg` stores physical nodes/edges, original point layers, selected attachment points and positive-length connector lines. CSV files store memberships, candidate reviews, routing states, transitions and terminal mappings; NPZ files hold the four matrices. Policies, frozen references, manifests and JSON/Markdown validation reports accompany the spatial data. Unchanged original network geometry and profile evidence are referenced in the retained Step 2 snapshot through repository-relative paths.
+The selected immutable directory is [outputs/step_3/runs/20261016T080509Z-4c604c82](../../precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82/). `attachments.gpkg` stores physical nodes/edges, original point layers, attachment points and connector lines. CSV stores memberships, candidate reviews, states, transitions and terminals. Six NPZ matrices store four primary mode/metric graphs and two baseline time graphs. Policies, frozen references, manifests, package versions and validation reports accompany them. Unchanged original source geometry and profile evidence are referenced through the retained Step 2 directory.
 
-Required checks verify point accounting, selection counts, connector limits and costs, subdivision conservation, exact spatial/attribute/null roundtrips, terminal roles, arrival from lift states, matrix/mapping roundtrips, shortest-path relaxation and upstream lift/endpoint regressions. Both weak and strong component labels are saved in each routing state's table. Coverage, distance quantiles, warnings, exclusions and unattached counts are in the validation report. Failed builds retain the previous successful selection and leave upstream snapshots unchanged.
+Completed checks verify all original points, primary/baseline counts, flagged thresholds and costs, topology/subdivision conservation, exact spatial/attribute/null/Z preservation, terminal directions, lift-state arrival, matrix/mapping roundtrips, shortest-path relaxation and real source-ID lift/endpoint regressions. Both weak and strong component labels remain in routing state tables. Independently, all **34 artifact hashes**, implementation and upstream hashes, GeoPackage integrity, public readers and terminal invariants passed. The complete repository suite passes **134 tests**.
 
-Estate-to-target subcosts, hospital preference selection and final ranking remain later work.
+## Current full-data result
 
-## Full-data result
-
-Selected run: `20261014T145819Z-4d15d1a3`. All **112 tests pass**. The successful build retains **10,163 original points**, records **20,814 mode/metric selections**, and produces **406,540 physical nodes / 475,721 pieces**. It splits 7,252 parent edges, adding 9,315 single-source nodes.
+- **20,814 primary + 20,238 baseline records**, preserving 10,163 original points.
+- **406,561 physical nodes / 475,742 pieces**; split 7,268 parents, adding 9,336 nodes/pieces.
+- **29,256 positive-length connector records** across scenarios/modes/metrics; no zero-distance mappings in this dataset.
+- All eligible records attach; exclusions remain visible. Attachment does not guarantee estate-to-target reachability.
+- Build runtime: **430.851 seconds**.
 
 | Type / mode / metric | Eligible | Attached | Unattached | Excluded |
 |---|---:|---:|---:|---:|
-| bus_stop/general/time | 8848 | 8812 | 36 | 416 |
-| bus_stop/wheelchair/time | 4130 | 4096 | 34 | 5134 |
+| bus_stop/general/time | 8848 | 8848 | 0 | 416 |
+| bus_stop/wheelchair/time | 4130 | 4130 | 0 | 5134 |
 | estate/general/distance | 244 | 244 | 0 | 0 |
 | estate/general/time | 244 | 244 | 0 | 0 |
 | estate/wheelchair/distance | 244 | 244 | 0 | 0 |
@@ -71,4 +73,14 @@ Selected run: `20261014T145819Z-4d15d1a3`. All **112 tests pass**. The successfu
 | mtr_access/general/time | 598 | 598 | 0 | 13 |
 | mtr_access/wheelchair/time | 276 | 276 | 0 | 335 |
 
-The [full validation report](../../precomputed/outputs/step_3/current/validation_report.md) includes connector distance quantiles, warnings, graph/component counts, exact reopen checks and the preserved upstream endpoint/lift regressions. No commit or push was performed.
+The time rows have the same counts in the baseline scenario; distance is saved once per mode. Baseline records are comparison selections, not additional source points.
+
+**Warnings that remain:** every selected point's level is uncertain; source points are accepted map approximations. Candidate reviews preserve alternative levels, lower-height tie assumptions, indoor fallback and longer connectors. **36 general / 34 wheelchair bus records per time scenario exceed 50 m**, with maxima **5,209.271 m / 5,161.979 m**. Such long straight connectors may cross unmapped barriers and are not verified walks. Their finite costs and explicit flags follow the expanded-search policy; they must remain visible to later routing/ranking users. Original gradient/geometry defects remain preserved alongside estimates. No unavailable source record has been silently declared repaired.
+
+The [full validation report](../../precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82/validation_report.md) contains distributions, warnings, matrices/components and reopen evidence. See also [test evidence](../../precomputed/docs/rebuild_test_report.json), [source/artifact preservation audit](../../precomputed/docs/rebuild_source_preservation.json), [public-reader smoke checks](../../precomputed/docs/rebuild_reader_verification.json) and [the completed plan](step_3_plan.md).
+
+Step 4 remains to implement estate-to-target subcost caches, selected/all-hospital reduction and complete route comparisons. Its plan uses a shared general-network hospital distance result for both modes and primary/baseline transport time results. Final score combination remains undecided.
+
+## Retained historical result
+
+Old Step 3 `20261014T145819Z-4d15d1a3` remains available with its original reports and artifacts: 112 tests at that time, 406,540 nodes / 475,721 pieces, four matrices, and 36 general / 34 wheelchair bus records unattached under the former hard distance limits. Those historical reports are unchanged. The new build changes both fallback policy and the connector threshold policy; comparisons with that old snapshot must not attribute every difference solely to fallback time.

@@ -32,7 +32,7 @@ from estate_ranking.step_3 import validate_terminals, verify_hashes
 DEFAULT_GRAPH = WORK / 'precomputed/outputs/step_3/current'
 DEFAULT_OUTPUT = WORK / 'precomputed/demos/coordinate_route/route.png'
 ROUTE_COLUMNS = ['sequence', 'kind', 'source_id', 'direction', 'distance_m', 'time_s',
-                 'lift_id', 'geometry']
+                 'lift_id', 'time_model', 'time_model_warning', 'fallback_review_ids', 'geometry']
 
 
 def coordinates(values):
@@ -102,7 +102,7 @@ def find_route(physical, start, end, wheelchair=False, evidence_directory=None):
     if not (selected.status == 'attached').all():
         missing = ['start' if row.entity_id == 'point:start' else 'destination'
                    for row in selected.loc[selected.status != 'attached'].itertuples()]
-        return {'status': 'unattached', 'message': 'No suitable path within 200 m of ' +
+        return {'status': 'unattached', 'message': 'No suitable path in the dataset for ' +
                 ' and '.join(missing) + '.', 'distance_m': None, 'time_s': None}, empty_route(), selected
     augmented, validation = split_attachments(physical, selected, evidence_directory)
     points = {'point:start': start, 'point:end': end}
@@ -139,14 +139,19 @@ def find_route(physical, start, end, wheelchair=False, evidence_directory=None):
             geometry = connector_geometry(point, network) if departure else connector_geometry(network, point)
             leg = dict(kind='start_connector' if departure else 'end_connector', source_id=None,
                 direction=1 if departure else -1, distance_m=float(attachment.distance_m),
-                time_s=float(transition.cost), lift_id=None, geometry=geometry)
+                time_s=float(transition.cost), lift_id=None, geometry=geometry,
+                time_model='flat_connector', time_model_warning='', fallback_review_ids='')
         else:
             edge = graph.edges.iloc[int(transition.edge_index)]
             geometry = edge.geometry if transition.direction == 1 else shapely.reverse(edge.geometry)
             leg = dict(kind='network', source_id=edge.source_id, direction=int(transition.direction),
                 distance_m=float(edge.distance_m), time_s=float(transition.cost),
                 lift_id=None if pd.isna(edge.lift_id) else str(edge.lift_id),
-                geometry=shapely.force_2d(geometry))
+                geometry=shapely.force_2d(geometry),
+                time_model=('lift_entry' if pd.notna(edge.lift_id) else
+                    'distance_height_estimate' if edge.get('uses_estimated_time', False) else 'tobler'),
+                time_model_warning=edge.get('time_model_warning', ''),
+                fallback_review_ids=edge.get('fallback_review_ids', ''))
         legs.append(leg)
         state = previous
     legs.reverse()
@@ -157,6 +162,7 @@ def find_route(physical, start, end, wheelchair=False, evidence_directory=None):
         raise AssertionError('Route legs do not conserve shortest-path cost')
     return {'status': 'ok', 'message': 'Fastest route under the saved walking model.',
             'distance_m': float(route.distance_m.sum()), 'time_s': float(costs[end_state]),
+            'estimated_network_sections': int(route.time_model.eq('distance_height_estimate').sum()),
             'subdivision_validation': validation, 'route_cost_sum_verified': True}, route, selected
 
 
@@ -252,7 +258,7 @@ def main(argv=None):
         created_utc=datetime.now(timezone.utc).isoformat(),
         assumptions=['Nearest suitable outdoor path; indoor fallback within 200 m.',
                      'Unknown endpoint heights; straight flat connectors.',
-                     'Saved Tobler times and lift entry charges; no crossing waits or live access checks.'])
+                     'Saved Tobler, reviewed estimated times and lift entry charges; no crossing waits or live access checks.'])
     result['attachments'] = []
     for row in attachments.itertuples():
         attached = row.status == 'attached'
@@ -269,6 +275,8 @@ def main(argv=None):
         print(f'Fastest route: {result["distance_m"]:.1f} m; {seconds // 60} min {seconds % 60:02d} sec')
     else:
         print(result['message'])
+    if result.get('estimated_network_sections', 0):
+        print('Includes estimated traversal time on ' + str(result['estimated_network_sections']) + ' network sections; see route details.')
     warning_labels = {'level_uncertain': 'path level is assumed',
         'long_connector': 'connection to the network is longer than 50 m',
         'indoor_fallback': 'uses an indoor path',

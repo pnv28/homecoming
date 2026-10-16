@@ -1,5 +1,5 @@
 {
-  "policy_version": 1,
+  "policy_version": 2,
   "always_open": true,
   "coordinates": {
     "assumed_wgs84_sources": [
@@ -38,7 +38,16 @@
     "maximum_ramp_slope": null,
     "lift_identity": "PedestrianRouteID",
     "lift_charge": "on_entry_same_identity_continuation_free_non_lift_resets",
-    "nonfinite_time": "exclude_direction_from_time_preserve_distance"
+    "nonfinite_time": "reviewed_distance_height_fallback_else_exclude_preserve_distance",
+    "fallback": {
+      "enabled": true,
+      "model": "horizontal_flat_time_plus_ascent_descent",
+      "uphill_seconds_per_metre": 6.0,
+      "downhill_seconds_per_metre": 2.0,
+      "wheelchair": "same_coefficients_explicit_approximation",
+      "review_file": "config/time_fallback_review.json",
+      "preserve_original_evidence": true
+    }
   },
   "modes": {
     "general": {

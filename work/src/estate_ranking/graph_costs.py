@@ -64,12 +64,15 @@ class CostProfile:
     forward_status: str
     reverse_status: str
     interval_reasons: list
+    fallback: object = None
 
     def piece(self, start, end):
         cost = self.piece_costs(start, end)
         return cost.distance_m, cost.forward_seconds, cost.reverse_seconds
 
-    def piece_costs(self, start, end):
+    def piece_costs(self, start, end, scenario='primary'):
+        if scenario not in ('primary', 'baseline'):
+            raise ValueError('scenario must be primary or baseline')
         # Vertex index + fraction also represents vertical source intervals.
         lower = np.maximum(self.positions[:-1], start)
         upper = np.minimum(self.positions[1:], end)
@@ -78,7 +81,13 @@ class CostProfile:
         overlaps = np.flatnonzero(fraction > 0)
         def part(values, direction):
             times = []
+            estimated = False
             for i in overlaps:
+                replacement = (self.fallback or {}).get(int(i)) if scenario == 'primary' else None
+                if replacement and values[i] is None:
+                    times.append(replacement[direction + '_seconds'] * float(fraction[i]))
+                    estimated = True
+                    continue
                 reason = self.interval_reasons[i]
                 if reason:
                     return None, reason
@@ -90,10 +99,14 @@ class CostProfile:
                 value *= float(fraction[i])
                 times.append(value)
             total = total_or_none(times)
-            return total, 'available' if total is not None else 'unrepresentable_tobler_time'
-        forward, forward_status = part(self.forward, 1)
-        reverse, reverse_status = part(self.reverse, -1)
+            return total, (('estimated_distance_height' if estimated else 'available')
+                           if total is not None else 'unrepresentable_tobler_time')
+        forward, forward_status = part(self.forward, 'forward')
+        reverse, reverse_status = part(self.reverse, 'reverse')
         return PieceCost(distance, forward, reverse, forward_status, reverse_status)
+
+    def derived_evidence(self):
+        return {'source_id': self.source_id, 'intervals': list((self.fallback or {}).values())}
 
     def geometry(self, start, end):
         indices = np.arange(len(self.coords))

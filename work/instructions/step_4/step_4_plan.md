@@ -36,18 +36,18 @@ I also checked NetworkX and OSMnx. Their documented routing functions provide ov
 
 Steps we will take
 
-1. [ ] Freeze successful Step 3 run 20261014T145819Z-4d15d1a3, its policies and required upstream references. Verify success records and hashes.
-2. [ ] Load general time, wheelchair time and general distance matrices with their state, terminal and transition mappings.
+1. [ ] Freeze the successful Step 2/Step 3 pair selected by `precomputed/outputs/rebuild/current.json`, its policies, parameters and required upstream references. Verify success records and hashes; do not use the old pre-fallback Step 3 snapshot for new caches.
+2. [ ] Load primary and baseline general/wheelchair time matrices plus the shared general distance matrix, with scenario-specific state, terminal and transition mappings. Baseline excludes fallback intervals and uses its own attachments under the same connector policy.
 3. [ ] Use all 244 estates. Preserve existing connections, directions, transport eligibility, connector costs and lift identities. Do not attach points again.
 4. [ ] Record the shared hospital model as an explicit Step 4 policy overriding the earlier two-mode hospital calculation. Leave frozen upstream policies unchanged.
-5. [ ] For transport, run directed Dijkstra from each estate terminal in each time graph.
-6. [ ] Inspect every eligible attached bus/MTR destination. Cache each group’s minimum finite time and all destinations with exactly that unrounded cost.
+5. [ ] For transport, run directed Dijkstra from each estate terminal in each mode and time scenario. Preserve the approved 6 s/m ascent and 2 s/m descent fallback as an explicit approximation in both modes; do not recompute or replace upstream costs.
+6. [ ] Inspect every eligible attached bus/MTR destination in each scenario. Cache each group’s minimum finite time and all exactly tied destinations. Also cache baseline costs/paths to primary-winning destinations for a like-for-like journey comparison; baseline group winners may be different targets. Preserve model/review warnings and source failures on estimated route sections.
 7. [ ] Include walking and connector time only. Do not add vehicle journeys, service waiting or fares.
 8. [ ] For hospitals, search from each hospital terminal through the transposed general-distance matrix. Recover estate-to-hospital paths in the original direction.
 9. [ ] Populate all estate–hospital pairs once. Do not use wheelchair-distance connections or create a second hospital cache.
 10. [ ] Preserve full precision; rounding for display must not change selection.
 
-This requires 488 transport searches plus 44 hospital searches: 532 searches total.
+This requires 488 primary transport searches, 488 baseline transport searches and 44 shared hospital searches: **1,020 searches total**. The additional same-target comparisons use those existing search results, not new Dijkstra calls.
 
 ## 3. Save paths and explain unavailable results
 
@@ -66,7 +66,7 @@ Steps we will take
 7. [ ] For hospital routes, sum horizontal metres. Do not add lift seconds or apply Tobler.
 8. [ ] Preserve network XYZ geometry and 2D connectors in returned route GeoDataFrames. Keep zero-distance movements explicit without inventing geometry or height.
 9. [ ] Record unavailable results with null costs, no route and explicit reasons: unattached origin/destination, no eligible or attached target, or no directed route.
-10. [ ] Preserve attachment warnings and path-source references. Hospital results explicitly identify the shared general-network model.
+10. [ ] Preserve attachment warnings, estimated-section identifiers, original failure reasons, selected time model and path-source references. When estimates change the chosen journey or reachability, expose the primary result, the baseline group result and the baseline path to the same primary target where available; report missing baseline routes explicitly. Hospital results identify the shared general-network model.
 
 Valid zero-cost journeys remain distinct from unavailable journeys.
 
@@ -83,14 +83,14 @@ Steps we will take
 1. [ ] Provide public readers with an optional saved-run directory:
    - read_subcosts(wheelchair=False, hospital_id=None): a 244-row estate GeoDataFrame containing MTR time, bus time, hospital distance, destination IDs, units, statuses and warnings.
    - read_hospital_costs(): the 10,736 shared hospital-pair results as a GeoDataFrame using estate point geometry.
-   - read_route(estate_id, target_id, wheelchair=False): the cached ordered route-section GeoDataFrame. The parameter selects transport mode; hospital targets always resolve to the shared general route, identified in metadata.
+   - read_route(estate_id, target_id, wheelchair=False, scenario="primary"): the cached ordered route-section GeoDataFrame. The parameter selects transport mode; hospital targets always resolve to the shared general route, identified in metadata.
 2. [ ] Return tied destination IDs in stable order without designating a preferred winner.
 3. [ ] Support every reachable hospital pair and every tied nearest bus/MTR destination.
 4. [ ] Return an empty route with status information for a recorded unavailable journey. Reject unknown IDs and uncached transport destinations without silently rerouting.
 5. [ ] Save spatial result tables in GeoPackage layers, restoring serialized ID collections through the readers.
 6. [ ] Publish compressed links, mappings, policies, manifests and reports under work/precomputed/outputs/step_4/, using staged runs and a successful current selection.
 7. [ ] Reference retained Step 3 geometry instead of duplicating the network. Failed builds preserve the previous selection and upstream outputs.
-8. [ ] Update work/instructions/step_4/step_4_plan.md, the project context and overall design consistently: one hospital model, three input graphs, 44 hospital searches, 10,736 hospital pairs and revised interfaces.
+8. [ ] Update work/instructions/step_4/step_4_plan.md, the project context and overall design consistently: one hospital model, five input graphs, 44 hospital searches, 10,736 hospital pairs, primary/baseline time comparisons and revised interfaces.
 9. [ ] Refresh the context timestamp in HKT, including seconds. Mark only completed implementation [X].
 10. [ ] Keep successful outputs tracked with appropriate Git LFS rules. Do not automatically commit or push.
 
@@ -100,7 +100,7 @@ Final weights, normalisation, ranking and penalties for unreachable groups remai
 
 Checks we will complete
 
-- [ ] Verify directed costs, connector inclusion, transport eligibility and lift charges.
+- [ ] Verify directed costs, connector inclusion, transport eligibility and lift charges in each time scenario. Test primary-winner versus baseline-winner changes, unavailable baseline paths, exact ties and estimated-section warnings.
 - [ ] Verify hospital costs, paths and statuses are identical under both user-mode requests and use general-mode connections.
 - [ ] Verify all 44 hospitals and hospital selection without rerouting.
 - [ ] Compare reversed hospital searches with forward estate searches.
@@ -113,4 +113,4 @@ Checks we will complete
 - [ ] Keep walking_route.py working after extracting shared logic.
 - [ ] Run repository tests and relevant upstream regressions.
 
-Full-data acceptance must account for 10,736 shared hospital pairs, 976 transport-group results and every tied transport winner. Report reachability, warnings, route counts, runtime and storage size before selecting the successful run.
+Full-data acceptance must account for 10,736 shared hospital pairs, 976 primary transport-group results, 976 baseline transport-group results, every tied winner and baseline comparisons to primary-winning destinations. Report reachability, warnings, route counts, runtime and storage size before selecting the successful run.

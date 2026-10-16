@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "pair_id": "20261016T080509Z-4c604c82",
+  "step_2": {
+    "directory": "precomputed/outputs/step_2/runs/20261016T075559Z-119a5636",
+    "run_id": "20261016T075559Z-119a5636",
+    "manifest_sha256": "969aefdf31859c78649775495ee2a698c47180e9361b29f0c75aa8f95483c00d"
+  },
+  "step_3": {
+    "directory": "precomputed/outputs/step_3/runs/20261016T080509Z-4c604c82",
+    "run_id": "20261016T080509Z-4c604c82",
+    "manifest_sha256": "52f8a85271a4b5adf651475dd2bb3d63685e405ff63f0a7ec7292f3c677dc463"
+  }
+}

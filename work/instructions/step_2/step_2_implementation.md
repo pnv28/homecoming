@@ -1,5 +1,51 @@
 # Step 2 implementation and review
 
+Last updated: 2026-10-16 16:21:12 HKT (UTC+08:00)
+
+## Current completed rebuild — 16 October 2026
+
+**Explanation for the team**
+
+The complete network was rebuilt from unchanged frozen Step 1 `20261014T090829Z-20d0139c`. Selected Step 2 is **`20261016T075559Z-119a5636`**, paired with Step 3 **`20261016T080509Z-4c604c82`**. The pair was selected only after both full builds passed. Earlier implementation records below describe retained historical results; the current rules and results in this section supersede their original time-exclusion policy.
+
+Healthy non-lift sections retain Tobler. On the **27 reviewed failure intervals in 26 source records**, primary routing uses flat horizontal walking time plus **6 seconds per metre climbed / 2 seconds per metre descended**, in both modes as an explicit approximation. Reversing travel swaps ascent/descent. Each rise/fall is accumulated separately. All original geometry, source attributes, radian gradients, sample positions, unavailable time values and failure reasons remain preserved. Cost estimates do not repair original source defects. Wheelchair barriers and equipment restrictions still apply. Lift entry remains 30 seconds per original lift identity, free continuation and zero waiting.
+
+The physical graph remains **397,225 nodes / 466,406 pieces**, including **26 estimated pieces**. Source eligibility remains **465,861 general / 430,496 wheelchair**, from 465,892 source records. Original `profiles.jsonl` is byte-identical to the previous successful run. Every original node/source field and all healthy directional times match the old run. All primary directional piece times are finite, while the separate original fields retain failures. Build runtime: **543.38 seconds**, peak process memory: **1,990.672 MiB**.
+
+**Completed implementation actions**
+
+- [X] Rebuild all topology, original profiles, reviewed derived costs, spatial outputs, matrices and audits from frozen Step 1.
+- [X] Save four primary graphs (general/wheelchair × time/distance) and two baseline time graphs excluding estimates.
+- [X] Preserve per-piece original/selected time status, review IDs, warning fields and source positions through subdivision.
+- [X] Pass full spatial/attribute/null/profile/matrix reopen checks, source-ID lift and endpoint regressions, shortest-path checks and all **134 repository tests**.
+- [X] Verify all **39 artifact hashes**, recorded implementation hashes and frozen-input hashes independently after selection. Keep previous successful runs available.
+
+**Outputs and use**
+
+Spatial outputs are actual GeoDataFrames when reopened; GeoPackage persists nodes, edges and original sources. NPZ stores SciPy CSR matrices; CSV stores routing states, source transition mappings, membership and component information. `profiles.jsonl` preserves original evidence; `derived_profiles.jsonl` contains separate reviewed estimates. `model_policy.json` snapshots the derived policy and bound review. The frozen Step 1 preparation policy is retained separately, rather than rewritten to claim it used later assumptions.
+
+```python
+from estate_ranking.graph import read_graph
+
+primary = read_graph(wheelchair=False, metric="time")
+baseline = read_graph(wheelchair=False, metric="time", scenario="baseline")
+# primary.nodes / primary.edges: GeoDataFrames
+# primary.matrix: directed SciPy CSR; primary.edge_mapping identifies selected pieces
+```
+
+Public readers resolve [the paired registry](../../precomputed/outputs/rebuild/current.json), and explicit run directories reopen historical data. For a new coordinated rebuild from the repository root:
+
+```sh
+PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild
+```
+
+This validates fresh Step 2 and Step 3 candidates before publishing one paired completion record. A failed candidate leaves the selected pair intact. Publication rollback is tested. No new dependency, commit or push was required.
+
+Read [this run's validation report](../../precomputed/outputs/step_2/runs/20261016T075559Z-119a5636/validation_report.md), [test evidence](../../precomputed/docs/rebuild_test_report.json), [independent saved-output/source preservation audit](../../precomputed/docs/rebuild_source_preservation.json), and [the completed plan](step_2_plan.md). Original-source diagnostics can still describe unavailable Tobler costs: they concern preserved source evidence, while the primary routing model now has separate flagged estimates. Actual estate subcost caches, comparison-route reporting and final ranking remain later work.
+
+## Historical implementation records — superseded where stated above
+
+
 ## Inputs and decisions
 
 ### Explanation for the team

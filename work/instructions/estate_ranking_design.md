@@ -1,6 +1,9 @@
 # Estate ranking: current design and implementation stages
 
-Updated 14 October 2026 after the verified Step 3 implementation. Read [project_context_and_decisions.md](project_context_and_decisions.md) for complete decisions. Step 1 `20261014T090829Z-20d0139c`, Step 2 `20261014T105436Z-8fe534aa` and Step 3 `20261014T145819Z-4d15d1a3` are successful saved outputs. Steps 4 and 5 remain later work.
+**16 October rebuild completed:** selected Step 2 `20261016T075559Z-119a5636` and Step 3 `20261016T080509Z-4c604c82` passed the full coordinated build, all saved-output checks and **134 tests**. Primary time graphs use reviewed distance-and-height estimates; separate baseline time graphs exclude them. Original geometry/gradient defects remain visible. Selection is recorded in `work/precomputed/outputs/rebuild/current.json`. Run the complete coordinated build with `PYTHONPATH=work/src .venv/bin/python -m estate_ranking.rebuild`.
+
+
+Updated 2026-10-16 16:19:58 HKT (UTC+08:00). Read [project_context_and_decisions.md](project_context_and_decisions.md) for complete decisions and [the Step 3 implementation](step_3/step_3_implementation.md) for current coverage/warnings. Frozen Step 1 remains `20261014T090829Z-20d0139c`; Steps 4 and 5 remain later work.
 
 ## Purpose and final output
 
@@ -63,7 +66,7 @@ Original inputs are in `work/original_data/`; selected older supplementary files
 
 Step 1 selects the Castle Peak Hospital supporting site record with the latest `LastAmendmentDate`: SiteID 1503020249, amended **13 July 2026**. Preserve both original site records, but use only the selected version where one canonical site description is needed. This does not create a second hospital target. Missing terminal, floor and building references are non-blocking Step 1 warnings; ignore them as investigation tasks and do not discard their paths. Preserve the original IDs and diagnostics. This decision does not waive ordinary geometry, height or connectivity checks. Missing site references and distance-post/path references are separate findings whose status is unchanged.
 
-The full rerun passed with **476,153 spatial records, zero blocking errors, 14 warning groups and 31 passing tests**. Warnings document actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
+The Step 1 rerun passed with **476,153 spatial records, zero blocking errors and 14 warning groups**. Its historical stage-specific suite passed **31 tests**; the complete repository suite now passes **134 tests**. Warnings document actual MTR evidence gaps, missing supporting network references, both Castle Peak Hospital reference versions and allocation-proxy provenance. They are not failed preservation checks. See the [validation report](../precomputed/outputs/current/validation_report.md).
 
 Finished results are under `work/precomputed/outputs/current/`, selected from successful snapshots in `outputs/runs/`. This folder includes `harmonised.gpkg`, `reference_tables.sqlite`, `schema.json`, `source_manifest.json`, `model_policy.json`, validation/rejection reports, IDs and `mtr_master/`. Failed candidates remain in `work/cache` without replacing the prior successful data/IDs. Successful precomputed outputs remain trackable in Git.
 
@@ -108,9 +111,11 @@ time_seconds = horizontal_length_metres * 3.6 / speed_kmh
 
 This converts the provider angle to rise/run input without recalculating its magnitude from heights. Sum separately signed interval times; a climb followed by a descent must account for both costs. Sampling uses exact height equality for now and seed 20261013, recorded in the policy snapshot. Reuse canonical sample positions for reverse travel.
 
-6. Use **30 seconds lift travel plus zero waiting time per lift use**, an accepted arbitrary assumption. Do not apply Tobler to a vertical lift or assign zero time from its zero horizontal length. Charge on entry to an original lift identity; its split-piece continuations are free, and a different identity incurs another 30 seconds. Non-lift travel resets lift identity. All other eligible equipment and both modes use standard Tobler.
-7. For hospital costs, use horizontal network distance in metres without slope/time penalties. Do not add lift seconds to hospital metres. Both hospital and transport journeys respect the selected mode's physical rules and direction constraints.
-8. Verify nonnegative costs, permitted directions, crossing levels and connectivity, including stairs allowed for general mode and excluded for wheelchair mode. Report unreachable paths/targets explicitly.
+6. For reviewed time-model failures, use horizontal flat walking time plus **6 seconds per metre climbed and 2 seconds per metre descended**, as an explicit approximation in both modes. Preserve original geometry/gradient/failure evidence, retain baseline time graphs without these estimates, and carry review IDs and warnings through splitting and journey reconstruction. No estimate overrides wheelchair restrictions or establishes a new physical connection.
+
+7. Use **30 seconds lift travel plus zero waiting time per lift use**, an accepted arbitrary assumption. Do not apply Tobler to a vertical lift or assign zero time from its zero horizontal length. Charge on entry to an original lift identity; its split-piece continuations are free, and a different identity incurs another 30 seconds. Non-lift travel resets lift identity. All other eligible equipment and both modes use standard Tobler.
+8. For hospital costs, use horizontal network distance in metres without slope/time penalties. Do not add lift seconds to hospital metres. Transport journeys respect the selected mode's physical rules and direction constraints. Step 4 uses one shared general-network hospital distance result for both modes, as recorded in its plan; Step 3 preserves both distance graphs for inspection.
+9. Verify nonnegative costs, permitted directions, crossing levels and connectivity, including stairs allowed for general mode and excluded for wheelchair mode. Report unreachable paths/targets explicitly.
 
 Tobler was researched from the [user-supplied page](https://en.wikipedia.org/wiki/Tobler%27s_hiking_function) and [original report](https://escholarship.org/uc/item/05r820mz.pdf). Standard walking speed is about 5.04 km/h at zero slope. Its walking curve is adopted as the shared assumption for both modes.
 
@@ -118,7 +123,7 @@ Tobler was researched from the [user-supplied page](https://en.wikipedia.org/wik
 
 ### Explanation for the team
 
-Connections preserve each supplied 2D map point and place an attachment on an eligible ordinary path. Outdoor paths are preferred; indoor paths are a flagged fallback. Straight flat connectors are accepted approximations, with inclusive limits of 200 m for estates/hospitals/MTR and 50 m for bus stops. Derived attachment points have original interpolated HKPD heights; facility heights remain unknown.
+Connections preserve each supplied 2D map point and place an attachment on an eligible ordinary path. Outdoor paths are preferred; indoor paths are a flagged fallback. Straight flat connectors are accepted approximations, with preferred search/warning thresholds of 200 m for estates/hospitals/MTR and 50 m for buses. If no suitable in-threshold path exists, allow and flag a farther connection under the current Step 3 plan; distance alone does not reject it. Derived attachment points have original interpolated HKPD heights; facility heights remain unknown.
 
 ### Completed actions
 
@@ -126,14 +131,14 @@ Connections preserve each supplied 2D map point and place an attachment on an el
 2. [X] Select one closest suitable source position per mode and relevant metric, retaining segment identity for repeated visits. Exclude bridges, tunnels, stairs and equipment interiors from automatic attachment; retain them for subsequent routing where permitted.
 3. [X] Record indoor fallback, unknown levels, exact ties, near alternative heights/floors, long connectors and unattached reasons. Count horizontal distance and flat Tobler time; save zero-distance mappings without degenerate lines.
 4. [X] Collect all selections, reuse eligible same-source nodes within the existing tolerances, then subdivide original pieces without new cross-path junctions. Verify original profile evidence and preserve directional costs, samples, availability and lift identities.
-5. [X] Compile four augmented graphs with outgoing estate terminals and incoming destination terminals accepting lift states. Preserve distinct coincident identities and prevent shortcuts through facility terminals.
-6. [X] Validate all point records, spatial/null/cost roundtrips, terminals, shortest paths, components and frozen hashes before selecting a successful run under `outputs/step_3/current`.
+5. [X] Compile four primary augmented graphs and two baseline time graphs with outgoing estate terminals and incoming destination terminals accepting lift states. Preserve distinct coincident identities and prevent shortcuts through facility terminals.
+6. [X] Validate all point records, spatial/null/cost roundtrips, terminals, shortest paths, components and frozen hashes before selecting the successful Step 2/Step 3 pair through `outputs/rebuild/current.json` (stage `current` links remain for compatibility).
 
 Read [the completed Step 3 plan](step_3/step_3_plan.md), [implementation/API guide](step_3/step_3_implementation.md) and [full-data validation](../precomputed/outputs/step_3/current/validation_report.md). Estate subcosts and final ranking remain later work.
 
 ## 4. Compute and cache the three subcosts — later work
 
-1. Compute estate-to-target journeys under the selected physical mode and metric. Directed time costs can differ in reverse travel.
+1. Compute transport journeys for the selected mode in primary and baseline time scenarios; use shared general-network distance for hospitals. Directed time costs can differ in reverse travel.
 2. Use the minimum reachable cost within each eligible MTR/bus group. For hospitals, use the selected hospital or the minimum reachable distance among all 44 institutions.
 3. Cache target-level results so a future hospital choice can select the correct column without rerunning all paths. Preserve mode, metric, policy/input version and target identity so incompatible results are not mixed.
 4. Return MTR time, bus time and hospital distance separately, with the selected targets, units, reachability and relevant data-quality flags. An unreachable group must not receive a zero cost.
