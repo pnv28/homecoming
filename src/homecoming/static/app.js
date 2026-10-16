@@ -1,7 +1,7 @@
 'use strict';
 const $ = (id) => document.getElementById(id);
 const state = {connected:false, bootstrap:null, results:null, selected:null, routeKind:'bus', routeSeq:0,
-  draft:0, extractSeq:0, walkSeq:0, pick:'start', markers:{}, pdfUrl:null};
+  draft:0, extractSeq:0, walkSeq:0, markerSeq:0, pick:'start', markers:{}, pdfUrl:null};
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = (n,d=1) => n==null ? 'Unavailable' : Number(n).toLocaleString('en-HK',{maximumFractionDigits:d});
 const minutes = n => n==null ? '—' : `${fmt(n/60)} min`;
@@ -193,10 +193,12 @@ function routeNotes(route) {
   return notes.map(n=>`<p class="route-note">${esc(n)}</p>`).join('');
 }
 function mapViewer(container,files,title,runtime) {
-  const local={mode:'static',hd:false,format:'webp',generation:0};
-  container.innerHTML=`<div class="map-controls"><div class="segmented"><button type="button" data-display="static" class="active">Static</button><button type="button" data-display="svg">Interactive SVG</button></div><div class="segmented quality-controls"><button type="button" data-quality="standard" class="active">Standard</button><button type="button" data-quality="hd">HD</button></div><div class="segmented format-controls"><button type="button" data-format="webp" class="active">WebP</button><button type="button" data-format="png">PNG</button></div></div><div class="map-viewer"></div><div class="map-downloads"><span class="map-help">Prepared route · offline context</span><a class="map-download" download>Download WebP ↓</a></div>`;
+  const svgOnly=runtime&&!files.standard;
+  const local={mode:svgOnly?'svg':'static',hd:false,format:'webp',generation:0};
+  const controls=svgOnly?'<span class="muted small">Interactive walking route</span>':`<div class="segmented"><button type="button" data-display="static" class="active">Static</button><button type="button" data-display="svg">Interactive SVG</button></div><div class="segmented quality-controls"><button type="button" data-quality="standard" class="active">Standard</button><button type="button" data-quality="hd">HD</button></div><div class="segmented format-controls"><button type="button" data-format="webp" class="active">WebP</button><button type="button" data-format="png">PNG</button></div>`;
+  container.innerHTML=`<div class="map-controls">${controls}</div><div class="map-viewer"></div><div class="map-downloads"><span class="map-help">Prepared route · offline context</span><a class="map-download" download>Download SVG ↓</a></div>`;
   const viewer=container.querySelector('.map-viewer'),download=container.querySelector('.map-download');
-  const asset=files.standard.split('/').pop().replace('.webp','');
+  const asset=(files.standard||files.svg).split('/').pop().replace(/\.(webp|svg)$/,'');
   function pngUrl(){return '/api/export/png?'+new URLSearchParams({asset,hd:local.hd,runtime});}
   async function update() {
     const generation=++local.generation;
@@ -204,7 +206,7 @@ function mapViewer(container,files,title,runtime) {
     container.querySelectorAll('[data-display]').forEach(b=>b.classList.toggle('active',b.dataset.display===local.mode));
     container.querySelectorAll('[data-quality]').forEach(b=>b.classList.toggle('active',(b.dataset.quality==='hd')===local.hd));
     container.querySelectorAll('[data-format]').forEach(b=>b.classList.toggle('active',b.dataset.format===local.format));
-    container.querySelector('.quality-controls').classList.toggle('hidden',local.mode==='svg');container.querySelector('.format-controls').classList.toggle('hidden',local.mode==='svg');
+    container.querySelector('.quality-controls')?.classList.toggle('hidden',local.mode==='svg');container.querySelector('.format-controls')?.classList.toggle('hidden',local.mode==='svg');
     container.querySelector('.map-help').textContent=local.mode==='svg'?'Scroll to zoom · drag to pan · DTM terrain + original paths · hover for costs':'DTM terrain + original paths · '+(local.hd?'3000 px HD':'1200 px standard');
     if(local.mode==='svg') {
       download.href=files.svg;download.textContent='Download SVG ↓';
@@ -231,6 +233,8 @@ function mapViewer(container,files,title,runtime) {
 }
 function installZoom(svg,viewer,initial=[0,0,1000,700]) {
   let view=[...initial],drag=null,detailTimer=null,detailRequest=null;
+  let viewportUrl=null;
+  const dynamicBackground=svg.dataset.dynamicBackground==='true';
   const bounds=svg.dataset.contextBounds?svg.dataset.contextBounds.split(' ').map(Number):null;
   const detail=svg.querySelector('#local-path-detail');
   const markers=detail?[...svg.querySelectorAll(':scope > circle')]:[];
@@ -246,12 +250,23 @@ function installZoom(svg,viewer,initial=[0,0,1000,700]) {
       bottom:cy+(365-y-h-pad)/scale,top:cy+(365-y+pad)/scale,cx,cy,scale});
     const requestedView=view.join(' ');
     try {
-      const response=await fetch('/api/map/context?'+params,{signal:detailRequest.signal});
+      const [response,backgroundResponse]=await Promise.all([
+        fetch('/api/map/context?'+params,{signal:detailRequest.signal}),
+        dynamicBackground&&view[2]<initial[2]*.99?fetch('/api/map/background?'+params,{signal:detailRequest.signal}):null
+      ]);
       if(!response.ok)return;
       const paths=await response.text();
       if(svg.isConnected&&requestedView===view.join(' ')){
         detail.innerHTML=paths;
-        svg.querySelector('#pedestrian-background').style.opacity=paths?'0':'1';
+        if(dynamicBackground&&backgroundResponse?.ok){
+          const blob=await backgroundResponse.blob();
+          if(!svg.isConnected||requestedView!==view.join(' '))return;
+          const image=svg.querySelector('#viewport-background'),nextUrl=URL.createObjectURL(blob),previousUrl=viewportUrl;
+          viewportUrl=nextUrl;
+          for(const [key,value] of Object.entries({x:x-pad,y:y-pad,width:w+2*pad,height:h+2*pad}))image.setAttribute(key,value);
+          image.setAttribute('href',nextUrl);image.setAttribute('visibility','visible');
+          if(previousUrl)URL.revokeObjectURL(previousUrl);
+        } else if(!dynamicBackground)svg.querySelector('#pedestrian-background').style.opacity=paths?'0':'1';
       }
     } catch(error) { /* The complete prepared basemap remains available. */ }
   }
@@ -262,6 +277,7 @@ function installZoom(svg,viewer,initial=[0,0,1000,700]) {
     }
     svg.setAttribute('viewBox',view.join(' '));
     const markerScale=view[2]/initial[2];
+    for(const marker of svg.querySelectorAll('.estate-location'))marker.setAttribute('r',2.6*markerScale);
     for(const marker of svg.querySelectorAll('.endpoint-marker')){
       marker.setAttribute('transform',`translate(${marker.dataset.x} ${marker.dataset.y}) scale(${markerScale})`);
     }
@@ -272,11 +288,17 @@ function installZoom(svg,viewer,initial=[0,0,1000,700]) {
     }
     if(detail){
       svg.querySelector('#pedestrian-background').style.opacity='1';detail.innerHTML='';
+      if(dynamicBackground&&view[2]>=initial[2]*.99)svg.querySelector('#viewport-background').setAttribute('visibility','hidden');
       clearTimeout(detailTimer);detailTimer=setTimeout(updateDetail,180);
     }
   };
   const coordinate=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
-  const zoom=(factor,point={x:view[0]+view[2]/2,y:view[1]+view[3]/2})=>{const maxWidth=bounds?Math.min(bounds[2],bounds[3]*initial[2]/initial[3]):2200;const width=Math.max(40,Math.min(maxWidth,view[2]*factor)),ratio=width/view[2];view=[point.x-(point.x-view[0])*ratio,point.y-(point.y-view[1])*ratio,width,width*initial[3]/initial[2]];apply();};
+  const zoom=(factor,point={x:view[0]+view[2]/2,y:view[1]+view[3]/2})=>{const maxWidth=bounds?Math.min(bounds[2],bounds[3]*initial[2]/initial[3]):2200;const width=Math.max(Number(svg.dataset.minWidth)||40,Math.min(maxWidth,view[2]*factor)),ratio=width/view[2];view=[point.x-(point.x-view[0])*ratio,point.y-(point.y-view[1])*ratio,width,width*initial[3]/initial[2]];apply();};
+  svg.addEventListener('homecoming:fit',e=>{
+    const [cx,cy,width]=e.detail;
+    const w=Math.max(Number(svg.dataset.minWidth)||40,Math.min(initial[2],width)),h=w*initial[3]/initial[2];
+    view=[cx-w/2,cy-h/2,w,h];apply();
+  });
   svg.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY>0?1.15:.87,coordinate(e));},{passive:false});
   const pointers=new Map();let pinch=null;
   svg.addEventListener('pointerdown',e=>{pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});svg.setPointerCapture(e.pointerId);if(pointers.size===1)drag={x:e.clientX,y:e.clientY,view:[...view]};if(pointers.size===2){const p=[...pointers.values()];pinch=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;}});
@@ -321,9 +343,19 @@ async function loadPointMap() {
   updateMarkers();
 }
 function pickLabel() {$('pick-instruction').textContent=state.pick==='start'?'CLICK THE MAP TO SET START':'CLICK THE MAP TO SET DESTINATION';$('point-map').classList.add('picking');}
+function fitPointMap(){
+  const svg=$('point-map').querySelector('svg');if(!svg)return;
+  const points=[...svg.querySelectorAll('.endpoint-marker')].map(g=>[Number(g.dataset.x),Number(g.dataset.y)]);
+  if(!points.length)return;
+  const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]),left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys);
+  const width=points.length===1?25:Math.max(4,(right-left)*1.7,(bottom-top)*1000/650*1.7);
+  svg.dispatchEvent(new CustomEvent('homecoming:fit',{detail:[(left+right)/2,(top+bottom)/2,width]}));
+}
+$('fit-points').onclick=fitPointMap;
 $('pick-start').onclick=()=>{state.pick='start';pickLabel();};$('pick-end').onclick=()=>{state.pick='end';pickLabel();};
 async function updateMarkers() {
-  const svg=$('point-map').querySelector('svg');if(!svg)return;
+  const svg=$('point-map').querySelector('svg');if(!svg)return false;
+  const generation=++state.markerSeq;
   svg.querySelectorAll('.endpoint-marker').forEach(n=>n.remove());
   // Projection for marker placement is obtained from known grid coordinates for
   // named places, or a small server conversion for arbitrary entered points.
@@ -331,6 +363,7 @@ async function updateMarkers() {
     const lat=Number($(which+'-lat').value),lon=Number($(which+'-lon').value);if(!$(which+'-lat').value||!$(which+'-lon').value)continue;
     const named=[...state.bootstrap.estates,...state.bootstrap.locations].find(r=>Math.abs(r.latitude-lat)<.000002&&Math.abs(r.longitude-lon)<.000002);
     let grid;if(named)grid={x:named.x,y:named.y};else grid=await api('/api/grid?'+new URLSearchParams({latitude:lat,longitude:lon})).catch(()=>null);
+    if(generation!==state.markerSeq)return false;
     if(!grid)continue;
     const x=(grid.x-Number(svg.dataset.xmin))*Number(svg.dataset.scale),y=(Number(svg.dataset.ymax)-grid.y)*Number(svg.dataset.scale);
     const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','endpoint-marker');g.dataset.x=x;g.dataset.y=y;
@@ -338,9 +371,10 @@ async function updateMarkers() {
     g.setAttribute('transform',`translate(${x} ${y}) scale(${markerScale})`);
     g.innerHTML=`<circle r="10" fill="${which==='start'?'#176957':'#b98548'}" stroke="white" stroke-width="3"/><text y="4" text-anchor="middle" font-family="sans-serif" font-size="11" fill="white">${which==='start'?'S':'E'}</text>`;svg.append(g);
   }
+  return true;
 }
 for(const which of ['start','end']) {
-  $(which+'-location').onchange=()=>{const id=$(which+'-location').value,place=[...state.bootstrap.estates,...state.bootstrap.locations].find(r=>r.id===id);if(place){$(which+'-lat').value=place.latitude;$(which+'-lon').value=place.longitude;updateMarkers();}};
+  $(which+'-location').onchange=async()=>{const id=$(which+'-location').value,place=[...state.bootstrap.estates,...state.bootstrap.locations].find(r=>r.id===id);if(place){$(which+'-lat').value=place.latitude;$(which+'-lon').value=place.longitude;if(await updateMarkers())fitPointMap();}};
   for(const field of ['lat','lon'])$(which+'-'+field).addEventListener('change',()=>{$(which+'-location').value='';updateMarkers();});
 }
 $('swap-points').onclick=()=>{for(const field of ['location','lat','lon']){const a=$('start-'+field),b=$('end-'+field),v=a.value;a.value=b.value;b.value=v;}updateMarkers();};

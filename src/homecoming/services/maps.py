@@ -257,6 +257,13 @@ def atomic_bytes(path, data):
     temporary.replace(path)
 
 
+def render_svg_asset(key, scene, title, subtitle, unit='seconds', root=MAP_ROOT):
+    path=paths_for(key,root)['svg']
+    atomic_bytes(path,svg_scene(scene,title,subtitle,unit).encode())
+    return {'svg':dict(path=str(path.relative_to(root)),bytes=path.stat().st_size,
+                       sha256=hashlib.sha256(path.read_bytes()).hexdigest())}
+
+
 def render_assets(key, scene, title, subtitle, unit='seconds', root=MAP_ROOT):
     paths = paths_for(key, root)
     atomic_bytes(paths['svg'], svg_scene(scene, title, subtitle, unit).encode())

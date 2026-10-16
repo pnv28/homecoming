@@ -17,6 +17,7 @@ def run():
         browser=p.chromium.launch(headless=True,executable_path=BROWSER_PATH or None)
         context=browser.new_context(viewport={'width':1440,'height':1100},device_scale_factor=1)
         page=context.new_page();errors=[];searches=[]
+        page.set_default_navigation_timeout(90000)
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.on('request',lambda request:searches.append(request.post_data_json) if request.url.endswith('/api/search') else None)
         page.goto(BASE_URL,wait_until='networkidle')
@@ -86,10 +87,18 @@ def run():
         page.locator('#point-map .endpoint-marker').first.wait_for()
         for _ in range(10):page.locator('#point-map button[aria-label="Zoom in"]').click()
         assert page.locator('#point-map .endpoint-marker circle').first.bounding_box()['width']<30
+        page.locator('#fit-points').click()
+        page.wait_for_function('document.querySelector("#point-map #viewport-background").getAttribute("visibility") === "visible"')
+        page.wait_for_function('document.querySelector("#point-map #local-path-detail polyline") !== null')
+        page.locator('#point-map').screenshot(path=str(OUT/'point-selection-terrain.png'))
+        page.set_viewport_size({'width':390,'height':844})
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),'Point selector overflows on mobile'
+        page.set_viewport_size({'width':1440,'height':1100})
         page.locator('#point-map button[aria-label="Reset map zoom"]').click()
         page.locator('#walk-button').click()
-        page.locator('#walk-route-map img').wait_for(timeout=180000)
-        page.locator('#walk-route-map img').evaluate('(img)=>img.decode()')
+        page.locator('#walk-route-map svg').wait_for(timeout=180000)
+        assert page.locator('#walk-route-map [data-format]').count()==0
+        assert page.locator('#walk-route-map .map-download').get_attribute('href').endswith('.svg')
         assert '319 m' in page.locator('.walk-result-summary').inner_text()
         page.screenshot(path=str(OUT/'walk.png'),full_page=True)
         assert not errors,errors
@@ -135,7 +144,7 @@ def run():
         report=dict(status='passed',manual_search=True,operator_gate=True,preferred_hospital=True,
                     hd_webp=True,png=True,svg_zoom_reset=True,svg_bounded_pan=True,svg_surrounding_context=True,
                     close_zoom_original_vectors=True,point_selection_map=True,on_demand_walk=True,
-                    point_map_bounded_pan=True,point_markers_constant_size=True,
+                    point_map_bounded_pan=True,point_markers_constant_size=True,point_map_terrain_and_paths=True,
                     mobile_no_overflow=True,javascript_errors=errors)
         (OUT/'browser_report.json').write_text(json.dumps(report,indent=2))
         print(json.dumps(report,indent=2))

@@ -4,6 +4,9 @@ import hashlib
 import io
 import json
 import unittest
+from pathlib import Path
+import tempfile
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 from PIL import Image
@@ -13,10 +16,20 @@ import shapely
 from homecoming.app import app
 from homecoming.settings import ROOT
 from homecoming.services.basemap import basemap, vector_context
-from homecoming.services.maps import Context, make_scene, svg_scene
+from homecoming.services.maps import Context, make_scene, svg_scene, render_svg_asset
 
 
 class MapTests(unittest.TestCase):
+    def test_on_demand_svg_does_not_render_static_images(self):
+        sections=[dict(coords=[[835000,816000],[835200,816100]],kind='network',
+                       distance_m=223.6,cost=180,source='synthetic')]
+        scene=make_scene(sections,[835000,816000],[835200,816100])
+        with tempfile.TemporaryDirectory() as directory:
+            with patch('homecoming.services.maps.raster_scene',side_effect=AssertionError('HD raster rendering')):
+                files=render_svg_asset('synthetic',scene,'Test','SVG only',root=Path(directory))
+            self.assertEqual(set(files),{'svg'})
+            self.assertEqual([p.suffix for p in Path(directory).rglob('*') if p.is_file()],['.svg'])
+
     def test_point_selection_map_has_navigation_bounds(self):
         with TestClient(app) as client:
             response=client.get('/api/map/overview')
@@ -24,6 +37,20 @@ class MapTests(unittest.TestCase):
         svg=ET.fromstring(response.text)
         self.assertEqual(svg.attrib['viewBox'],'0 0 1000 650')
         self.assertEqual(svg.attrib['data-context-bounds'],'0 0 1000 650')
+        self.assertEqual(svg.attrib['data-dynamic-background'],'true')
+        image=svg.find("{http://www.w3.org/2000/svg}image[@id='pedestrian-background']")
+        with Image.open(io.BytesIO(base64.b64decode(image.attrib['href'].split(',',1)[1]))) as background:
+            self.assertEqual(background.size,(1600,1040))
+
+    def test_selection_viewport_serves_terrain_and_paths(self):
+        with TestClient(app) as client:
+            response=client.get('/api/map/background?left=834950&bottom=815950&right=835250&top=816150')
+            self.assertEqual(response.status_code,200)
+            self.assertEqual(response.headers['content-type'],'image/webp')
+            with Image.open(io.BytesIO(response.content)) as image:
+                self.assertEqual(image.width,1400)
+            self.assertEqual(client.get('/api/map/background?left=nan&bottom=815950&right=835250&top=816150').status_code,400)
+            self.assertEqual(client.get('/api/map/background?left=834950&bottom=815950&right=834951&top=816150').status_code,400)
 
     def test_original_background_is_complete_and_not_mode_filtered(self):
         context = basemap()

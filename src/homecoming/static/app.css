@@ -3,3 +3,6 @@
 .demo-forms{font-size:10px;color:var(--muted);margin:-15px 0 24px}.demo-forms summary{cursor:pointer;color:var(--teal)}.demo-forms p{font-size:9px;line-height:1.9}.demo-forms a{color:var(--teal);text-decoration:underline}
 .interactive-map-legend{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:9px;font-size:9px;color:#52675f}.interactive-map-legend>span{display:inline-flex;align-items:center;gap:5px}.interactive-map-legend i{display:inline-block;width:14px;height:3px;border-radius:2px}.interactive-map-legend small{flex-basis:100%;font-size:8px}
 .map-viewer:has(svg),.map-viewer:has(img){min-height:0}
+
+.point-map-actions{display:flex;gap:18px;flex-wrap:wrap}.point-map-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:9px;color:var(--muted);padding:12px 0 2px}.point-map-legend span{display:flex;align-items:center;gap:6px}.point-map-legend i{display:inline-block;width:18px;height:2px;background:#a95430}.point-map{background:#e6eff2}.point-map svg{cursor:grab}.point-map.picking svg{cursor:crosshair}
+.walk-map-panel .section-top{flex-wrap:wrap;row-gap:12px}

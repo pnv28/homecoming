@@ -11,7 +11,7 @@ from estate_ranking.attachments import read_attached_graph
 from homecoming.settings import STEP_3, ROOT, RUNTIME
 from homecoming.services.fast_coordinate import find_route
 from homecoming.services.loading import load_attached,full_sources
-from homecoming.services.maps import VERSION, Context, atomic_bytes, make_scene, render_assets
+from homecoming.services.maps import VERSION, Context, atomic_bytes, make_scene, render_svg_asset
 
 LOCK = threading.RLock()
 _attached = None
@@ -22,7 +22,7 @@ TO_GPS = Transformer.from_crs(2326,4326,always_xy=True)
 
 def walking(parameters):
     global _attached
-    signature = dict(parameters=parameters.model_dump(),snapshot=STEP_3.resolve().name,policy='endpoints-200m-v3-frozen-profiles',renderer=VERSION)
+    signature = dict(parameters=parameters.model_dump(),snapshot=STEP_3.resolve().name,policy='endpoints-200m-v4-frozen-profiles-svg',renderer=VERSION)
     key = hashlib.sha256(json.dumps(signature,sort_keys=True).encode()).hexdigest()[:28]
     saved = RUNTIME / 'route_cache' / (key+'.json')
     if saved.exists():
@@ -61,7 +61,7 @@ def walking(parameters):
             title=(parameters.start.label or 'Start')+' → '+(parameters.end.label or 'Destination')
             subtitle='{:.0f} m · {:.1f} min · {}'.format(result['distance_m'],result['time_s']/60,
                 'Wheelchair mode' if parameters.wheelchair else 'General walking')
-            files=render_assets(key,scene,title,subtitle,root=RUNTIME/'map_cache')
+            files=render_svg_asset(key,scene,title,subtitle,root=RUNTIME/'map_cache')
             result['assets']={kind:'/runtime-maps/'+record['path'] for kind,record in files.items()}
             result['section_count']=len(sections)
         result.update(snapshot=STEP_3.resolve().name,parameters=parameters.model_dump())

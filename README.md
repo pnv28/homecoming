@@ -41,7 +41,7 @@ The upload panel also offers synthetic typed and scanned PDFs. Both describe fic
 
 **Plan a walk** accepts map clicks, coordinates in latitude/longitude order, or named estates/hospitals/MTR access points. Start and destination can be swapped. The Kennedy Town example fills two real points, then waits for you to press **Find a walk**. Arbitrary endpoints need a suitable mapped path within 200 m. Unreachable routes are reported explicitly.
 
-The point-selection map keeps zoom and pan within its Hong Kong coverage, and start/destination markers retain their screen size while zooming.
+The point-selection map shows the original pedestrian network over local DTM terrain, with sharper terrain/path backgrounds as you zoom and individual vector paths at close range. Named selections focus the map; **Fit points** frames the selected endpoints. Zoom and pan stay within Hong Kong, and all markers retain their screen size. On-demand walking results render and download as interactive SVG only, avoiding the extra standard/HD raster generation. Prepared estate routes retain their WebP, PNG, and SVG choices.
 
 ## What is already computed
 
@@ -74,6 +74,8 @@ It records unavailable routes without making fictitious images. Original Steps 1
 `assets/maps/terrain_relief.png` and its georeferencing/provenance JSON are already prepared. To recreate them, install `requirements-dev.txt` and run `scripts/prepare_basemap.py --dtm-archive ../hacksdg_homecoming-development/data/organized/supplementary/terrain/Whole_HK_DTM_5m.zip` before regenerating maps. The original archive on `development` is needed only for this preparation step. Shared original-network/terrain tiles are cached in `precomputed/maps/basemap/`; on-demand route cache keys include the map-renderer version so older displays cannot be returned after a renderer update.
 
 After a renderer update, `scripts/prune_maps.py` previews obsolete generated files; add `--apply` to remove them. It retains all current route identities, including maps still pending in a resumable build, and never visits the original graph artifacts.
+
+`scripts/prepare_selection_map.py` recreates the bundled full-Hong-Kong terrain/path overview at `assets/maps/selection-background.webp`. Close-zoom point-selector backgrounds are rendered from the same original network and DTM. New on-demand basemap tiles are ignored by Git; previously bundled tiles remain tracked.
 
 `scripts/package_data.py --development-root ../hacksdg_homecoming-development` is a development utility for assembling the bundle from the original `work/` tree; it is not needed to run the application. `scripts/verify_bundle.py` checks packaged fingerprints and numeric parity without requiring that original tree.
 

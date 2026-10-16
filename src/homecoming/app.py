@@ -1,6 +1,7 @@
 """Local operator interface. Extraction never invokes ranking or an overview."""
 from datetime import datetime, timezone
 from functools import lru_cache
+import base64
 import io
 import json
 import math
@@ -246,7 +247,7 @@ def grid(latitude:float,longitude:float):
 
 
 @lru_cache(maxsize=1)
-def overview_svg():
+def overview_frame():
     import shapely
     from shapely.geometry import shape
     from shapely.ops import transform
@@ -256,18 +257,45 @@ def overview_svg():
     scale=min(940/(x1-x0),590/(y1-y0))
     cx,cy=(x0+x1)/2,(y0+y1)/2
     xmin,ymax=cx-500/scale,cy+325/scale
+    return land,xmin,ymax,scale
+
+
+@lru_cache(maxsize=1)
+def overview_svg():
+    import shapely
+    land,xmin,ymax,scale=overview_frame()
     def project(coords):
         return ' '.join('{:.2f},{:.2f}'.format((x-xmin)*scale,(ymax-y)*scale) for x,y in coords)
-    out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" data-context-bounds="0 0 1000 650" data-xmin="{}" data-ymax="{}" data-scale="{}" aria-label="Hong Kong start and destination selection map">'.format(xmin,ymax,scale),
+    encoded=base64.b64encode((ROOT/'assets/maps/selection-background.webp').read_bytes()).decode('ascii')
+    out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" data-context-bounds="0 0 1000 650" data-center="{} {}" data-grid-scale="{}" data-dynamic-background="true" data-min-width="4" data-xmin="{}" data-ymax="{}" data-scale="{}" aria-label="Hong Kong terrain and pedestrian paths: choose start and destination">'.format(xmin+500/scale,ymax-365/scale,scale,xmin,ymax,scale),
          '<rect width="1000" height="650" fill="#e9f0ed"/>']
+    out.append('<image id="pedestrian-background" width="1000" height="650" href="data:image/webp;base64,'+encoded+'"/>')
+    out.append('<image id="viewport-background" visibility="hidden"/>')
     for polygon in shapely.get_parts(land.simplify(25)):
         if polygon.geom_type=='Polygon':
-            out.append('<polygon points="'+project(polygon.exterior.coords)+'" fill="#faf9f3" stroke="#b4c9be" stroke-width="1"/>')
+            out.append('<polygon points="'+project(polygon.exterior.coords)+'" fill="none" stroke="#91aaa0" stroke-width=".5" vector-effect="non-scaling-stroke"/>')
+    out.append('<g id="local-path-detail" fill="none" stroke="#a95430" stroke-width="1.2"/>')
     for estate in data.catalog()['lists']['estate']:
         x=(estate['x']-xmin)*scale;y=(ymax-estate['y'])*scale
-        out.append('<circle cx="{}" cy="{}" r="2.6" fill="#628e78" opacity=".65"/>'.format(x,y))
-    out.append('<text x="30" y="620" fill="#62756d" font-family="sans-serif" font-size="14">Hong Kong · Offline map · Dots indicate public rental estates</text></svg>')
+        out.append('<circle class="estate-location" cx="{}" cy="{}" r="2.6" fill="#628e78" opacity=".65"/>'.format(x,y))
+    out.append('</svg>')
     return ''.join(out)
+
+
+@app.get('/api/map/background')
+def map_background(left:float,bottom:float,right:float,top:float):
+    if (not all(math.isfinite(v) for v in (left,bottom,right,top)) or
+            not (780000 <= left < right <= 890000 and 780000 <= bottom < top <= 880000)):
+        raise ValueError('Map viewport is outside Hong Kong.')
+    if not .4 <= (right-left)/(top-bottom) <= 3:
+        raise ValueError('Invalid map viewport proportions.')
+    from homecoming.services.basemap import basemap
+    size=(1400,round(1400*(top-bottom)/(right-left)))
+    image=basemap().image([left,bottom,right,top],size)
+    stream=io.BytesIO()
+    image.save(stream,'WEBP',quality=85,method=0)
+    image.close()
+    return Response(stream.getvalue(),media_type='image/webp')
 
 
 @app.get('/api/map/overview',response_class=Response)
