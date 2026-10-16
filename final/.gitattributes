@@ -1,0 +1,10 @@
+precomputed/**/*.gpkg filter=lfs diff=lfs merge=lfs -text
+precomputed/**/*.sqlite filter=lfs diff=lfs merge=lfs -text
+precomputed/**/*.npz filter=lfs diff=lfs merge=lfs -text
+precomputed/**/*.csv filter=lfs diff=lfs merge=lfs -text
+precomputed/**/*.jsonl filter=lfs diff=lfs merge=lfs -text
+precomputed/**/results.json filter=lfs diff=lfs merge=lfs -text
+precomputed/maps/**/*.webp filter=lfs diff=lfs merge=lfs -text
+precomputed/maps/**/*.svg filter=lfs diff=lfs merge=lfs -text
+precomputed/maps/basemap/**/*.png filter=lfs diff=lfs merge=lfs -text
+assets/maps/terrain_relief.png filter=lfs diff=lfs merge=lfs -text

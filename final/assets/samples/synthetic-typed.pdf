@@ -1,0 +1,85 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 595 842 ]
+/Parent 2 0 R
+/Contents 6 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+6 0 obj
+<<
+/Length 1389
+>>
+stream
+0.12 0.25 0.21 rg
+BT /F1 22 Tf 42 790 Td (HOMECOMING - SYNTHETIC DEMONSTRATION FORM) Tj ET
+BT /F1 11 Tf 42 762 Td (Fictional information for testing only. Not an official housing application.) Tj ET
+BT /F1 16 Tf 42 711 Td (Part 1 - Applicant and household) Tj ET
+BT /F1 13 Tf 42 675 Td (Applicant surname: CHAN) Tj ET
+BT /F1 13 Tf 42 648 Td (Applicant given name: ALEX) Tj ET
+BT /F1 13 Tf 42 621 Td (Number of household members: 2) Tj ET
+BT /F1 12 Tf 42 577 Td (Applicant disability codes: none selected) Tj ET
+BT /F1 12 Tf 42 550 Td (Family member: PARENT CHAN) Tj ET
+BT /F1 12 Tf 42 523 Td (Family member disability code 1: [X]) Tj ET
+BT /F1 11 Tf 42 495 Td (Code 1: non-temporary indoor dependence on wheelchair for mobility.) Tj ET
+BT /F1 11 Tf 42 468 Td (Other disability codes: [ ] 2  [ ] 3  [ ] 4  [ ] 5  [ ] 6) Tj ET
+BT /F1 16 Tf 42 400 Td (Part 5 - Choice of housing allocation area) Tj ET
+BT /F1 13 Tf 42 360 Td ([X] Urban) Tj ET
+BT /F1 13 Tf 42 332 Td ([ ] Extended Urban) Tj ET
+BT /F1 13 Tf 42 304 Td ([ ] New Territories) Tj ET
+BT /F1 13 Tf 42 276 Td ([ ] Islands) Tj ET
+BT /F1 11 Tf 42 214 Td (Preferred hospital: not specified. The operator may choose in the app.) Tj ET
+BT /F1 11 Tf 42 155 Td (The operator must review extracted values and press Yes, search.) Tj ET
+BT /F1 10 Tf 42 90 Td (This example should prefill Alex Chan, household 2, Urban, wheelchair routes.) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000113 00000 n 
+0000000162 00000 n 
+0000000294 00000 n 
+0000000364 00000 n 
+trailer
+<<
+/Size 7
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1805
+%%EOF

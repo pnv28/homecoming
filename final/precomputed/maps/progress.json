@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "assets": 7262,
+  "total": 7262,
+  "workers": 4,
+  "process_id": 25332,
+  "renderer": "scene-2-terrain",
+  "routes": 12599,
+  "rendered_this_run": 5903,
+  "elapsed_seconds": 1571.1,
+  "bytes": 11843349555
+}

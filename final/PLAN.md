@@ -1,6 +1,6 @@
 # homecoming — proposed local web application
 
-Status: exploration and planning only, 16 October 2026. No application implementation, data migration, dependency installation, or changes to Steps 1–5 have been made.
+Status: implemented and locally verified on 16 October 2026. The source Step 1–5 snapshots remain unchanged. All 7,262 WebP/SVG map sets are prepared and verified. See README.md for launch instructions and docs/verification.json for test evidence. Live DeepSeek verification requires the operator's own API key; provider and review-flow tests use synthetic responses.
 
 ## Confirmed scope
 
@@ -294,13 +294,13 @@ For estate-to-cached-winner requests, reuse cached routes when the requested sem
 - Start/end routing covers valid directed routes, wheelchair restrictions, unattached/unreachable endpoints, identical points, and coordinate order. Cost sums match the search result.
 - Run the existing applicable regression suite and focused new integration tests for extraction validation, API boundaries, routing jobs, and bundle independence. Verify the real DeepSeek integration with a key during implementation; no key is needed for this planning step.
 
-## Open decisions for discussion
+## Confirmed implementation choices
 
-Questions already sent in the conversation; proposed defaults if left open:
+The user closed the open-ended discussion and authorised implementation. Their inline answers below are preserved; the implementation uses household-wide wheelchair review, offline maps, and English.
 
-1. Apply wheelchair mode when any household member needs it, with an editable confirmation. Code 1 explicitly indicates wheelchair dependence; other disability codes must not automatically imply an unsupported routing profile.
-2. Use an offline route diagram with local geographic context, or add an online street-map background.
-3. English interface/overview first, or English plus Traditional Chinese. Original estate and destination names can retain the available Chinese names in either version.
+1. Apply wheelchair mode when any household member needs it, with an editable confirmation. Code 1 explicitly indicates wheelchair dependence; other disability codes must not automatically imply an unsupported routing profile. -- answer yes
+2. Use an offline route diagram with local geographic context, or add an online street-map background. --- offline route
+3. English interface/overview first, or English plus Traditional Chinese. Original estate and destination names can retain the available Chinese names in either version. -- english app.
 
 The requested “HD / Not HD” behavior is interpreted as static export resolution; SVG stays vector at every zoom. The plan does not add a new routing/scoring model or automatic PRH eligibility checks.
 

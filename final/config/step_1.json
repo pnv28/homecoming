@@ -1,0 +1,49 @@
+{
+  "work_root": "..",
+  "output": "precomputed/outputs/current",
+  "runs": "precomputed/outputs/runs",
+  "cache": "cache",
+  "registry": "config/entity_ids.json",
+  "legacy_registry_targets": ["../precomputed/step_1/entity_ids.json"],
+  "station_overrides": "config/mtr_station_overrides.csv",
+  "exit_overrides": "config/mtr_exit_overrides.csv",
+  "access_policy": {
+    "always_open": true,
+    "ignored_tables": ["AccessTime", "AccessTimeDetails"],
+    "schedule_reference_policy": "AccessTimeID is an unused original source attribute; no joins or checks"
+  },
+  "sources": {
+    "routing_policy": {"path": "config/routing_policy.json", "role": "Latest user-approved modelling rules; candidates prepared without computing routes"},
+    "mtr_dictionary": {"path": "original_data/mtr DataDictionary.zip", "role": "MTR station/facility/category provider definitions"},
+    "network": {"path": "original_data/3D_Pedestrian_Network_FGDB.zip", "role": "3D pedestrian paths and support tables", "crs_evidence": "Embedded compound CRS: HK1980 Grid and HKPD height"},
+    "estates": {"path": "original_data/prh-estates (1).json", "role": "Estate map points", "crs": "EPSG:4326", "coordinate_fields_evidence": "ha_hahdweb_dataspec.pdf, PDF page 6: Estate Map Latitude/Longitude are numeric latitude/longitude; no datum named in the document.", "crs_assumption_accepted": true, "crs_assumption": "User-accepted WGS84 assumption: ha_hahdweb_dataspec.pdf defines latitude/longitude but does not explicitly specify their datum."},
+    "hospitals": {"path": "original_data/facility-hosp.json", "role": "Hospital institution map points", "crs": "EPSG:4326", "coordinate_fields_evidence": "Data-Specification-for-List-of-HA-Hospitals-Institutions-SOPCs-FMCs-en.pdf, PDF page 2: numeric latitude/longitude; no datum named.", "crs_assumption_accepted": true, "crs_assumption": "User-accepted WGS84 assumption: the supplied Hospital Authority specification defines latitude/longitude but does not explicitly specify their datum."},
+    "mtr_exits": {"path": "original_data/mtr_access_points.geojson", "role": "iGeoCom railway access records", "crs": "EPSG:4326", "crs_evidence": "work/original_data/data_dictionary_v5.pdf: geometry WGS84, attributes HK1980 Grid"},
+    "railway_stations": {"path": "original_data/railway_stations.geojson", "role": "iGeoCom railway station reference points", "crs": "EPSG:4326", "crs_evidence": "work/original_data/data_dictionary_v5.pdf: geometry WGS84, attributes HK1980 Grid"},
+    "bus_stops": {"path": "original_data/bus_stops.json", "role": "Distinct bus and minibus stop points", "crs": "EPSG:4326", "coordinate_fields_evidence": "ptroutefare_geojson_dataspec.pdf, PDF page 1: stop coordinates described as latitude and longitude; no datum explicitly named.", "crs_assumption_accepted": true, "crs_assumption": "User-accepted WGS84 assumption: the bus GeoJSON specification identifies latitude/longitude but does not explicitly specify a datum; derived stop coordinates match both raw inputs."},
+    "raw_bus": {"path": "original_data/JSON_BUS.json", "role": "Original bus route-stop records"},
+    "raw_gmb": {"path": "original_data/JSON_GMB.json", "role": "Original GMB route-stop records"},
+    "mtr_station_csv": {"path": "original_data/reference/mtr_lines_and_stations.csv", "copy_from": "../data/organized/core/mtr/mtr_lines_and_stations.csv", "role": "MTR station and line identifiers"},
+    "mtr_facilities": {"path": "original_data/reference/barrier_free_facilities.csv", "copy_from": "../data/organized/core/mtr/barrier_free_facilities.csv", "role": "MTR facility descriptions"},
+    "mtr_categories": {"path": "original_data/reference/barrier_free_facility_category.csv", "copy_from": "../data/organized/core/mtr/barrier_free_facility_category.csv", "role": "MTR facility code definitions"},
+    "housing_crosswalk": {"path": "original_data/reference/estate_housing_district_crosswalk.csv", "copy_from": "../analysis/maps/estate_housing_district_crosswalk.csv", "role": "Documented estate allocation categories"},
+    "housing_documentation": {"path": "original_data/reference/HOUSING_DISTRICTS_README.md", "copy_from": "../analysis/maps/HOUSING_DISTRICTS_README.md", "role": "Crosswalk source and geographic proxy limitations"},
+    "mtr_source_manifest": {"path": "original_data/reference/igeocom_source_manifest.json", "copy_from": "../data/official_igeocom/source_manifest.json", "role": "iGeoCom extraction provenance"},
+    "bus_documentation": {"path": "original_data/reference/bus_stops_notes.md", "copy_from": "../data/bus_stops_notes.md", "role": "Stop-list derivation and limitations"},
+    "network_documentation": {"path": "original_data/portal.csdi.gov.hk_csdi-webpage_metadata_landsd_rcd_1637222018065_52265_html.pdf", "role": "Network source metadata"},
+    "igeocom_dictionary": {"path": "original_data/data_dictionary_v5.pdf", "role": "iGeoCom coordinates and access-category definitions"},
+    "network_dictionary": {"path": "original_data/3DPN_DataDictionary_v2.2.pdf", "role": "3DPN field definitions: radians for Gradient, metres for horizontal SHAPE_Length"},
+    "estate_specification": {"path": "original_data/ha_hahdweb_dataspec.pdf", "role": "Estate coordinate field definitions; datum not explicitly specified"},
+    "hospital_specification": {"path": "original_data/Data-Specification-for-List-of-HA-Hospitals-Institutions-SOPCs-FMCs-en.pdf", "role": "Hospital coordinate field definitions; datum not explicitly specified"},
+    "bus_specification": {"path": "original_data/ptroutefare_geojson_dataspec.pdf", "role": "Bus coordinate field definitions; datum not explicitly specified"}
+  },
+  "validation": {
+    "wgs84_bounds": [113.7, 22.1, 114.5, 22.6],
+    "coordinate_roundtrip_deg": 0.00000001,
+    "igeocom_residual_review_m": 3.0,
+    "crosswalk_coordinate_tolerance_m": 0.1,
+    "geometry_roundtrip_tolerance_m": 0.0,
+    "expected_counts": {"network": 465892, "estates": 244, "hospitals": 44, "mtr_exits": 611, "railway_stations": 98, "bus_stops": 9264},
+    "expected_housing_counts": {"Urban": 109, "Extended Urban": 70, "New Territories": 60, "Islands": 5}
+  }
+}
