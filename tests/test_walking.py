@@ -1,12 +1,18 @@
 """The sparse endpoint adapter must match the original complete compilation."""
 import unittest
+import json
+import tempfile
+from pathlib import Path
 from unittest.mock import patch
 import geopandas as gpd
+import numpy as np
 from shapely.geometry import MultiLineString,Point
 from estate_ranking.graph import build_physical_graph
 from estate_ranking.attachments import attach_points,attached_routing_graph
 from homecoming.services.coordinate import find_route as reference_route
 from homecoming.services.fast_coordinate import find_route
+from homecoming.services.profiles import verified_profiles,same_evidence
+from estate_ranking.graph_costs import build_profile
 
 
 def saved_graph(paths,wheelchair=False):
@@ -26,6 +32,28 @@ def saved_graph(paths,wheelchair=False):
 
 
 class FastWalkingTests(unittest.TestCase):
+    def test_native_roundoff_restores_exact_frozen_costs(self):
+        physical=saved_graph([[(0,0,0),(10,0,0)]]).physical
+        frozen=physical.profiles[0].evidence()
+        sid=frozen['source_id']
+        def different_libm(*args,**kwargs):
+            profile=build_profile(*args,**kwargs)
+            profile.forward[0]=float(np.nextafter(profile.forward[0],np.inf))
+            return profile
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'profiles.jsonl'
+            path.write_text(json.dumps(frozen)+'\n')
+            with patch('homecoming.services.profiles.build_profile',side_effect=different_libm):
+                profiles=verified_profiles(physical,{sid},directory)
+            self.assertEqual(profiles[0].evidence(),frozen)
+            changed={**frozen,'forward_seconds':[frozen['forward_seconds'][0]+.01]}
+            path.write_text(json.dumps(changed)+'\n')
+            with self.assertRaisesRegex(ValueError,'does not match'):
+                verified_profiles(physical,{sid},directory)
+        self.assertFalse(same_evidence({'cost':None},{'cost':0.}))
+        self.assertFalse(same_evidence({'status':'unavailable'},{'status':'available'}))
+        self.assertFalse(same_evidence({'seed':1},{'seed':2}))
+
     def compare(self,graph,start,end):
         original_edges=len(graph.edges)
         expected,_,_=reference_route(graph.physical,start,end,graph.wheelchair)

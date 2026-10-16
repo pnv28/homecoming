@@ -41,6 +41,8 @@ The upload panel also offers synthetic typed and scanned PDFs. Both describe fic
 
 **Plan a walk** accepts map clicks, coordinates in latitude/longitude order, or named estates/hospitals/MTR access points. Start and destination can be swapped. The Kennedy Town example fills two real points, then waits for you to press **Find a walk**. Arbitrary endpoints need a suitable mapped path within 200 m. Unreachable routes are reported explicitly.
 
+The point-selection map keeps zoom and pan within its Hong Kong coverage, and start/destination markers retain their screen size while zooming.
+
 ## What is already computed
 
 - Every estate/hospital pair: **244 × 44 = 10,736** distance/status records. **6,323** are reachable in the saved pedestrian model.
@@ -49,6 +51,8 @@ The upload panel also offers synthetic typed and scanned PDFs. Both describe fic
 - Standard/HD WebP and SVG maps are indexed in `precomputed/maps/index.json`. Identical displays share files. `progress.json` records full preparation coverage.
 
 Serving a prepared map does not run a new shortest-path search or render a new image. PNG exports convert a prepared WebP. Arbitrary Start → End routes are calculated on demand and cached under `runtime/`.
+
+On-demand source profiles are checked against frozen evidence with a floating-point tolerance of `2e-12` relative and `1e-12` absolute; identifiers, statuses, sample counts, and other discrete evidence must match exactly. The adapter then restores the original saved numeric values before the engine checks review hashes and subdivides paths. This avoids rejecting Mac-prepared data for final-bit math differences on Linux. Cached graphs and rankings are unchanged.
 
 Route backgrounds use the **complete original pedestrian geometry** underlying `analysis/maps/hong_kong_paths_precise`, with no random sampling or wheelchair filtering. Brown paths provide geographic context; the selected route uses a heavier blue line with a white outline. Dashed brown connections, green lifts, and purple estimated-time sections retain their original meanings. The background is decorative and does not imply that every visible path is eligible for the selected mode.
 

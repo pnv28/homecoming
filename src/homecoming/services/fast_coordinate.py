@@ -15,6 +15,7 @@ from estate_ranking.attachments import split_attachments
 from estate_ranking.graph import PhysicalGraph,minimum_matrix
 from estate_ranking.routes import path_transitions,ordered_sections,check_cost
 from homecoming.services.coordinate import endpoint_attachments,empty_route
+from homecoming.services.profiles import verified_profiles
 
 
 def find_route(saved,start,end,evidence_directory):
@@ -35,7 +36,9 @@ def find_route(saved,start,end,evidence_directory):
         sources,
         physical.memberships.loc[physical.memberships.source_id.isin(source_ids)].copy(),
         physical.profiles,[],physical.policy)
-    augmented,validation=split_attachments(local,selected,evidence_directory)
+    if evidence_directory is not None:
+        local.profiles=verified_profiles(local,source_ids,evidence_directory)
+    augmented,validation=split_attachments(local,selected,None)
     state_count=len(saved.states)
     by_node=defaultdict(list);base={}
     for row in saved.states.loc[saved.states.state_kind=='physical'].itertuples():

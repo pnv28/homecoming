@@ -17,6 +17,14 @@ from homecoming.services.maps import Context, make_scene, svg_scene
 
 
 class MapTests(unittest.TestCase):
+    def test_point_selection_map_has_navigation_bounds(self):
+        with TestClient(app) as client:
+            response=client.get('/api/map/overview')
+        self.assertEqual(response.status_code,200)
+        svg=ET.fromstring(response.text)
+        self.assertEqual(svg.attrib['viewBox'],'0 0 1000 650')
+        self.assertEqual(svg.attrib['data-context-bounds'],'0 0 1000 650')
+
     def test_original_background_is_complete_and_not_mode_filtered(self):
         context = basemap()
         self.assertEqual(len(context.geometry), 465892)

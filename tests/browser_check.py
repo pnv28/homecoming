@@ -74,12 +74,19 @@ def run():
         page.locator('#point-map svg').wait_for()
         page.locator('#point-map button[aria-label="Zoom in"]').click()
         assert page.locator('#point-map svg').get_attribute('viewBox')!='0 0 1000 650'
+        for _ in range(10):page.locator('#point-map button[aria-label="Zoom out"]').click()
+        assert page.locator('#point-map svg').get_attribute('viewBox')=='0 0 1000 650'
         assert page.locator('#start-lat').input_value()==''
         page.locator('#example-walk').click()
         assert page.locator('#start-lat').input_value()=='22.280111'
         # A nearby new coordinate exercises the real endpoint loader/calculation,
         # rather than merely retrieving the previously rehearsed route cache.
         page.locator('#start-lat').fill('22.280112')
+        page.locator('#start-lat').blur()
+        page.locator('#point-map .endpoint-marker').first.wait_for()
+        for _ in range(10):page.locator('#point-map button[aria-label="Zoom in"]').click()
+        assert page.locator('#point-map .endpoint-marker circle').first.bounding_box()['width']<30
+        page.locator('#point-map button[aria-label="Reset map zoom"]').click()
         page.locator('#walk-button').click()
         page.locator('#walk-route-map img').wait_for(timeout=180000)
         page.locator('#walk-route-map img').evaluate('(img)=>img.decode()')
@@ -128,6 +135,7 @@ def run():
         report=dict(status='passed',manual_search=True,operator_gate=True,preferred_hospital=True,
                     hd_webp=True,png=True,svg_zoom_reset=True,svg_bounded_pan=True,svg_surrounding_context=True,
                     close_zoom_original_vectors=True,point_selection_map=True,on_demand_walk=True,
+                    point_map_bounded_pan=True,point_markers_constant_size=True,
                     mobile_no_overflow=True,javascript_errors=errors)
         (OUT/'browser_report.json').write_text(json.dumps(report,indent=2))
         print(json.dumps(report,indent=2))

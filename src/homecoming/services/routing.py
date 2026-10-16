@@ -22,7 +22,7 @@ TO_GPS = Transformer.from_crs(2326,4326,always_xy=True)
 
 def walking(parameters):
     global _attached
-    signature = dict(parameters=parameters.model_dump(),snapshot=STEP_3.resolve().name,policy='endpoints-200m-v2',renderer=VERSION)
+    signature = dict(parameters=parameters.model_dump(),snapshot=STEP_3.resolve().name,policy='endpoints-200m-v3-frozen-profiles',renderer=VERSION)
     key = hashlib.sha256(json.dumps(signature,sort_keys=True).encode()).hexdigest()[:28]
     saved = RUNTIME / 'route_cache' / (key+'.json')
     if saved.exists():
