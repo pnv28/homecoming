@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="slide-title slide-description">
+<title id="slide-title">Homecoming: from application data to explainable estate rankings</title>
+<desc id="slide-description">Geographic data is cleaned, converted into walking graphs, and stored as prepared journey costs and maps. The main workflow is application inputs, DeepSeek extraction, human review, Python estate ranking, and the officer dashboard. A separate on-demand walking workflow uses the same graph and produces interactive SVG. The Python engine calculates rankings; AI extracts fields and explains the top three.</desc>
+<defs>
+  <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#163440" flood-opacity="0.13"/></filter>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 Z" fill="#228B9C"/></marker>
+</defs>
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="48" y="43" font-size="15" fill="#228B9C" font-weight="700" text-anchor="start" letter-spacing="0.5">03 / SYSTEM ARCHITECTURE &amp; METHODOLOGY</text>
+<text x="48" y="106" font-size="44" fill="#0D2D70" font-weight="700" text-anchor="start">From application data to explainable estate rankings</text>
+<text x="50" y="153" font-size="20" fill="#687780" font-weight="400" text-anchor="start">Precomputed walking-access data, human-reviewed inputs, and transparent scoring.</text>
+<rect x="48" y="182" width="94" height="6" rx="1" fill="#228B9C"/>
+<g id="geographic-foundation">
+<rect x="48" y="215" width="1504" height="133" rx="16" fill="#EAF3F7" stroke="#E0E9ED" stroke-width="1.4"/>
+<text x="72" y="242" font-size="15" fill="#0D2D70" font-weight="700" text-anchor="start" letter-spacing="0.45">GEOGRAPHIC DATA &amp; PRECOMPUTATION</text>
+<text x="77" y="274" font-size="18" fill="#37434D" font-weight="400" text-anchor="start">Estates · hospitals · MTR entrances</text>
+<text x="77" y="298" font-size="18" fill="#37434D" font-weight="400" text-anchor="start">Bus / minibus stops · 3D pedestrian paths</text>
+<path d="M483 279 L550 279" fill="none" stroke="#228B9C" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="578" y="274" font-size="19" fill="#37434D" font-weight="700" text-anchor="start">Clean + standardise</text>
+<text x="578" y="298" font-size="18" fill="#37434D" font-weight="400" text-anchor="start">Walking graphs + Dijkstra</text>
+<path d="M949 279 L1020 279" fill="none" stroke="#228B9C" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="1054" y="282" font-size="21" fill="#0D2D70" font-weight="700" text-anchor="start">Saved journey costs + maps</text>
+<text x="73" y="328" font-size="15" fill="#687780" font-weight="400" text-anchor="start">VPS STORAGE   GeoPackage / SQLite · NPZ · CSV / JSON · WebP / SVG · versioned files</text>
+</g>
+<path d="M1107 349 L1107 383" fill="none" stroke="#228B9C" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="1123" y="372" font-size="13" fill="#687780" font-weight="400" text-anchor="start">Reuse prepared results</text>
+<g id="workflow-stage-1">
+<rect x="48" y="390" width="276" height="250" rx="18" fill="#F7FAFC" stroke="#D5DFE4" stroke-width="1.4" filter="url(#soft-shadow)"/>
+<path d="M66 390 H306 Q324 390 324 408 V450 H48 V408 Q48 390 66 390 Z" fill="#0D2D70"/>
+<text x="186" y="427" font-size="16" fill="#FFFFFF" font-weight="700" text-anchor="middle">APPLICATION INPUTS</text>
+<text x="186" y="484" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Completed PDF form</text>
+<text x="186" y="518" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Mobility requirements</text>
+<text x="186" y="552" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Allocation category</text>
+<text x="186" y="586" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Hospital preference</text>
+</g>
+<path d="M331 518 L348 518" fill="none" stroke="#228B9C" stroke-width="2.3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<g id="workflow-stage-2">
+<rect x="355" y="390" width="276" height="250" rx="18" fill="#F7FAFC" stroke="#D5DFE4" stroke-width="1.4" filter="url(#soft-shadow)"/>
+<path d="M373 390 H613 Q631 390 631 408 V450 H355 V408 Q355 390 373 390 Z" fill="#228B9C"/>
+<text x="493" y="427" font-size="16" fill="#FFFFFF" font-weight="700" text-anchor="middle">AI EXTRACTION</text>
+<text x="493" y="484" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Render PDF regions</text>
+<text x="493" y="518" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">DeepSeek extracts fields</text>
+<text x="493" y="552" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Validate structured output</text>
+<text x="493" y="586" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Flag missing information</text>
+</g>
+<path d="M638 518 L655 518" fill="none" stroke="#228B9C" stroke-width="2.3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<g id="workflow-stage-3">
+<rect x="662" y="390" width="276" height="250" rx="18" fill="#F7FAFC" stroke="#D5DFE4" stroke-width="1.4" filter="url(#soft-shadow)"/>
+<path d="M680 390 H920 Q938 390 938 408 V450 H662 V408 Q662 390 680 390 Z" fill="#228B9C"/>
+<text x="800" y="427" font-size="16" fill="#FFFFFF" font-weight="700" text-anchor="middle">HUMAN REVIEW</text>
+<text x="800" y="484" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Review prefilled details</text>
+<text x="800" y="518" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Correct uncertain fields</text>
+<text x="800" y="552" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Choose preferred hospital</text>
+<rect x="691" y="561" width="218" height="35" rx="7" fill="#E1F0E9"/>
+<text x="800" y="586" font-size="18" fill="#228B9C" font-weight="700" text-anchor="middle">Confirm before search</text>
+</g>
+<path d="M945 518 L962 518" fill="none" stroke="#228B9C" stroke-width="2.3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<g id="workflow-stage-4">
+<rect x="969" y="390" width="276" height="250" rx="18" fill="#F7FAFC" stroke="#D5DFE4" stroke-width="1.4" filter="url(#soft-shadow)"/>
+<path d="M987 390 H1227 Q1245 390 1245 408 V450 H969 V408 Q969 390 987 390 Z" fill="#0D2D70"/>
+<text x="1107" y="427" font-size="16" fill="#FFFFFF" font-weight="700" text-anchor="middle">ESTATE RANKING</text>
+<text x="1107" y="484" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Retrieve cached costs</text>
+<text x="1107" y="518" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Apply area + mobility rules</text>
+<text x="1107" y="552" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Scale and weight costs</text>
+<text x="1107" y="586" font-size="18" fill="#0D2D70" font-weight="700" text-anchor="middle">Lower cost ranks better</text>
+</g>
+<path d="M1252 518 L1269 518" fill="none" stroke="#228B9C" stroke-width="2.3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<g id="workflow-stage-5">
+<rect x="1276" y="390" width="276" height="250" rx="18" fill="#F7FAFC" stroke="#D5DFE4" stroke-width="1.4" filter="url(#soft-shadow)"/>
+<path d="M1294 390 H1534 Q1552 390 1552 408 V450 H1276 V408 Q1276 390 1294 390 Z" fill="#228B9C"/>
+<text x="1414" y="427" font-size="16" fill="#FFFFFF" font-weight="700" text-anchor="middle">OFFICER DASHBOARD</text>
+<text x="1414" y="484" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Ranked estate list</text>
+<text x="1414" y="518" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Costs, maps and warnings</text>
+<text x="1414" y="552" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">AI explains the top three</text>
+<text x="1414" y="586" font-size="18.5" fill="#37434D" font-weight="400" text-anchor="middle">Human decision support</text>
+</g>
+<g id="on-demand-walking">
+<rect x="48" y="689" width="734" height="132" rx="16" fill="#EAF3F7" filter="url(#soft-shadow)"/>
+<text x="74" y="720" font-size="17" fill="#0D2D70" font-weight="700" text-anchor="start">ON-DEMAND WALKING</text>
+<rect x="663" y="701" width="93" height="26" rx="6" fill="#D4EAEF"/>
+<text x="709.5" y="719" font-size="12" fill="#228B9C" font-weight="700" text-anchor="middle" letter-spacing="0.5">SVG ONLY</text>
+<text x="74" y="753" font-size="20" fill="#37434D" font-weight="400" text-anchor="start">Start + destination → Dijkstra → interactive SVG</text>
+<text x="74" y="783" font-size="19" fill="#37434D" font-weight="400" text-anchor="start">Original paths + DTM terrain · cached for reuse</text>
+<text x="74" y="806" font-size="13" fill="#687780" font-weight="400" text-anchor="start">Uses the same eligible walking graph; terrain is a display layer.</text>
+</g>
+<g id="scoring-and-guardrails">
+<rect x="806" y="689" width="746" height="132" rx="16" fill="#EAF3F7" filter="url(#soft-shadow)"/>
+<text x="832" y="720" font-size="17" fill="#0D2D70" font-weight="700" text-anchor="start">SCORING &amp; GUARDRAILS</text>
+<text x="832" y="753" font-size="19" fill="#37434D" font-weight="400" text-anchor="start">Bus + MTR walking time · hospital walking distance</text>
+<text x="832" y="782" font-size="17.5" fill="#37434D" font-weight="400" text-anchor="start">Adjustable weights · operator confirmation · missing-route flags</text>
+<text x="832" y="806" font-size="13" fill="#687780" font-weight="400" text-anchor="start">Hospital distances use the general walking network.</text>
+</g>
+<text x="50" y="855" font-size="16" fill="#687780" font-weight="400" text-anchor="start">HTML / CSS / JavaScript → Cloudflare → Caddy → Python FastAPI</text>
+<text x="50" y="880" font-size="14" fill="#687780" font-weight="400" text-anchor="start">DeepSeek: extraction + explanation · Applicant session data held in memory</text>
+<text x="1552" y="856" font-size="23" fill="#0D2D70" font-weight="700" text-anchor="end">homecoming.</text>
+<text x="1552" y="880" font-size="12" fill="#687780" font-weight="700" text-anchor="end" letter-spacing="0.7">SYSTEM OVERVIEW</text>
+</g></svg>
