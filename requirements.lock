@@ -30,6 +30,7 @@ pypdf==6.20.0
 pypdfium2==4.30.0
 pyproj==3.6.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 python-multipart==0.0.20
 pytz==2026.5
 scipy==1.13.1

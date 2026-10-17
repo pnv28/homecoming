@@ -29,10 +29,6 @@ class SearchRequest(BaseModel):
     parameters: Parameters
 
 
-class ApiKeyRequest(BaseModel):
-    api_key: str = Field(min_length=8, max_length=512)
-
-
 class Member(BaseModel):
     name: Optional[str] = Field(default=None,max_length=160)
     disability_codes: List[int] = Field(default_factory=list,max_length=6)

@@ -8,8 +8,23 @@ The application lives at `/opt/homecoming`, owned by root. A dedicated
 `homecoming` user runs one Uvicorn process behind Caddy. One worker is required
 because sessions and background jobs are in memory. Caddy manages HTTPS and
 redirects HTTP to HTTPS. Only the loopback proxy can supply trusted forwarded
-headers. API keys belong to individual browser sessions and are never placed
-in a service environment file.
+headers. A shared DeepSeek key is read from `/opt/homecoming/.env` by systemd.
+This file stays out of Git and is root-owned with mode `600`. Visitors never
+enter, receive, or disconnect the shared key; applicant sessions remain separate.
+
+Configure the key privately after deployment:
+
+```sh
+cd /opt/homecoming
+.venv/bin/python scripts/configure_ai.py
+systemctl restart homecoming
+```
+
+The prompt hides the key. The helper checks it against DeepSeek's models endpoint
+before saving it. `.env.example` defines the settings; `DEEPSEEK_MODEL` defaults
+to `deepseek-flash`. Use `--skip-validation` only when deliberately configuring
+without provider access. Changing `.env` requires an app restart. The updater
+preserves existing keys and reinstalls the service unit on updates.
 
 Use a managed Python 3.12 from uv, stored at `/opt/homecoming-python`, rather
 than changing Ubuntu's system Python. Install the frozen dependencies with:

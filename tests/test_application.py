@@ -20,10 +20,32 @@ from homecoming.settings import ROOT
 
 class ApplicationTests(unittest.TestCase):
     def setUp(self):
+        self.key_patch=patch('homecoming.app.DEEPSEEK_API_KEY','')
+        self.key_patch.start()
         self.client=TestClient(app)
 
     def tearDown(self):
         self.client.close()
+        self.key_patch.stop()
+
+    def test_shared_key_is_private_and_survives_applicant_reset(self):
+        with patch('homecoming.app.DEEPSEEK_API_KEY','synthetic-shared-server-key'):
+            response=self.client.get('/api/bootstrap')
+            self.assertTrue(response.json()['connected'])
+            self.assertNotIn('synthetic-shared-server-key',response.text)
+            home=self.client.get('/').text
+            self.assertNotIn('connection-dialog',home)
+            self.assertNotIn('id="api-key"',home)
+            with TestClient(app) as other:
+                self.assertTrue(other.get('/api/bootstrap').json()['connected'])
+                self.assertNotEqual(self.client.cookies.get('homecoming_session'),other.cookies.get('homecoming_session'))
+                search=self.client.post('/api/search',json={'confirmed':True,'parameters':{'housing_district':'Urban'}}).json()
+                self.assertEqual(other.post('/api/overview/'+search['search_id']).status_code,404)
+                self.assertEqual(self.client.post('/api/reset').status_code,200)
+                self.assertTrue(self.client.get('/api/bootstrap').json()['connected'])
+                self.assertTrue(other.get('/api/bootstrap').json()['connected'])
+            self.assertEqual(self.client.post('/api/connection',json={'api_key':'replacement-key'}).status_code,404)
+            self.assertEqual(self.client.delete('/api/connection').status_code,404)
 
     def test_https_session_and_same_origin_requests(self):
         with TestClient(app,base_url='https://homecoming.pidge.dev') as public:
@@ -57,10 +79,8 @@ class ApplicationTests(unittest.TestCase):
 
     def test_extraction_never_searches_and_is_session_scoped(self):
         self.client.get('/api/health')
-        token=self.client.cookies.get('homecoming_session')
-        SESSIONS[token]['key']='synthetic-test-key'
         fixture=dict(applicant_name='Synthetic',wheelchair_required=True)
-        with patch('homecoming.services.documents.extract_pdf',return_value=fixture),patch('homecoming.services.data.ranking') as rank,patch('homecoming.services.deepseek.overview') as overview:
+        with patch('homecoming.app.DEEPSEEK_API_KEY','synthetic-test-key'),patch('homecoming.services.documents.extract_pdf',return_value=fixture) as extract,patch('homecoming.services.data.ranking') as rank,patch('homecoming.services.deepseek.overview') as overview:
             response=self.client.post('/api/extract',files={'file':('form.pdf',b'%PDF- synthetic','application/pdf')})
             self.assertEqual(response.status_code,200,response.text)
             job_id=response.json()['job_id']
@@ -69,6 +89,7 @@ class ApplicationTests(unittest.TestCase):
                 if result['status'] in ('done','failed'):break
                 time.sleep(.01)
             self.assertEqual(result['result'],fixture)
+            extract.assert_called_once_with(b'%PDF- synthetic','synthetic-test-key')
             rank.assert_not_called();overview.assert_not_called()
             with TestClient(app) as stranger:
                 self.assertEqual(stranger.get('/api/jobs/'+job_id).status_code,404)
@@ -83,7 +104,7 @@ class ApplicationTests(unittest.TestCase):
 
     def test_provider_failures_are_sanitised(self):
         request=httpx.Request('POST','https://api.deepseek.com/chat/completions')
-        with self.assertRaisesRegex(deepseek.ProviderError,'API key'):
+        with self.assertRaisesRegex(deepseek.ProviderError,'authenticate'):
             deepseek.checked(httpx.Response(401,request=request,json={'secret':'do-not-display'}))
         with self.assertRaisesRegex(deepseek.ProviderError,'rate limited'):
             deepseek.checked(httpx.Response(429,request=request))

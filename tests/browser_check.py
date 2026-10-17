@@ -12,18 +12,28 @@ BASE_URL=os.environ.get('HOMECOMING_BASE_URL','http://127.0.0.1:8000')
 BROWSER_PATH=os.environ.get('HOMECOMING_BROWSER_PATH','/Applications/Helium.app/Contents/MacOS/Helium')
 
 
+def mock_ai_status(page,connected):
+    def bootstrap(route):
+        response=route.fetch()
+        body=response.json();body['connected']=connected
+        route.fulfill(response=response,json=body)
+    page.route('**/api/bootstrap',bootstrap)
+    # Never make a paid provider call when checking a server with a shared key.
+    page.route('**/api/overview/**',lambda route:route.fulfill(status=409,json={'detail':'Synthetic API-offline check.'}))
+
+
 def run():
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True,executable_path=BROWSER_PATH or None)
         context=browser.new_context(viewport={'width':1440,'height':1100},device_scale_factor=1)
         page=context.new_page();errors=[];searches=[]
+        mock_ai_status(page,False)
         page.set_default_navigation_timeout(90000)
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.on('request',lambda request:searches.append(request.post_data_json) if request.url.endswith('/api/search') else None)
         page.goto(BASE_URL,wait_until='networkidle')
-        page.locator('#connection-dialog').wait_for(state='visible')
-        page.screenshot(path=str(OUT/'connection.png'),full_page=True)
-        page.locator('#skip-connection').click()
+        assert page.locator('#connection-dialog').count()==0
+        assert page.locator('#api-key').count()==0
         page.screenshot(path=str(OUT/'upload.png'),full_page=True)
         page.locator('#applicant-name').fill('Alex Chan')
         page.locator('#district-select').select_option('Urban')
@@ -110,7 +120,7 @@ def run():
         page=context.new_page();searches=[]
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.on('request',lambda request:searches.append(request.post_data_json) if request.url.endswith('/api/search') else None)
-        page.route('**/api/connection',lambda route:route.fulfill(json={'connected':True,'model':'test'}))
+        mock_ai_status(page,True)
         page.route('**/api/extract',lambda route:route.fulfill(json={'job_id':'mock-extract'}))
         fixture=dict(applicant_name='Jordan Lee',household_size=3,housing_district='Extended Urban',
                      wheelchair_required=True,household=[],hospital_mentioned=None,issues=[],
@@ -118,8 +128,8 @@ def run():
         page.route('**/api/jobs/mock-extract',lambda route:route.fulfill(json={'status':'done','result':fixture}))
         page.route('**/api/overview/**',lambda route:route.fulfill(status=409,json={'detail':'Synthetic API-offline check.'}))
         page.goto(BASE_URL,wait_until='networkidle')
-        page.locator('#api-key').fill('synthetic-test-key')
-        page.locator('#connect-submit').click();page.locator('#connection-dialog').wait_for(state='hidden')
+        assert page.locator('#connection-dialog').count()==0
+        page.wait_for_function('document.getElementById("connection-label").textContent === "AI enabled"')
         page.locator('#pdf-input').set_input_files(str(ROOT/'assets/samples/application-form.pdf'))
         page.wait_for_function('document.getElementById("applicant-name").value === "Jordan Lee"')
         page.wait_for_timeout(400)
@@ -136,7 +146,7 @@ def run():
 
         context=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
         page=context.new_page();page.goto(BASE_URL,wait_until='networkidle')
-        page.locator('#skip-connection').click()
+        assert page.locator('#connection-dialog').count()==0
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),'Horizontal overflow on mobile'
         page.screenshot(path=str(OUT/'mobile.png'),full_page=True)
         context.close();browser.close()

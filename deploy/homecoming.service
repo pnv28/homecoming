@@ -8,6 +8,7 @@ Type=simple
 User=homecoming
 Group=homecoming
 WorkingDirectory=/opt/homecoming
+EnvironmentFile=-/opt/homecoming/.env
 Environment=PYTHONUNBUFFERED=1
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=MPLCONFIGDIR=/opt/homecoming/runtime/matplotlib

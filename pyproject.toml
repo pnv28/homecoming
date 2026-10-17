@@ -7,7 +7,7 @@ name = "homecoming-local"
 version = "1.0.0"
 description = "Local Hong Kong estate accessibility explorer"
 requires-python = ">=3.9,<3.13"
-dependencies = ["fastapi>=0.115,<0.120", "uvicorn>=0.30,<0.35", "jinja2>=3.1,<4", "httpx>=0.27,<0.29", "python-multipart>=0.0.18,<0.1", "pypdfium2>=4.30,<5", "pypdf>=6.20,<7", "Pillow>=10,<12", "numpy>=2,<2.1", "pandas>=2.3,<2.4", "geopandas==1.0.1", "pyogrio==0.11.1", "shapely==2.0.7", "pyproj==3.6.1", "scipy==1.13.1"]
+dependencies = ["fastapi>=0.115,<0.120", "uvicorn>=0.30,<0.35", "jinja2>=3.1,<4", "httpx>=0.27,<0.29", "python-multipart>=0.0.18,<0.1", "python-dotenv==1.1.1", "pypdfium2>=4.30,<5", "pypdf>=6.20,<7", "Pillow>=10,<12", "numpy>=2,<2.1", "pandas>=2.3,<2.4", "geopandas==1.0.1", "pyogrio==0.11.1", "shapely==2.0.7", "pyproj==3.6.1", "scipy==1.13.1"]
 
 [project.scripts]
 homecoming = "homecoming.__main__:main"

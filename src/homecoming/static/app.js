@@ -30,20 +30,9 @@ async function pollJob(id, current=()=>true) {
 }
 function setConnection(connected) {
   state.connected=connected;
-  $('connection-button').classList.toggle('connected',connected);
-  $('connection-label').textContent=connected?'DeepSeek connected':'Connect DeepSeek';
-  show('disconnect-button',connected);
+  $('ai-status').classList.toggle('connected',connected);
+  $('connection-label').textContent=connected?'AI enabled':'AI unavailable';
 }
-function connectionDialog() { $('connection-error').textContent=''; $('connection-dialog').showModal(); }
-$('connection-button').addEventListener('click',connectionDialog);
-for(const id of ['close-connection','skip-connection']) $(id).addEventListener('click',()=>$('connection-dialog').close());
-$('connection-form').addEventListener('submit',async e=>{
-  e.preventDefault(); $('connect-submit').disabled=true; $('connection-error').textContent='';
-  try { await post('/api/connection',{api_key:$('api-key').value.trim()});setConnection(true);$('api-key').value='';$('connection-dialog').close();notice('DeepSeek is connected. Upload a form, or review your parameters and search.',true); }
-  catch(error) { $('connection-error').textContent=error.message; }
-  finally { $('connect-submit').disabled=false; }
-});
-$('disconnect-button').addEventListener('click',async()=>{await api('/api/connection',{method:'DELETE'});setConnection(false);$('api-key').value='';$('connection-dialog').close();});
 function setView(walk) {
   show('find-view',!walk);show('walk-view',walk);
   $('find-tab').classList.toggle('active',!walk);$('walk-tab').classList.toggle('active',walk);
@@ -89,7 +78,7 @@ async function upload(file) {
   $('upload-label').textContent=file.name;$('upload-caption').textContent='Choose another PDF to replace this file';
   if(state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
   state.pdfUrl=URL.createObjectURL(file);$('pdf-preview').src=state.pdfUrl;show('pdf-preview-wrap');
-  if(!state.connected) {notice('Connect DeepSeek to extract this PDF, then choose the file again. You can also enter the parameters manually.');connectionDialog();return;}
+  if(!state.connected) {notice('AI is temporarily unavailable. You can enter the parameters manually.');return;}
   const revision=state.draft;
   $('extract-status').className='extract-status busy';$('extract-status').textContent='Reading the application with DeepSeek…';show('extract-status');show('extraction-evidence',false);
   try {
@@ -308,7 +297,7 @@ function installZoom(svg,viewer,initial=[0,0,1000,700]) {
   const buttons=controls.querySelectorAll('button');buttons[0].onclick=()=>zoom(.75);buttons[1].onclick=()=>zoom(1.33);buttons[2].onclick=()=>{view=[...initial];apply();};viewer.append(controls);
   apply();
 }
-function renderOverviewUnavailable() { $('overview-content').innerHTML='<p class="muted">Your estate ranking is ready. Connect DeepSeek to add an explanation of the top three.</p>';show('retry-overview');$('retry-overview').textContent='Generate overview ✧'; }
+function renderOverviewUnavailable() { $('overview-content').innerHTML='<p class="muted">Your estate ranking is ready. AI is temporarily unavailable; you can still use the computed results.</p>';show('retry-overview');$('retry-overview').textContent='Generate overview ✧'; }
 async function requestOverview(searchId) {
   if(!state.results||state.results.search_id!==searchId)return;
   $('overview-content').innerHTML='<p class="muted loading-text">DeepSeek is explaining the top three using the computed costs and your confirmed preferences…</p>';show('retry-overview',false);
@@ -319,7 +308,7 @@ async function requestOverview(searchId) {
     $('overview-content').innerHTML=`<p>${esc(overview.summary)}</p><div class="overview-three">${overview.top_three.map((item,i)=>{const estate=state.results.estates.find(r=>r.id===item.estate_id);return `<div><strong>${i+1}. ${esc(estate.name_en)}</strong><p>${esc(item.explanation)}</p></div>`;}).join('')}</div>${overview.note?`<p class="formula-note">${esc(overview.note)}</p>`:''}`;
   } catch(error) {if(state.results?.search_id===searchId){$('overview-content').innerHTML=`<p class="muted">${esc(error.message)} The computed ranking remains available.</p>`;show('retry-overview');$('retry-overview').textContent='Retry ↻';}}
 }
-$('retry-overview').addEventListener('click',()=>{if(!state.connected)connectionDialog();else if(state.results)requestOverview(state.results.search_id);});
+$('retry-overview').addEventListener('click',()=>{if(state.results&&state.connected)requestOverview(state.results.search_id);else notice('AI is temporarily unavailable. The computed ranking is ready to use.');});
 async function loadPointMap() {
   if($('point-map').querySelector('svg'))return;
   const response=await fetch('/api/map/overview');if(!response.ok)throw new Error('The point-selection map could not be loaded. You can enter coordinates instead.');
@@ -402,7 +391,6 @@ async function bootstrap() {
         const group=document.createElement('optgroup');group.label=label;for(const place of places)group.append(new Option(place.name,place.id));$(which+'-location').append(group);
       }
     }
-    if(!state.connected)connectionDialog();
   } catch(error){notice(error.message+' Reload the page after checking the local data bundle.');}
   finally {$('search-button').disabled=!state.bootstrap;}
 }

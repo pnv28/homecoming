@@ -19,7 +19,7 @@ if (( EUID != 0 )); then
     exit 1
 fi
 
-for command in git uv curl systemctl flock chown; do
+for command in git uv curl systemctl flock chown install chmod; do
     command -v "$command" >/dev/null || { printf 'Missing command: %s\n' "$command" >&2; exit 1; }
 done
 cd /opt/homecoming
@@ -46,6 +46,13 @@ printf '%s\n' 'Pulling GitHub main. If prompted, use your GitHub username and PA
 git -c credential.helper='cache --timeout=3600' pull --ff-only origin main
 uv pip install --no-cache --python .venv/bin/python -r requirements.lock
 chown -R homecoming:homecoming runtime precomputed/maps/basemap
+if [[ ! -f .env ]]; then
+    install -m 600 .env.example .env
+fi
+chmod 600 .env
+chown root:root .env
+install -m 644 deploy/homecoming.service /etc/systemd/system/homecoming.service
+systemctl daemon-reload
 printf '%s\n' 'Restarting Homecoming. Active sessions and jobs will be cleared.'
 systemctl restart homecoming
 curl --fail --silent --show-error --retry 12 --retry-connrefused --retry-delay 2 \

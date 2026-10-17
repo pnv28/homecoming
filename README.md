@@ -14,6 +14,8 @@ python3 -m venv .venv
 
 Open **http://127.0.0.1:8000**. Keep that terminal running. Stop with Ctrl+C.
 
+AI uses one server-side key. Configure it once with `.venv/bin/python scripts/configure_ai.py`, which prompts without echoing the key and saves it in the ignored `.env`. Restart the app after changing configuration. `.env.example` documents `DEEPSEEK_API_KEY` and `DEEPSEEK_MODEL` (default `deepseek-flash`). Existing process environment variables take precedence over the file.
+
 For the temporary HTTPS server at **homecoming.pidge.dev**, see [VPS deployment](deploy/README.md).
 
 On the development computer, the existing environment can run it directly:
@@ -28,7 +30,7 @@ The data, application code, form template, fonts, and geographic context are inc
 
 ## Operator workflow
 
-1. Enter a DeepSeek API key in the opening modal, or continue with manual input.
+1. Open the website. AI is enabled automatically when the server has a configured DeepSeek key; no connection popup or per-visitor key is needed. Manual entry remains available if AI is unavailable.
 2. Upload a completed PDF. Typed, scanned, and handwritten forms are sent as relevant rendered page images to DeepSeek for extraction. Handwriting/checkbox accuracy needs operator review.
 3. Review the prefilled name, household size, allocation area, and wheelchair mode. Choose a preferred hospital if needed. All fields are editable; unknown wheelchair evidence requires an explicit choice.
 4. Press **Yes, search**. Extraction never clicks this button. Editing preferences also does not automatically run another search.
@@ -89,11 +91,11 @@ Each component cost scales as `100*x/(x+k)` with bus `k=600 seconds`, MTR `k=900
 
 ## DeepSeek and session data
 
-The adapter uses the documented vision-capable `deepseek-flash` model at `https://api.deepseek.com`. It validates a supplied key through the models endpoint. No key is embedded in the project. Real provider availability and OCR accuracy must be checked with your own key; automated provider checks use synthetic responses.
+The adapter defaults to `deepseek-flash` at `https://api.deepseek.com`; `DEEPSEEK_MODEL` can override the configured model. `scripts/configure_ai.py` validates the supplied key and configured model through the models endpoint before saving, unless `--skip-validation` is explicitly used. No real key is committed to Git or returned to the browser. Real provider availability and OCR accuracy require a working provider account; automated provider checks use synthetic responses.
 
-API keys, confirmed applicant profiles, extraction outputs, and overview results are kept in server memory for the local session. Uploaded PDFs are rendered in memory; browser previews use a local object URL. Recognised HD300E templates send the name/disability and allocation-choice regions of pages 1–2; other layouts send rendered page regions up to the 12-page/15 MB limit. Relevant images leave the computer for DeepSeek when extraction is requested. Overview requests omit applicant identity and finances.
+The shared API key is stored in the server's ignored `.env` file and loaded into the process environment. On the VPS this file is root-owned with mode `600`; systemd reads it for the service. Confirmed applicant profiles, extraction outputs, overview results, and background jobs remain isolated by browser session in server memory. Uploaded PDFs are rendered in memory; browser previews use a local object URL. Recognised HD300E templates send the name/disability and allocation-choice regions of pages 1–2; other layouts send rendered page regions up to the 12-page/15 MB limit. Relevant images leave the computer for DeepSeek when extraction is requested. Overview requests omit applicant identity and finances.
 
-**Clear session** removes the session's key, results, and jobs. Restarting the server clears in-memory sessions. Geographic map assets and arbitrary-route caches are reusable, non-applicant data and remain on disk. The app binds to localhost; the VPS deployment serves it through an HTTPS reverse proxy. Session cookies are Secure when served over HTTPS.
+**Clear session** removes that applicant's results and jobs while leaving the shared AI connection configured. Restarting the server clears in-memory sessions and reloads the key from `.env`. Geographic map assets and arbitrary-route caches are reusable, non-applicant data and remain on disk. The app binds to localhost; the VPS deployment serves it through an HTTPS reverse proxy. Session cookies are Secure when served over HTTPS.
 
 ## Checks and project layout
 

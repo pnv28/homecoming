@@ -18,8 +18,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
-from homecoming.schemas import ApiKeyRequest, Parameters, SearchRequest, WalkRequest
-from homecoming.settings import ROOT, MAP_ROOT, RUNTIME, MAX_PDF_BYTES, MODEL
+from homecoming.schemas import Parameters, SearchRequest, WalkRequest
+from homecoming.settings import ROOT, MAP_ROOT, RUNTIME, MAX_PDF_BYTES, MODEL, DEEPSEEK_API_KEY
 from homecoming.services import data, deepseek, documents, jobs, map_index, routing
 
 app=FastAPI(title='homecoming',docs_url=None,redoc_url=None)
@@ -45,7 +45,7 @@ async def session_middleware(request,call_next):
                 del SESSIONS[sid]
         if token not in SESSIONS:
             token=secrets.token_urlsafe(32)
-            SESSIONS[token]=dict(key=None,results={},touched=time.monotonic())
+            SESSIONS[token]=dict(results={},touched=time.monotonic())
         SESSIONS[token]['touched']=time.monotonic()
         request.state.owner=token
         request.state.session=SESSIONS[token]
@@ -96,7 +96,7 @@ def path_context(left:float,bottom:float,right:float,top:float,cx:float,cy:float
 def bootstrap(request:Request):
     catalog=data.catalog()
     data.cache()
-    return dict(connected=bool(request.state.session['key']),model=MODEL,
+    return dict(connected=bool(DEEPSEEK_API_KEY),model=MODEL,
         categories=['Urban','Extended Urban','New Territories','Islands'],
         hospitals=catalog['lists']['hospital'],estates=catalog['lists']['estate'],
         locations=catalog['lists']['hospital']+catalog['lists']['mtr'],
@@ -104,27 +104,12 @@ def bootstrap(request:Request):
         map_library_complete=map_index.index().get('complete',False))
 
 
-@app.post('/api/connection')
-async def connect(request:Request,body:ApiKeyRequest):
-    key=body.api_key.strip()
-    result=await deepseek.validate_key(key)
-    request.state.session['key']=key
-    return result
-
-
-@app.delete('/api/connection')
-def disconnect(request:Request):
-    request.state.session['key']=None
-    return dict(connected=False)
-
-
 @app.post('/api/reset')
 def reset(request:Request):
-    # Replace the session object so an older in-flight connection response cannot
-    # restore credentials after the operator clears the session.
-    request.state.session.update(key=None,results={})
+    # Clearing one applicant never disconnects the shared server-side AI key.
+    request.state.session.update(results={})
     with SESSION_LOCK:
-        SESSIONS[request.state.owner]=dict(key=None,results={},touched=time.monotonic())
+        SESSIONS[request.state.owner]=dict(results={},touched=time.monotonic())
     jobs.clear(request.state.owner)
     return dict(ok=True)
 
@@ -143,9 +128,9 @@ def demo_form(kind:str):
 
 @app.post('/api/extract')
 async def extract(request:Request,file:UploadFile=File(...)):
-    key=request.state.session['key']
+    key=DEEPSEEK_API_KEY
     if not key:
-        raise HTTPException(409,'Connect a DeepSeek API key first, or fill the parameters manually.')
+        raise HTTPException(409,'AI is temporarily unavailable. You can enter the parameters manually.')
     payload=await file.read(MAX_PDF_BYTES+1)
     await file.close()
     if len(payload)>MAX_PDF_BYTES or not payload.lstrip().startswith(b'%PDF-'):
@@ -175,12 +160,12 @@ def search(request:Request,body:SearchRequest):
 @app.post('/api/overview/{search_id}')
 def explain(request:Request,search_id:str):
     session=request.state.session
-    if not session['key']:
-        raise HTTPException(409,'Connect DeepSeek to generate an AI Overview. The ranking is ready to use.')
+    if not DEEPSEEK_API_KEY:
+        raise HTTPException(409,'AI is temporarily unavailable. The computed ranking is ready to use.')
     result=session['results'].get(search_id)
     if result is None:
         raise HTTPException(404,'This confirmed search has expired. Submit the reviewed form again.')
-    key=session['key']
+    key=DEEPSEEK_API_KEY
     parameters=Parameters.model_validate(result['parameters'])
     job=jobs.submit(request.state.owner,'overview',lambda:deepseek.overview(key,result,parameters))
     return dict(job_id=job)

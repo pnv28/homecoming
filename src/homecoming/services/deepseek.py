@@ -16,7 +16,7 @@ class ProviderError(ValueError):
 
 def checked(response):
     if response.status_code in (401,403):
-        raise ProviderError('DeepSeek rejected this API key. Check the key in Connection settings.')
+        raise ProviderError('The AI service could not authenticate. Please contact the operator.')
     if response.status_code == 402:
         raise ProviderError('The DeepSeek account has insufficient balance.')
     if response.status_code == 429:
