@@ -1,5 +1,9 @@
 # Step 4 cache and reader guide
 
+> **Archived development guide.** This copy preserves the original implementation record, workspace paths, commands, and relative links. Some linked plans, project-context documents, and reports were omitted from the standalone application, so those links may not resolve here.
+>
+> See [this guide in its original location on `development`](https://github.com/pnv28/homecoming/blob/development/work/instructions/step_4/step_4_implementation.md), the [development plans and project context](https://github.com/pnv28/homecoming/tree/development/work/instructions), and the [development reports](https://github.com/pnv28/homecoming/tree/development/work/precomputed/docs). For current standalone usage and implementation status, follow the [README](../../README.md) and [current implementation status](../implementation-status.md).
+
 Updated 2026-10-16 20:32:37 HKT (UTC+08:00). Selected run: `20261016T102523Z-8e69faad`.
 
 Step 4 consumes one verified record from `precomputed/outputs/rebuild/current.json`. It pins the retained Step 2 and Step 3 run directories and their manifest hashes. It uses the five saved Step 3 graphs and scenario-specific terminal mappings, plus the two explicit hospital-only origin overrides documented below. It does not rebuild graph topology or remove estimated edges from the primary attached graph to construct a baseline.

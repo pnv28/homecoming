@@ -1,5 +1,9 @@
 # Step 5 implementation and ranking reader guide
 
+> **Archived development guide.** This copy preserves the original implementation record, workspace paths, commands, and relative links. Some linked plans, project-context documents, and reports were omitted from the standalone application, so those links may not resolve here.
+>
+> See [this guide in its original location on `development`](https://github.com/pnv28/homecoming/blob/development/work/instructions/step_5/step_5_implementation.md), the [development plans and project context](https://github.com/pnv28/homecoming/tree/development/work/instructions), and the [development reports](https://github.com/pnv28/homecoming/tree/development/work/precomputed/docs). For current standalone usage and implementation status, follow the [README](../../README.md) and [current implementation status](../implementation-status.md).
+
 Updated 2026-10-16 20:34:38 HKT (UTC+08:00). Selected run: `20261016T122956Z-21343da6`, frozen to amended Step 4 `20261016T102523Z-8e69faad`.
 
 All **162 tests** and the independent full-data acceptance pass. Each of the four views contains **244 estates**: general has **239 complete / 5 incomplete**, wheelchair has **225 complete / 19 incomplete**, in both scenarios. Missing default components are general bus/MTR/hospital **5/5/1** and wheelchair **17/19/1**. Counts overlap across components and are inherited reachability, not scoring errors. The build used **zero routing searches**, took **4.94 seconds** through save/reopen checks before final publication checks, and saved **5,152,539 bytes (4.91 MiB)** of payload before small report/manifest/success overhead.

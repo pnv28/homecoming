@@ -1,5 +1,9 @@
 # Step 1 implementation plan: ingest and harmonise the housing-ranking data
 
+> **Archived development guide.** This copy preserves the original implementation record, workspace paths, commands, and relative links. Some linked plans, project-context documents, and reports were omitted from the standalone application, so those links may not resolve here.
+>
+> See [this guide in its original location on `development`](https://github.com/pnv28/homecoming/blob/development/work/instructions/step_1/step_1_implementation_plan.md), the [development plans and project context](https://github.com/pnv28/homecoming/tree/development/work/instructions), and the [development reports](https://github.com/pnv28/homecoming/tree/development/work/precomputed/docs). For current standalone usage and implementation status, follow the [README](../../README.md) and [current implementation status](../implementation-status.md).
+
 > **Latest decisions:** Read [the project context and agent handoff](../project_context_and_decisions.md). It records the user's later assumptions and cost-model choices, which override earlier unresolved questions or suggested defaults in this document. Implementation status is distinguished from agreed policy.
 
 Prepared 13 October 2026 after inspecting the local files with the repository's `.venv`.

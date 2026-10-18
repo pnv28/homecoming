@@ -1,5 +1,9 @@
 # Step 3: facility connections and augmented graphs
 
+> **Archived development guide.** This copy preserves the original implementation record, workspace paths, commands, and relative links. Some linked plans, project-context documents, and reports were omitted from the standalone application, so those links may not resolve here.
+>
+> See [this guide in its original location on `development`](https://github.com/pnv28/homecoming/blob/development/work/instructions/step_3/step_3_implementation.md), the [development plans and project context](https://github.com/pnv28/homecoming/tree/development/work/instructions), and the [development reports](https://github.com/pnv28/homecoming/tree/development/work/precomputed/docs). For current standalone usage and implementation status, follow the [README](../../README.md) and [current implementation status](../implementation-status.md).
+
 Last updated: 2026-10-16 16:21:12 HKT (UTC+08:00)
 
 ## Explanation for the team

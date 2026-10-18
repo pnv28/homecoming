@@ -122,4 +122,6 @@ docs/engine/         Copied engine implementation guides
 runtime/             Ignored temporary caches and QA output
 ```
 
-The copied engine guides preserve their original relative links and refer to the earlier workspace layout retained on `development`. [PLAN.md](PLAN.md) records the agreed design and decisions.
+The copied engine guides preserve their original relative links and refer to the earlier workspace layout retained on the [development branch](https://github.com/pnv28/homecoming/tree/development). Each guide begins with an archive notice linking to its original location and the retained plans and reports. Some historical relative links do not resolve in this standalone checkout.
+
+[PLAN.md](PLAN.md) preserves the historical design and decisions; its opening notice identifies the superseded API-key and `final/` requirements. Follow this README for current operation. [Current implementation status](docs/implementation-status.md) documents Step 5 scoring and ranking separately from the legacy status fields in `config/routing_policy.json`, whose policy contents remain preserved for frozen builds.

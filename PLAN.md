@@ -1,5 +1,12 @@
 # homecoming — proposed local web application
 
+> **Historical plan — superseded requirements.** This document preserves the original design and implementation record. For current setup, behavior, and credential handling, follow the [README](README.md).
+>
+> - The opening API-key modal and session-specific credentials described below were replaced by one server-side DeepSeek key, configured through the ignored `.env` file or process environment. Applicant data remains scoped to browser sessions; **Clear session** leaves the shared AI connection configured. See [DeepSeek and session data](README.md#deepseek-and-session-data).
+> - The standalone application was promoted from `final/` to the repository root. Run commands from the root using the [current launch instructions](README.md#run-locally). The original `final/`, `work/`, and research layout is preserved on the [development branch](https://github.com/pnv28/homecoming/tree/development).
+>
+> These changes were recorded in [the application promotion](https://github.com/pnv28/homecoming/commit/394575921f64abf857110a2fe7b572c78afdd490) and [the shared-key change](https://github.com/pnv28/homecoming/commit/460360923affb4594dfea3934c4c2cc9c0f37b2d). The status and requirements below refer to the earlier design.
+
 Status: implemented and locally verified on 16 October 2026. The source Step 1–5 snapshots remain unchanged. All 7,262 WebP/SVG map sets are prepared and verified. See README.md for launch instructions and docs/verification.json for test evidence. Live DeepSeek verification requires the operator's own API key; provider and review-flow tests use synthetic responses.
 
 ## Confirmed scope
