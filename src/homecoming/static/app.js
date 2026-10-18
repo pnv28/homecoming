@@ -116,14 +116,14 @@ $('preferences-form').addEventListener('submit',async e=>{
 $('edit-preferences').addEventListener('click',()=>{show('input-area');setStep(2);$('input-area').scrollIntoView({behavior:'smooth'});});
 function renderResults() {
   const r=state.results,p=r.parameters;
-  $('results-title').textContent=p.applicant_name?`${p.applicant_name}’s next chapter.`:'A closer look at your options.';
+  $('results-title').textContent=p.applicant_name||'Estate ranking';
   const hospital=state.bootstrap.hospitals.find(h=>h.id===p.hospital_id);
   const labels=[p.housing_district||'All areas',p.wheelchair?'Wheelchair routes':'General walking',hospital?.name||'Nearest reachable hospital'];
   if(p.household_size)labels.push(`${p.household_size} household member${p.household_size===1?'':'s'}`);
   if(p.scenario==='baseline')labels.push('Baseline evidence');
   $('profile-chips').innerHTML=labels.map(t=>`<span>${esc(t)}</span>`).join('');
   $('estate-count').textContent=`${r.estates.length} estates`;
-  $('list-footer').textContent=`${r.complete} complete · ${r.incomplete} incomplete. Missing routes stay visible without a numeric rank.`;
+  $('list-footer').textContent=`${r.complete} complete · ${r.incomplete} incomplete. Estates with missing required routes remain visible but do not receive a numeric rank.`;
   $('estate-filter').value='';renderEstateList();
   if(r.estates.length) selectEstate(r.estates[0].id);
   else $('estate-detail').innerHTML='<div class="empty-result">No estates match these preferences.</div>';
