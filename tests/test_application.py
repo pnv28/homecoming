@@ -155,11 +155,19 @@ class ApplicationTests(unittest.TestCase):
         from pypdf import PdfReader
         typed=ROOT/'assets/samples/synthetic-typed.pdf'
         scanned=ROOT/'assets/samples/synthetic-scanned.pdf'
-        self.assertIn('Applicant surname: CHAN',PdfReader(typed).pages[0].extract_text())
-        self.assertEqual(PdfReader(scanned).pages[0].extract_text(),'')
+        template=PdfReader(ROOT/'assets/samples/application-form.pdf')
+        typed_reader,scanned_reader=PdfReader(typed),PdfReader(scanned)
+        self.assertEqual(len(typed_reader.pages),len(template.pages))
+        self.assertEqual(len(scanned_reader.pages),len(template.pages))
+        for original,filled,scan in zip(template.pages,typed_reader.pages,scanned_reader.pages):
+            self.assertIn(original.extract_text(),filled.extract_text())
+            self.assertEqual(scan.extract_text(),'')
+            self.assertEqual(filled.mediabox,original.mediabox)
+        for name in ('JOHN','MARY','DENG'):
+            self.assertIn(name,typed_reader.pages[0].extract_text())
         for path in (typed,scanned):
             content=documents.content_from_pdf(path.read_bytes())
-            self.assertEqual(sum(r['type']=='image_url' for r in content),2)
+            self.assertEqual(sum(r['type']=='image_url' for r in content),3 if path==typed else 8)
             response=self.client.get('/demo-form/'+('typed' if path==typed else 'scanned')+'.pdf')
             self.assertEqual(response.status_code,200)
             self.assertEqual(response.content,path.read_bytes())

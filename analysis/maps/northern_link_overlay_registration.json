@@ -1,0 +1,280 @@
+{
+  "version": 2,
+  "schematic_reference": "https://mtrnorthernlink.hk/images/pages/about/map_en.svg",
+  "geographic_reference": "https://www.legco.gov.hk/yr2025/english/brief/tlb102002001p002_20250709-e.pdf",
+  "reference_page": 12,
+  "method": "Redrawn SVG centerlines from geographic plan; uniform circular symbols; separate label layout per view",
+  "grid_crs": "EPSG:2326",
+  "geographic_plan_fit_rms_m": 157.9427702592955,
+  "proposed_positions": "Indicative positions digitised from official plan; not surveyed",
+  "existing_station_positions": "Local official railway station dataset; exact original coordinates",
+  "anchors": [
+    {
+      "name": "Lo Wu",
+      "reference_xy": [
+        865,
+        76
+      ],
+      "fit_residual_m": 181.33857719420135
+    },
+    {
+      "name": "Lok Ma Chau",
+      "reference_xy": [
+        468,
+        207
+      ],
+      "fit_residual_m": 112.04334429902762
+    },
+    {
+      "name": "Sheung Shui",
+      "reference_xy": [
+        1005,
+        342
+      ],
+      "fit_residual_m": 308.31288585700037
+    },
+    {
+      "name": "Fanling",
+      "reference_xy": [
+        1087,
+        414
+      ],
+      "fit_residual_m": 98.94258675905435
+    },
+    {
+      "name": "Long Ping",
+      "reference_xy": [
+        139,
+        803
+      ],
+      "fit_residual_m": 103.12728227359442
+    },
+    {
+      "name": "Yuen Long",
+      "reference_xy": [
+        230,
+        813
+      ],
+      "fit_residual_m": 68.13782213565712
+    },
+    {
+      "name": "Kam Sheung Road",
+      "reference_xy": [
+        472,
+        923
+      ],
+      "fit_residual_m": 171.6854334902895
+    },
+    {
+      "name": "Tai Wo",
+      "reference_xy": [
+        1262,
+        773
+      ],
+      "fit_residual_m": 97.13752140268419
+    },
+    {
+      "name": "Tai Po Market",
+      "reference_xy": [
+        1337,
+        827
+      ],
+      "fit_residual_m": 141.5620752974441
+    }
+  ],
+  "label_layout": {
+    "overview": [
+      {
+        "name": "Kam Sheung Road",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0,
+        "within_map": true
+      },
+      {
+        "name": "Au Tau",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Ngau Tam Mei",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "San Tin",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Kwu Tung",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Chau Tau",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "The Loop",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Huanggang Port",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Ngau Tam Mei depot",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      }
+    ],
+    "detail": [
+      {
+        "name": "Sheung Shui",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0,
+        "within_map": true
+      },
+      {
+        "name": "Fanling",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Long Ping",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Yuen Long",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Tin Shui Wai",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Lo Wu",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Lok Ma Chau",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Kam Sheung Road",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Tai Wo",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Tai Po Market",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Au Tau",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Ngau Tam Mei",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "San Tin",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Kwu Tung",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Chau Tau",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "The Loop",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Huanggang Port",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      },
+      {
+        "name": "Ngau Tam Mei depot",
+        "marker_overlaps": 0,
+        "station_overlaps": 0,
+        "label_overlap_area": 0.0,
+        "within_map": true
+      }
+    ]
+  }
+}
