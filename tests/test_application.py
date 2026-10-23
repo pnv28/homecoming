@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -27,6 +28,15 @@ class ApplicationTests(unittest.TestCase):
     def tearDown(self):
         self.client.close()
         self.key_patch.stop()
+
+    def test_page_versions_scripts_and_styles_by_content(self):
+        response=self.client.get('/')
+        self.assertEqual(response.status_code,200)
+        for name in ('app.css','app.js'):
+            asset=ROOT/'src/homecoming/static'/name
+            version=hashlib.sha256(asset.read_bytes()).hexdigest()[:16]
+            self.assertIn('/static/'+name+'?v='+version,response.text)
+        self.assertEqual(response.headers['cache-control'],'no-store')
 
     def test_shared_key_is_private_and_survives_applicant_reset(self):
         with patch('homecoming.app.DEEPSEEK_API_KEY','synthetic-shared-server-key'):

@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Compare Hong Kong public rental housing estates by their walking connections to MTR access points, bus stops, and hospitals, based on the applicant’s preferences.">
   <title>homecoming — AI Based Estate Mobility Ranker</title>
-  <link rel="stylesheet" href="/static/app.css"><script defer src="/static/app.js"></script>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_versions['app.css'] }}"><script defer src="/static/app.js?v={{ asset_versions['app.js'] }}"></script>
 </head>
 <body>
   <header class="site-header"><a class="brand" href="/" aria-label="homecoming home"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M7 18 18 8l11 10v13H7Z"/><path d="M14 31V20h8v11"/><path d="M23 7c1-4 6-5 8-3 0 4-3 7-7 7"/></svg><span>homecoming</span></a>
@@ -20,7 +20,7 @@
         <section class="panel upload-panel"><div class="section-top"><span class="muted small">01 / 03</span></div><h2>Upload the applicant’s form to autofill their details</h2><p class="muted">Upload a completed PRH application.</p>
           <label class="dropzone" id="dropzone" tabindex="0"><input id="pdf-input" type="file" accept="application/pdf,.pdf" hidden><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 5h14l9 9v29H11V5Z"/><path d="M28 5v10h9M24 34V22m-5 5 5-5 5 5"/></svg><strong id="upload-label">Drop your PDF here</strong><span id="upload-caption">or choose a file from your computer</span><small>Typed or scanned · PDF · up to 15 MB</small></label>
           <div class="upload-actions"><a href="/sample-form.pdf" download>Download blank form <span>↓</span></a><button class="text-button" id="manual-button">Enter details manually →</button></div>
-          <details class="demo-forms"><summary>Try a completed sample form</summary><p>John Deng's fictional household, filled on the original HD300 form. For demonstration only. <a href="/demo-form/typed.pdf" download>Typed PDF ↓</a> · <a href="/demo-form/scanned.pdf" download>Scanned PDF ↓</a></p><button type="button" class="secondary-button" id="fill-sample-button">Fill in sample applicant details</button><p>Reads the typed sample with AI. Review the prefilled details before searching.</p></details>
+          <details class="demo-forms"><summary>Try a completed sample form</summary><p>John Deng's fictional household, filled on the original HD300 form. For demonstration only. <a href="/demo-form/typed.pdf" download>Typed PDF ↓</a> · <a href="/demo-form/scanned.pdf" download>Scanned PDF ↓</a> · <button type="button" class="text-button" id="fill-sample-button">Fill in sample applicant details</button></p><p>Reads the typed sample with AI. Review the prefilled details before searching.</p></details>
           <div id="extract-status" class="extract-status hidden" role="status"></div><div id="extraction-evidence" class="evidence hidden"></div>
           <details id="pdf-preview-wrap" class="hidden"><summary>View uploaded document</summary><iframe id="pdf-preview" title="Uploaded PDF preview"></iframe></details>
           <div class="privacy-note"><span aria-hidden="true">◇</span><p>Your form is used only for the current session on our server. Relevant pages are sent to DeepSeek for extraction; AI access is provided by our server.</p></div>

@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 from functools import lru_cache
 import base64
+import hashlib
 import io
 import json
 import math
@@ -66,7 +67,11 @@ async def value_error(request,exc):
 
 @app.get('/',response_class=HTMLResponse)
 def home(request:Request):
-    return templates.TemplateResponse(request=request,name='index.html',context={})
+    # Change asset URLs with their contents so cached scripts cannot lag behind
+    # freshly rendered HTML after an update.
+    versions={name:hashlib.sha256((HERE/'static'/name).read_bytes()).hexdigest()[:16]
+              for name in ('app.css','app.js')}
+    return templates.TemplateResponse(request=request,name='index.html',context={'asset_versions':versions})
 
 
 @app.get('/api/health')
