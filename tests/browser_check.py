@@ -117,11 +117,14 @@ def run():
         # Simulate a provider extraction while exercising the real browser form
         # and real ranking endpoint. No paid API request is needed for this check.
         context=browser.new_context(viewport={'width':1440,'height':1000})
-        page=context.new_page();searches=[]
+        page=context.new_page();searches=[];uploads=[]
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.on('request',lambda request:searches.append(request.post_data_json) if request.url.endswith('/api/search') else None)
         mock_ai_status(page,True)
-        page.route('**/api/extract',lambda route:route.fulfill(json={'job_id':'mock-extract'}))
+        def sample_extract(route):
+            uploads.append(route.request.post_data_buffer)
+            route.fulfill(json={'job_id':'mock-extract'})
+        page.route('**/api/extract',sample_extract)
         fixture=dict(applicant_name='Jordan Lee',household_size=3,housing_district='Extended Urban',
                      wheelchair_required=True,household=[],hospital_mentioned=None,issues=[],
                      evidence=[dict(page=1,text='Synthetic operator-review test')])
@@ -130,8 +133,14 @@ def run():
         page.goto(BASE_URL,wait_until='networkidle')
         assert page.locator('#connection-dialog').count()==0
         page.wait_for_function('document.getElementById("connection-label").textContent === "AI enabled"')
-        page.locator('#pdf-input').set_input_files(str(ROOT/'assets/samples/application-form.pdf'))
+        page.locator('.demo-forms summary').click()
+        page.locator('#fill-sample-button').click()
         page.wait_for_function('document.getElementById("applicant-name").value === "Jordan Lee"')
+        assert len(uploads)==1
+        assert (ROOT/'assets/samples/synthetic-typed.pdf').read_bytes() in uploads[0]
+        assert b'filename="homecoming-demo-typed.pdf"' in uploads[0]
+        assert page.locator('#upload-label').inner_text()=='homecoming-demo-typed.pdf'
+        assert page.locator('#pdf-preview-wrap').is_visible()
         page.wait_for_timeout(400)
         assert len(searches)==0,'Extraction must stop at the operator review form'
         assert page.locator('[name=wheelchair][value=true]').is_checked()
@@ -151,7 +160,7 @@ def run():
         page.screenshot(path=str(OUT/'mobile.png'),full_page=True)
         context.close();browser.close()
         assert not errors,errors
-        report=dict(status='passed',manual_search=True,operator_gate=True,preferred_hospital=True,
+        report=dict(status='passed',manual_search=True,sample_auto_upload=True,operator_gate=True,preferred_hospital=True,
                     hd_webp=True,png=True,svg_zoom_reset=True,svg_bounded_pan=True,svg_surrounding_context=True,
                     close_zoom_original_vectors=True,point_selection_map=True,on_demand_walk=True,
                     point_map_bounded_pan=True,point_markers_constant_size=True,point_map_terrain_and_paths=True,

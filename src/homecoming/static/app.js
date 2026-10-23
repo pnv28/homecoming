@@ -52,6 +52,17 @@ for(const event of ['dragenter','dragover']) $('dropzone').addEventListener(even
 for(const event of ['dragleave','drop']) $('dropzone').addEventListener(event,e=>{e.preventDefault();$('dropzone').classList.remove('dragover');});
 $('dropzone').addEventListener('drop',e=>{if(e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]);});
 $('pdf-input').addEventListener('change',e=>{if(e.target.files[0]) upload(e.target.files[0]);});
+$('fill-sample-button').addEventListener('click',async()=>{
+  const button=$('fill-sample-button');
+  button.disabled=true;button.textContent='Reading sample form…';
+  try {
+    const response=await fetch('/demo-form/typed.pdf',{credentials:'same-origin'});
+    if(!response.ok) throw new Error('The sample form could not be loaded. Please retry.');
+    const file=new File([await response.blob()],'homecoming-demo-typed.pdf',{type:'application/pdf'});
+    await upload(file);
+  } catch(error) {notice(error.message);}
+  finally {button.disabled=false;button.textContent='Fill in sample applicant details';}
+});
 function applyExtraction(profile) {
   $('applicant-name').value=profile.applicant_name||'';
   $('household-size').value=profile.household_size||'';
